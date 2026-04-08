@@ -42,7 +42,7 @@ h6{
 }
 p{
     font-size: 14px;
-    margin: 0px;
+    margin: 0;
 }
 a{
     font-size: 12px;
