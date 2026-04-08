@@ -129,7 +129,7 @@ chart.render();
 //
 // STACKED BAR CHART
 //
-var colors = ["#1c84ee", "#4ecac2", "#22c55e", "#f9b931", "#ff6c2f"];
+var colors = ["#1c84ee", "#4ecac2", "#22c55e", "#f9b931", "var(--bs-primary)"];
 var options = {
   chart: {
     height: 380,
@@ -216,7 +216,7 @@ chart.render();
 //
 // 100% STACKED BAR CHART
 //
-var colors = ["#1c84ee", "#4ecac2", "#22c55e", "#f9b931", "#ff6c2f"];
+var colors = ["#1c84ee", "#4ecac2", "#22c55e", "#f9b931", "var(--bs-primary)"];
 var options = {
   chart: {
     height: 380,
@@ -666,7 +666,7 @@ var colors = [
   "#7f56da",
   "#ff86c8",
   "#ef5f5f",
-  "#ff6c2f",
+  "var(--bs-primary)",
   "#f9b931",
   "#22c55e",
   "#040505",

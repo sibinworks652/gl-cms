@@ -2,7 +2,6 @@
 
 use Illuminate\Support\Facades\Route;
 use Modules\Services\Controllers\AdminServiceController;
-use Modules\Services\Controllers\FrontServiceController;
 use Modules\Services\Controllers\ServiceCategoryController;
 
 Route::prefix('admin')->middleware('auth:admin')->name('admin.')->group(function () {
@@ -63,5 +62,3 @@ Route::prefix('admin')->middleware('auth:admin')->name('admin.')->group(function
         ->name('service-categories.destroy');
 });
 
-Route::get('services', [FrontServiceController::class, 'index'])->name('services.index');
-Route::get('services/{slug}', [FrontServiceController::class, 'show'])->name('services.show');

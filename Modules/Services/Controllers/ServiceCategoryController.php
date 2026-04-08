@@ -33,7 +33,17 @@ class ServiceCategoryController extends Controller
 
     public function store(ServiceCategoryRequest $request)
     {
-        $this->manager->createCategory($request->validated());
+        $category = $this->manager->createCategory($request->validated());
+
+        if ($request->wantsJson()) {
+            return response()->json([
+                'message' => 'Service category created successfully.',
+                'category' => [
+                    'id' => $category->id,
+                    'name' => $category->name,
+                ],
+            ], 201);
+        }
 
         return redirect()
             ->route('admin.service-categories.index')

@@ -7,12 +7,12 @@
 //
 // SIMPLE PIE CHART
 //
-var colors = ["#1c84ee", "#7f56da","#ff6c2f", "#f9b931","#4ecac2"];
+var colors = ["#1c84ee", "#7f56da","var(--bs-primary)", "#f9b931","#4ecac2"];
 var options = {
     chart: {
         height: 320,
         type: 'pie',
-    }, 
+    },
     series: [44, 55, 41, 17, 15],
     labels: ["Series 1", "Series 2", "Series 3", "Series 4", "Series 5"],
     colors: colors,
@@ -49,12 +49,12 @@ chart.render();
 //
 // SIMPLE DONUT CHART
 //
-var colors = ["#7f56da", "#1c84ee","#ff6c2f", "#4ecac2","#f9b931"];
+var colors = ["#7f56da", "#1c84ee","var(--bs-primary)", "#4ecac2","#f9b931"];
 var options = {
     chart: {
         height: 320,
         type: 'donut',
-    }, 
+    },
     series: [44, 55, 41, 17, 15],
     legend: {
         show: true,
@@ -94,7 +94,7 @@ var options = {
     chart: {
         height: 320,
         type: 'pie',
-    }, 
+    },
     series: [25, 15, 44, 55, 41, 17],
     labels: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
     legend: {
@@ -133,12 +133,12 @@ chart.render();
 //
 // GRADIENT DONUT CHART
 //
-var colors = ["#7f56da", "#1c84ee","#ff6c2f", "#4ecac2","#f9b931"];
+var colors = ["#7f56da", "#1c84ee","var(--bs-primary)", "#4ecac2","#f9b931"];
 var options = {
     chart: {
         height: 320,
         type: 'donut',
-    }, 
+    },
     series: [44, 55, 41, 17, 15],
     legend: {
         show: true,
@@ -177,7 +177,7 @@ chart.render();
 //
 // PATTERNED DONUT CHART
 //
-var colors = ["#7f56da", "#1c84ee","#ff6c2f", "#4ecac2","#f9b931"];
+var colors = ["#7f56da", "#1c84ee","var(--bs-primary)", "#4ecac2","#f9b931"];
 var options = {
     chart: {
         height: 320,
@@ -209,7 +209,7 @@ var options = {
       opacity: 1,
       pattern: {
         enabled: true,
-        style: ['verticalLines', 'squares', 'horizontalLines', 'circles','slantedLines'], 
+        style: ['verticalLines', 'squares', 'horizontalLines', 'circles','slantedLines'],
       },
     },
     states: {
@@ -304,7 +304,7 @@ chart.render();
 //
 // DONUT UPDATE
 //
-var colors = ["#1c84ee", "#53389f", "#7f56da", "#ff86c8", "#ef5f5f", "#ff6c2f", "#f9b931", "#22c55e", "#040505", "#4ecac2",];
+var colors = ["#1c84ee", "#53389f", "#7f56da", "#ff86c8", "#ef5f5f", "var(--bs-primary)", "#f9b931", "#22c55e", "#040505", "#4ecac2",];
 var options = {
     chart: {
         height: 320,

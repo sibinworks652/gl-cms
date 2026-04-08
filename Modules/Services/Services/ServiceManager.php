@@ -62,7 +62,7 @@ class ServiceManager
 
             if ($image) {
                 $service->update([
-                    'image_path' => $image->store('services', 'public'),
+                    'image_path' => $image->storeAs('services', $this->datedOriginalFilename($image), 'public'),
                 ]);
             }
 
@@ -81,7 +81,7 @@ class ServiceManager
                 }
 
                 $service->update([
-                    'image_path' => $image->store('services', 'public'),
+                    'image_path' => $image->storeAs('services', $this->datedOriginalFilename($image), 'public'),
                 ]);
             }
 
@@ -154,5 +154,14 @@ class ServiceManager
         }
 
         return $slug;
+    }
+
+    protected function datedOriginalFilename(UploadedFile $file): string
+    {
+        $name = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+        $extension = $file->getClientOriginalExtension();
+        $safeName = Str::slug($name) ?: 'file';
+
+        return $safeName . '-' . now()->format('Y-m-d-His') . ($extension ? '.' . strtolower($extension) : '');
     }
 }

@@ -1,11 +1,11 @@
- 
+
   // sales_analytic
-  
+
   var options = {
     chart: {
       height: 328,
       type: "area",
-  
+
       dropShadow: {
         enabled: true,
         opacity: 0.2,
@@ -17,11 +17,11 @@
         show: false,
       },
     },
-    colors: ["#47ad94", "#ff6c2f"],
+    colors: ["#47ad94", "var(--bs-primary)"],
     dataLabels: {
       enabled: false,
     },
-  
+
     stroke: {
       show: true,
       curve: "smooth",
@@ -113,7 +113,7 @@
     legend: {
       show: false,
     },
-  
+
     fill: {
       type: "gradient",
       gradient: {
@@ -138,5 +138,4 @@
   };
   var chart = new ApexCharts(document.querySelector("#sales_analytic_seller"), options);
   chart.render();
-  
-  
+

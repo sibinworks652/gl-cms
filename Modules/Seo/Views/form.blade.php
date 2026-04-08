@@ -29,7 +29,10 @@
                         </div>
                         <div class="col-md-4">
                             <label class="form-label">Page Key</label>
-                            <input type="text" name="page_key" id="seo-page-key" class="form-control @error('page_key') is-invalid @enderror" value="{{ old('page_key', $seoSetting->page_key) }}" placeholder="about-us">
+                            <div class="input-group">
+                                <span class="input-group-text" >{{ url('/') }}/</span>
+                                <input type="text" name="page_key" id="seo-page-key" class="form-control @error('page_key') is-invalid @enderror" value="{{ old('page_key', $seoSetting->page_key) }}" placeholder="about-us">
+                            </div>
                             <small class="text-muted" id="seo-page-key-help">For a normal page, enter the URL path without the domain, like about-us or contact.</small>
                             @error('page_key')<div class="invalid-feedback">{{ $message }}</div>@enderror
                         </div>

@@ -30,11 +30,11 @@ var options = {
         stops: [0, 100],
       },
     },
-  
+
     markers: {
       size: 0,
     },
-    colors: ["#FF6C2F"],
+    colors: ["var(--bs-primary)"],
     tooltip: {
       fixed: {
         enabled: false,
@@ -56,4 +56,3 @@ var options = {
   };
   var chart = new ApexCharts(document.querySelector("#chart2"), options);
   chart.render();
-  

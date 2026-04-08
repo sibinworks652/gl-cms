@@ -1,6 +1,6 @@
-// 
+//
 // _light-mode.scss
-// 
+//
 
 
 /* Root Prefix Variable */
@@ -9,7 +9,7 @@
     --#{$prefix}logo-sm-height:                26px;
 
     --#{$prefix}main-nav-width:               280px;
-    --#{$prefix}main-nav-width-sm:             75px; 
+    --#{$prefix}main-nav-width-sm:             75px;
     --#{$prefix}main-nav-item-icon-size:       22px;
     --#{$prefix}main-nav-item-font-size:       15px;
     --#{$prefix}main-nav-item-padding-x:       25px;
@@ -17,7 +17,7 @@
 
     --#{$prefix}topbar-height:                 100px;
     --#{$prefix}footer-height:                 60px;
-    
+
     // Heading Variable
     --#{$prefix}headings-color:                            #313b5e;
 
@@ -33,7 +33,7 @@ html[data-bs-theme="dark"], [data-bs-theme="dark"] {
 
     --#{$prefix}light:                     #{$body-tertiary-bg-dark};
     --#{$prefix}dark:                      #{$body-tertiary-color-dark};
-    
+
     --#{$prefix}light-rgb:                 #{to-rgb($body-tertiary-bg-dark)};
     --#{$prefix}dark-rgb:                  #{to-rgb($body-tertiary-color-dark)};
 
@@ -50,7 +50,7 @@ html[data-menu-color="light"]{
     --#{$prefix}main-nav-bg:                               #f8f5f1;
     --#{$prefix}main-nav-item-color:                       #797b97;
     --#{$prefix}main-nav-item-hover-bg:                    transparent;
-    --#{$prefix}main-nav-item-hover-color:                 #ff6c2f;
+    --#{$prefix}main-nav-item-hover-color:                 var(--bs-primary);
     --#{$prefix}main-nav-border-color:                     #eaedf1;
 }
 
@@ -72,7 +72,7 @@ html[data-topbar-color="light"] {
 }
 
 /* Topbar Dark */
-html[data-topbar-color="dark"], 
+html[data-topbar-color="dark"],
 html[data-bs-theme="dark"][data-topbar-color="light"]{
     --#{$prefix}topbar-bg:                                 #22282e;
     --#{$prefix}topbar-item-color:                         #dee2e6;

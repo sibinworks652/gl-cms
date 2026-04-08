@@ -4,7 +4,10 @@ namespace Modules\Backup\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Modules\Backup\Services\BackupManager;
+use Modules\Email\Mail\GenericMail;
 
 class BackupController extends Controller
 {
@@ -33,6 +36,8 @@ class BackupController extends Controller
             user: $request->user('admin')->load('googleAccount')
         );
 
+        $this->queueBackupNotification($result);
+
         if (! $uploadToGoogle) {
             return redirect()
                 ->route('admin.backups.index')
@@ -54,6 +59,56 @@ class BackupController extends Controller
         return redirect()
             ->route('admin.backups.index')
             ->with('warning', 'Backup created locally. Google Drive upload skipped: ' . $result['google_error'] . ' Fallback upload failed: ' . $result['fallback_error']);
+    }
+
+    protected function queueBackupNotification(array $result): void
+    {
+        $template = emailTemplate('backup-notification') ?: emailTemplate('backup_notification');
+
+        if (! $template) {
+            Log::warning('Backup notification email template not found.', [
+                'template_slug' => 'backup-notification',
+                'backup_filename' => $result['filename'] ?? null,
+            ]);
+
+            return;
+        }
+
+        try {
+            Mail::to(setting('mail_from_address', config('mail.from.address')))
+                ->queue(new GenericMail($template, [
+                    'backup_name' => $result['filename'] ?? 'Backup Creation',
+                    'backup_date' => now()->format('d M Y H:i:s A'),
+                    'file_size' => $this->formatBytes((int) ($result['size'] ?? 0)),
+                    'google_status' => ($result['google_uploaded'] ?? false) ? 'Uploaded to Google Drive' : 'Not uploaded to Google Drive',
+                    'google_error' => $result['google_error'] ?? '',
+                    'fallback_status' => ($result['fallback_uploaded'] ?? false) ? 'Fallback uploaded' : 'Fallback not used',
+                    'fallback_error' => $result['fallback_error'] ?? '',
+                ]));
+        } catch (\Throwable $exception) {
+            Log::error('Unable to queue backup notification email.', [
+                'backup_filename' => $result['filename'] ?? null,
+                'message' => $exception->getMessage(),
+            ]);
+        }
+    }
+
+    protected function formatBytes(int $bytes): string
+    {
+        if ($bytes <= 0) {
+            return 'N/A';
+        }
+
+        $units = ['B', 'KB', 'MB', 'GB'];
+        $index = 0;
+        $size = $bytes;
+
+        while ($size >= 1024 && $index < count($units) - 1) {
+            $size /= 1024;
+            $index++;
+        }
+
+        return round($size, 2) . ' ' . $units[$index];
     }
 
     public function download(string $filename)

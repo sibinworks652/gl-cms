@@ -157,8 +157,8 @@
                     </li>
                @endif
 
-               @if($adminUser?->can('settings.view'))
-                    @php($settingsMenuOpen = request()->routeIs('admin.settings.*'))
+               @if($adminUser?->can('settings.view') || $adminUser?->can('email.view'))
+                    @php($settingsMenuOpen = request()->routeIs('admin.settings.*') || request()->routeIs('admin.email.*'))
                     <li class="nav-item">
                          <a class="nav-link menu-arrow {{ $settingsMenuOpen ? 'active' : '' }}" href="#sidebarSettings" data-bs-toggle="collapse" role="button" aria-expanded="{{ $settingsMenuOpen ? 'true' : 'false' }}" aria-controls="sidebarSettings">
                               <span class="nav-icon">
@@ -168,9 +168,11 @@
                          </a>
                          <div class="collapse {{ $settingsMenuOpen ? 'show' : '' }}" id="sidebarSettings">
                               <ul class="nav sub-navbar-nav">
-                                   <li class="sub-nav-item">
-                                        <a class="sub-nav-link {{ request()->routeIs('admin.settings.show') && !request('section') ? 'active' : '' }}" href="{{ route('admin.settings.show') }}">Overview</a>
-                                   </li>
+                                   @if($adminUser?->can('settings.view'))
+                                        <li class="sub-nav-item">
+                                             <a class="sub-nav-link {{ request()->routeIs('admin.settings.show') && !request('section') ? 'active' : '' }}" href="{{ route('admin.settings.show') }}">Overview</a>
+                                        </li>
+                                   @endif
                                    @if($adminUser?->can('settings.mail.update'))
                                         <li class="sub-nav-item">
                                              <a class="sub-nav-link {{ request()->routeIs('admin.settings.section.edit') && request()->route('section') === 'mail' ? 'active' : '' }}" href="{{ route('admin.settings.section.edit', 'mail') }}">Mail Settings</a>
@@ -199,6 +201,11 @@
                                    @if($adminUser?->can('settings.analytics.update'))
                                         <li class="sub-nav-item">
                                              <a class="sub-nav-link {{ request()->routeIs('admin.settings.section.edit') && request()->route('section') === 'analytics' ? 'active' : '' }}" href="{{ route('admin.settings.section.edit', 'analytics') }}">Analytics</a>
+                                        </li>
+                                   @endif
+                                   @if($adminUser?->can('email.view'))
+                                        <li class="sub-nav-item">
+                                             <a class="sub-nav-link {{ request()->routeIs('admin.email.*') ? 'active' : '' }}" href="{{ route('admin.email.settings.edit') }}">Email System</a>
                                         </li>
                                    @endif
                                    {{-- @if($adminUser?->can('settings.update'))

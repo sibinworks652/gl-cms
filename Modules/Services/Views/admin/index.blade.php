@@ -43,10 +43,14 @@
 
                 <div id="services-sort-list" class="row g-3">
                     @forelse($services as $service)
-                        <div class="col-xl-4 sortable-service" draggable="true" data-id="{{ $service->id }}">
-                            <div class="card border h-100 mb-0">
+                        <div class="col-xl-3 col-md-6 col-lg-4 col-sm-6 sortable-service" draggable="true" data-id="{{ $service->id }}">
+                            <div class="card border h-100 mb-0 overflow-hidden" style="width: 100%;">
                                 @if($service->image_url)
-                                    <img src="{{ $service->image_url }}" alt="{{ $service->title }}" class="card-img-top" style="height:180px; object-fit:cover;">
+                                    <img src="{{ $service->image_url }}" alt="{{ $service->title }}" class="card-img-top" style="object-fit:cover;">
+                                    @else
+                                    <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 100%;">
+                                        <iconify-icon icon="solar:album-bold" width="48" height="48" style="color: #ced4da;"></iconify-icon>
+                                    </div>
                                 @endif
                                 <div class="card-body">
                                     <div class="d-flex gap-3">
@@ -62,14 +66,17 @@
                                                 </span>
                                             </div>
                                             <div class="small text-muted mb-2">
-                                                {{ $service->category?->name ?? 'No category' }}
+                                                {{ $service->category?->name ?? '' }}
                                                 @if($service->is_featured)
                                                     <span class="badge bg-warning-subtle text-warning ms-1">Featured</span>
                                                 @endif
                                             </div>
-                                            <p class="text-muted mb-3">{{ \Illuminate\Support\Str::limit($service->short_description, 130) }}</p>
-                                            <div class="d-flex gap-2 flex-wrap">
-                                                <a href="{{ route('services.show', $service->slug) }}" target="_blank" class="btn btn-soft-primary btn-sm"><iconify-icon icon="solar:eye-outline" width="16" height="16"></iconify-icon></a>
+                                            {{-- <p class="text-muted mb-3">{{ \Illuminate\Support\Str::limit($service->short_description, 130) }}</p> --}}
+
+                                        </div>
+                                    </div>
+                                    <div class="d-flex gap-2 flex-wrap justify-content-end">
+                                                {{-- <a href="{{ route('services.show', $service->slug) }}" target="_blank" class="btn btn-soft-primary btn-sm"><iconify-icon icon="solar:eye-outline" width="16" height="16"></iconify-icon></a> --}}
                                                 @if($adminUser?->can('services.update'))
                                                     <a href="{{ route('admin.services.edit', $service) }}" class="btn btn-soft-warning btn-sm"><iconify-icon icon="solar:pen-new-square-line-duotone" width="18" height="18"></iconify-icon></a>
                                                 @endif
@@ -81,8 +88,6 @@
                                                     </form>
                                                 @endif
                                             </div>
-                                        </div>
-                                    </div>
                                 </div>
                             </div>
                         </div>

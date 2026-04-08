@@ -153,7 +153,7 @@ while (i < count) {
 return series;
 }
 
-var colors = ["#1c84ee", "#53389f", "#7f56da", "#ff86c8", "#ef5f5f", "#ff6c2f", "#f9b931", '#22c55e','#4ecac2'];
+var colors = ["#1c84ee", "#53389f", "#7f56da", "#ff86c8", "#ef5f5f", "var(--bs-primary)", "#f9b931", '#22c55e','#4ecac2'];
 var options = {
     chart: {
         toolbar: {

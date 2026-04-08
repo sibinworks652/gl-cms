@@ -320,7 +320,7 @@ chart.render();
 //
 // COLUMN WITH MARKERS
 //
-var colors = ["#ff6c2f", "#57606c"];
+var colors = ["var(--bs-primary)", "#57606c"];
 var options = {
     series: [{
         name: 'Actual',
@@ -691,7 +691,7 @@ chart.render();
 //
 // DISTRIBUTED COLUMN CHART
 //
-var colors = ['#1c84ee', '#53389f', '#7f56da', '#ff86c8', '#ef5f5f', '#ff6c2f', '#f9b931', '#22c55e'];
+var colors = ['#1c84ee', '#53389f', '#7f56da', '#ff86c8', '#ef5f5f', 'var(--bs-primary)', '#f9b931', '#22c55e'];
 var options = {
     chart: {
         height: 380,
@@ -1003,9 +1003,9 @@ function updateQuarterChart(sourceChart, destChartIDToUpdate) {
 }
 
 
-// 
+//
 // year charts
-// 
+//
 var colors = ['#727cf5', '#6c757d', '#0acf97', '#fa5c7c', '#ffbc00', '#39afd1'];
 var options = {
     series: [{

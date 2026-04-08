@@ -305,7 +305,7 @@
                                 </div>
                                 <div class="col-md-2">
                                     <label class="form-label">Primary Color</label>
-                                    <input type="color" name="admin_primary_color" class="form-control form-control-color @error('admin_primary_color') is-invalid @enderror" value="{{ old('admin_primary_color', $settings['admin_primary_color'] ?? '#ff6c2f') }}" data-default-color="#ff6c2f">
+                                    <input type="color" name="admin_primary_color" class="form-control form-control-color @error('admin_primary_color') is-invalid @enderror" value="{{ old('admin_primary_color', $settings['admin_primary_color'] ?? 'var(--bs-primary)') }}" data-default-color="var(--bs-primary)">
                                     @error('admin_primary_color')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                 </div>
                                 <div class="col-md-2">

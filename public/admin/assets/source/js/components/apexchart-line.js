@@ -638,7 +638,7 @@ for (var i = 0; i < 30; i++) {
   var innerArr = [ts2, dataSeries[1][i].value];
   data.push(innerArr);
 }
-var colors = ["#ff6c2f"];
+var colors = ["var(--bs-primary)"];
 var options = {
   chart: {
     type: "line",

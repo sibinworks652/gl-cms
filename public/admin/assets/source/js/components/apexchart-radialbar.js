@@ -39,7 +39,7 @@ chart.render();
 //
 // MULTIPLE RADIALBARS
 //
-var colors = ["#1c84ee", "#7f56da", "#ff6c2f", "#4ecac2"];
+var colors = ["#1c84ee", "#7f56da", "var(--bs-primary)", "#4ecac2"];
 var options = {
     chart: {
         height: 320,
@@ -80,7 +80,7 @@ chart.render();
 //
 // CIRCLE CHART - CUSTOM ANGLE
 //
-var colors = ["#1c84ee", "#7f56da", "#ff6c2f", "#4ecac2"];
+var colors = ["#1c84ee", "#7f56da", "var(--bs-primary)", "#4ecac2"];
 var options = {
     chart: {
         height: 380,
@@ -197,7 +197,7 @@ chart.render();
 //
 // STROKED CIRCULAR GUAGE
 //
-var colors = ["#ff6c2f"];
+var colors = ["var(--bs-primary)"];
 var options = {
     chart: {
         height: 380,

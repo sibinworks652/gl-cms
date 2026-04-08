@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Modules\Banner\Models\BannerSlide;
 
@@ -97,8 +98,10 @@ class BannerController extends Controller
             $slide = BannerSlide::create($this->payload($validated));
 
             if ($request->hasFile('image')) {
+                $image = $request->file('image');
+
                 $slide->update([
-                    'image_path' => $request->file('image')->store('banners', 'public'),
+                    'image_path' => $image->storeAs('banners', $this->datedOriginalFilename($image), 'public'),
                 ]);
             }
         }, 3);
@@ -161,8 +164,10 @@ class BannerController extends Controller
                     Storage::disk('public')->delete($banner->image_path);
                 }
 
+                $image = $request->file('image');
+
                 $banner->update([
-                    'image_path' => $request->file('image')->store('banners', 'public'),
+                    'image_path' => $image->storeAs('banners', $this->datedOriginalFilename($image), 'public'),
                 ]);
             }
         });
@@ -267,6 +272,15 @@ class BannerController extends Controller
             'is_active' => (bool) ($validated['is_active'] ?? false),
             'sort_order' => $slide?->sort_order ?? ((int) BannerSlide::max('sort_order') + 1),
         ];
+    }
+
+    protected function datedOriginalFilename(mixed $file): string
+    {
+        $name = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+        $extension = $file->getClientOriginalExtension();
+        $safeName = Str::slug($name) ?: 'file';
+
+        return $safeName . '-' . now()->format('Y-m-d-His') . ($extension ? '.' . strtolower($extension) : '');
     }
 
     protected function pageSuggestions(): array

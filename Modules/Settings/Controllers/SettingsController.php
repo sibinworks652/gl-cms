@@ -421,7 +421,8 @@ class SettingsController extends Controller
             Storage::disk('public')->delete($existing);
         }
 
-        $path = $request->file($key)->store($directory, 'public');
+        $file = $request->file($key);
+        $path = $file->storeAs($directory, $this->datedOriginalFilename($file), 'public');
 
         Setting::updateOrCreate(
             ['key' => $key],
@@ -430,6 +431,15 @@ class SettingsController extends Controller
                 'value' => $path,
             ]
         );
+    }
+
+    protected function datedOriginalFilename(mixed $file): string
+    {
+        $name = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+        $extension = $file->getClientOriginalExtension();
+        $safeName = Str::slug($name) ?: 'file';
+
+        return $safeName . '-' . now()->format('Y-m-d-His') . ($extension ? '.' . strtolower($extension) : '');
     }
 
     protected function sections(): array

@@ -161,7 +161,7 @@ class GalleryController extends Controller
     protected function storeImages(GalleryAlbum $album, array $images): void
     {
         foreach ($images as $image) {
-            $path = $image->store('gallery', 'public');
+            $path = $image->storeAs('gallery', $this->datedOriginalFilename($image), 'public');
 
             $album->images()->create([
                 'image_path' => $path,
@@ -170,6 +170,15 @@ class GalleryController extends Controller
                 'file_size' => $image->getSize(),
             ]);
         }
+    }
+
+    protected function datedOriginalFilename(mixed $file): string
+    {
+        $name = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+        $extension = $file->getClientOriginalExtension();
+        $safeName = Str::slug($name) ?: 'file';
+
+        return $safeName . '-' . now()->format('Y-m-d-His') . ($extension ? '.' . strtolower($extension) : '');
     }
 
     protected function uniqueSlug(string $title, ?int $ignoreId = null): string

@@ -127,7 +127,7 @@ function generateData1(baseval1, count, yrange) {
     return series;
 }
 
-var colors = ["#1c84ee", "#7f56da", "#ff6c2f", "#4ecac2"];
+var colors = ["#1c84ee", "#7f56da", "var(--bs-primary)", "#4ecac2"];
 var options2 = {
     chart: {
         height: 380,

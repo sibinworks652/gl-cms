@@ -48,7 +48,42 @@
                         --bs-btn-border-color: {!! $adminSettings['admin_primary_color'] !!} !important;
                         --bs-link-color: {!! $adminSettings['admin_primary_color'] !!} !important;
                         --bs-link-hover-color: {!! $adminSettings['admin_primary_color'] !!} !important;
+                        --bs-btn-color: {!! $adminSettings['admin_primary_color'] !!} !important;
+                        --bs-btn-hover-color: {!! $adminSettings['admin_primary_color'] !!} !important;
+                        --bs-btn-active-color: {!! $adminSettings['admin_primary_color'] !!} !important;
+                        --bs-btn-active-border-color: {!! $adminSettings['admin_primary_color'] !!} !important;
                 }
+                .btn-outline-primary{
+                    --bs-btn-color: {!! $adminSettings['admin_primary_color'] !!} !important;
+                    --bs-btn-border-color: {!! $adminSettings['admin_primary_color'] !!} !important;
+                    --bs-btn-hover-color: #ffffff;
+                    --bs-btn-hover-bg: {!! $adminSettings['admin_primary_color'] !!} !important;
+                    --bs-btn-hover-border-color: {!! $adminSettings['admin_primary_color'] !!} !important;
+                    --bs-btn-focus-shadow-rgb: 255, 108, 47;
+                    --bs-btn-active-color: #ffffff;
+                    --bs-btn-active-bg: {!! $adminSettings['admin_primary_color'] !!} !important;
+                    --bs-btn-active-border-color: {!! $adminSettings['admin_primary_color'] !!} !important;
+                    --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+                    --bs-btn-disabled-color: {!! $adminSettings['admin_primary_color'] !!} !important;
+                    --bs-btn-disabled-bg: transparent;
+                    --bs-btn-disabled-border-color: {!! $adminSettings['admin_primary_color'] !!} !important;
+                    --bs-gradient: none;
+                   }
+                   .btn-soft-primary {
+                    --bs-btn-color: var(--bs-primary);
+                   --bs-btn-bg: rgba(var(--bs-primary-rgb), 0.1) !important;
+                    --bs-btn-border-color: transparent;
+                    --bs-btn-hover-color: #ffffff;
+                    --bs-btn-hover-bg: var(--bs-primary);
+                    --bs-btn-hover-border-color: var(--bs-primary);
+                    --bs-btn-active-color: #ffffff;
+                    --bs-btn-active-bg: var(--bs-primary);
+                    --bs-btn-active-border-color: var(--bs-primary);
+                    --bs-btn-disabled-color: #ffffff;
+                    --bs-btn-disabled-bg: var(--bs-primary);
+                    --bs-btn-disabled-border-color: var(--bs-primary);
+                    --bs-btn-focus-shadow-rgb: 0 0 0 $btn-focus-width rgba($bg, 0.5);
+                    }
             @endif
 
             html[data-bs-theme="light"] {
@@ -87,6 +122,20 @@
                 .form-check-input:checked{
                     background-color: {!! $adminSettings['admin_primary_color'] !!} !important;
                     border-color: {!! $adminSettings['admin_primary_color'] !!} !important;
+                }
+                .btn-outline-primary{
+                    color: {!! $adminSettings['admin_primary_color'] !!} !important;
+                    border-color: {!! $adminSettings['admin_primary_color'] !!} !important;
+                }
+                .btn:hover {
+                    color:#ffffff !important;
+                }
+                .btn-outline-input{
+                    border:var(--bs-border-width) solid var(--bs-input-border-color);
+                }
+                .btn-outline-input:hover {
+                    color:black !important;
+                    border:var(--bs-border-width) solid var(--bs-input-border-color);
                 }
             @endif
         </style>
