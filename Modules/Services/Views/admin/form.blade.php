@@ -9,7 +9,7 @@
                 @method('PUT')
             @endif
 
-            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
+            <div class="d-flex commons-ticky-template-toolbar justify-content-between align-items-center flex-wrap gap-2 mb-4">
                 <div>
                     <h4 class="mb-1">{{ $isEdit ? 'Edit Service' : 'Create Service' }}</h4>
                     <p class="text-muted mb-0">Build a service page with media, SEO, category, and display controls.</p>
@@ -74,9 +74,11 @@
                             </div>
                         </div>
                     </div>
+
                 </div>
 
                 <div class="col-lg-4">
+                    <div class="common-template-sidebar-sticky">
                     <div class="card">
                         <div class="card-header">
                             <h5 class="card-title mb-0">Publishing</h5>
@@ -107,12 +109,13 @@
                                     <div class="small mt-1" id="service-category-inline-status" aria-live="polite"></div>
                                 @endif
                             </div>
+                            <div class="d-flex gap-2 justify-content-between align-items-center">
                             <div class="mb-3">
                                 <label class="form-label">Sort Order</label>
                                 <input type="number" name="sort_order" class="form-control @error('sort_order') is-invalid @enderror" value="{{ old('sort_order', $service->sort_order) }}">
                                 @error('sort_order')<div class="invalid-feedback">{{ $message }}</div>@enderror
                             </div>
-                            <div class="form-check form-switch mb-2">
+                            <div class="form-check form-switch">
                                 <input type="hidden" name="is_active" value="0">
                                 <input class="form-check-input" type="checkbox" name="is_active" value="1" id="is-active" @checked(old('is_active', $service->is_active) == 1)>
                                 <label class="form-check-label" for="is-active">Active</label>
@@ -121,6 +124,7 @@
                                 <input type="hidden" name="is_featured" value="0">
                                 <input class="form-check-input" type="checkbox" name="is_featured" value="1" id="is-featured" @checked(old('is_featured', $service->is_featured) == 1)>
                                 <label class="form-check-label" for="is-featured">Featured</label>
+                            </div>
                             </div>
                         </div>
                     </div>
@@ -155,6 +159,7 @@
                                 @error('cta_url')<div class="invalid-feedback">{{ $message }}</div>@enderror
                             </div>
                         </div>
+                    </div>
                     </div>
                 </div>
             </div>

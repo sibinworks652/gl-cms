@@ -31,19 +31,31 @@ class EmailTestingController extends Controller
         $template = EmailTemplate::query()->findOrFail($validated['template_id']);
         $payload = array_filter($validated['payload'] ?? [], fn ($value) => filled($value));
         $emails = $request->emails();
+        $ccEmails = $request->ccEmails();
+
+        if ($emails === [] && ($template->to_emails ?? []) === [] && ($template->cc_emails ?? []) === [] && $ccEmails === []) {
+            return redirect()
+                ->route('admin.email.testing.index')
+                ->withInput()
+                ->with('email_test_status', [
+                    'type' => 'danger',
+                    'message' => 'Enter at least one To email address or configure default recipients on the template.',
+                ]);
+        }
 
         try {
             $this->email->sendTest(
                 $template,
                 $emails,
-                $payload ?: $this->templates->dummyData($template)
+                $payload ?: $this->templates->dummyData($template),
+                $ccEmails
             );
 
             return redirect()
                 ->route('admin.email.testing.index')
                 ->with('email_test_status', [
                     'type' => 'success',
-                    'message' => 'Test email sent successfully to ' . implode(', ', $emails) . '.',
+                    'message' => 'Test email sent successfully.',
                 ]);
         } catch (\Throwable $exception) {
             return redirect()

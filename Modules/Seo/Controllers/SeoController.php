@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
+use Modules\Page\Models\Page;
 use Modules\Seo\Models\SeoSetting;
 
 class SeoController extends Controller
@@ -30,6 +32,7 @@ class SeoController extends Controller
                 'is_active' => true,
             ]),
             'isEdit' => false,
+            'pages' => $this->pages(),
             'pageTypes' => $this->pageTypes(),
             'twitterCards' => $this->twitterCards(),
         ]);
@@ -40,6 +43,7 @@ class SeoController extends Controller
         $validated = $request->validate($this->rules(), $this->messages());
         $validated['page_key'] = $this->normalizePageKey($validated['page_key']);
         $validated['is_active'] = $request->boolean('is_active');
+        $this->assertPageExistsForPageType($validated['page_type'], $validated['page_key']);
 
         if ($request->hasFile('seo_og_image')) {
             $validated['seo_og_image'] = $request->file('seo_og_image')->store('seo/og', 'public');
@@ -57,6 +61,7 @@ class SeoController extends Controller
         return view('seo::form', [
             'seoSetting' => $seo,
             'isEdit' => true,
+            'pages' => $this->pages(),
             'pageTypes' => $this->pageTypes(),
             'twitterCards' => $this->twitterCards(),
         ]);
@@ -67,6 +72,7 @@ class SeoController extends Controller
         $validated = $request->validate($this->rules($seo), $this->messages());
         $validated['page_key'] = $this->normalizePageKey($validated['page_key']);
         $validated['is_active'] = $request->boolean('is_active');
+        $this->assertPageExistsForPageType($validated['page_type'], $validated['page_key']);
 
         if ($request->hasFile('seo_og_image')) {
             if ($seo->seo_og_image) {
@@ -148,7 +154,7 @@ class SeoController extends Controller
     protected function pageTypes(): array
     {
         return [
-            'page' => 'Page / Path',
+            'page' => 'Created Page',
             'route' => 'Route Name',
             // 'form' => 'Form',
             // 'gallery' => 'Gallery',
@@ -165,5 +171,27 @@ class SeoController extends Controller
             'app' => 'App',
             'player' => 'Player',
         ];
+    }
+
+    protected function pages()
+    {
+        return Page::query()
+            ->orderBy('title')
+            ->get(['id', 'title', 'slug']);
+    }
+
+    protected function assertPageExistsForPageType(string $pageType, string $pageKey): void
+    {
+        if ($pageType !== 'page') {
+            return;
+        }
+
+        if (Page::query()->where('slug', $pageKey)->exists()) {
+            return;
+        }
+
+        throw ValidationException::withMessages([
+            'page_key' => 'Please choose a valid page from the list.',
+        ]);
     }
 }

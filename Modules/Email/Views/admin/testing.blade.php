@@ -42,9 +42,15 @@
                         </div>
                         <div class="mb-3">
                             <label class="form-label">To Email Addresses</label>
-                            <textarea name="email" rows="3" class="form-control @error('email') is-invalid @enderror" placeholder="admin@example.com, team@example.com" required>{{ old('email', $settings['mail_from_address'] ?? $settings['site_email'] ?? '') }}</textarea>
-                            <div class="form-text">Add multiple recipients separated by comma, semicolon, space, or a new line.</div>
+                            <textarea name="email" rows="3" class="form-control @error('email') is-invalid @enderror" placeholder="admin@example.com, team@example.com">{{ old('email', $settings['mail_from_address'] ?? $settings['site_email'] ?? '') }}</textarea>
+                            <div class="form-text">Optional if the selected template already has default To recipients.</div>
                             @error('email')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">CC Email Addresses</label>
+                            <textarea name="cc_email" rows="2" class="form-control @error('cc_email') is-invalid @enderror" placeholder="owner@example.com, audit@example.com">{{ old('cc_email') }}</textarea>
+                            <div class="form-text">Optional extra CC recipients for this test send.</div>
+                            @error('cc_email')<div class="invalid-feedback">{{ $message }}</div>@enderror
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Variable Values</label>

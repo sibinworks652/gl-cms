@@ -1,5 +1,28 @@
 @extends('admin.layouts.app')
 
+@push('styles')
+<style>
+p {
+    margin-bottom: 0 !important;
+}
+
+.email-template-toolbar {
+    position: sticky;
+    top: 100px;
+    z-index: 20;
+    padding: 12px 0;
+    background: var(--bs-body-bg);
+}
+
+@media (min-width: 1200px) {
+    .email-template-sidebar-sticky {
+        position: sticky;
+        top: 200px;
+    }
+}
+</style>
+@endpush
+
 @section('content')
     <div class="container-xxl">
         @include('email::admin.partials.tabs')
@@ -11,7 +34,7 @@
             @endif
             <input type="hidden" name="body" id="email-template-body" value="{{ old('body', $template->body) }}">
 
-            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
+            <div class="email-template-toolbar d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
                 <div>
                     <h4 class="mb-1">{{ $isEdit ? 'Edit Email Template' : 'Create Email Template' }}</h4>
                     <p class="text-muted mb-0">Design the email visually, insert variables, and preview the full branded output.</p>
@@ -31,6 +54,7 @@
 
             <div class="row g-4">
                 <div class="col-xl-4">
+
                     <div class="card">
                         <div class="card-header">
                             <h5 class="card-title mb-0">Template Details</h5>
@@ -50,6 +74,18 @@
                                 <label class="form-label">Subject</label>
                                 <input type="text" name="subject" class="form-control @error('subject') is-invalid @enderror" value="{{ old('subject', $template->subject) }}" required>
                                 @error('subject')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">To Email Addresses</label>
+                                <textarea name="to_emails" rows="3" class="form-control @error('to_emails') is-invalid @enderror" placeholder="hr@example.com, manager@example.com">{{ old('to_emails', implode(', ', $template->to_emails ?? [])) }}</textarea>
+                                <div class="form-text">Optional default recipients for this template. Separate multiple emails with commas, semicolons, or new lines.</div>
+                                @error('to_emails')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">CC Email Addresses</label>
+                                <textarea name="cc_emails" rows="2" class="form-control @error('cc_emails') is-invalid @enderror" placeholder="owner@example.com, audit@example.com">{{ old('cc_emails', implode(', ', $template->cc_emails ?? [])) }}</textarea>
+                                <div class="form-text">Optional CC recipients that should always receive this template.</div>
+                                @error('cc_emails')<div class="invalid-feedback">{{ $message }}</div>@enderror
                             </div>
                             <div class="form-check form-switch">
                                 <input type="hidden" name="status" value="0">
@@ -122,7 +158,7 @@
                 </div>
 
                 <div class="col-xl-8">
-                    <div class="card">
+                    <div class="card email-template-sidebar-sticky">
                         <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
                             <div>
                                 <h5 class="card-title mb-1">Drag & Drop Builder</h5>
@@ -180,7 +216,13 @@ document.addEventListener('DOMContentLoaded', function () {
         if (type === 'image') {
             content = content || '<img src="https://placehold.co/640x240" alt="Email image" style="max-width:100%; border-radius:8px;">';
         } else if (type === 'button') {
-            content = content || '<a href="{button_url}" style="display:inline-block; background:var(--bs-primary); color:#ffffff; padding:12px 18px; border-radius:8px; text-decoration:none; font-weight:600;">Call to Action</a>';
+            content = content || buttonMarkup({
+                label: 'Call to Action',
+                url: '{button_url}',
+                background: '#ff6c2f',
+                color: '#ffffff',
+                align: 'left',
+            });
         } else if (type === 'divider') {
             content = '<hr style="border:0; border-top:1px solid #e2e8f0; margin:18px 0;">';
         } else if (type === 'spacer') {
@@ -190,6 +232,24 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         return content;
+    }
+
+    function buttonMarkup(settings = {}) {
+        const label = escapeAttribute(settings.label || 'Call to Action');
+        const url = escapeAttribute(settings.url || '{button_url}');
+        const background = settings.background || '#ff6c2f';
+        const color = settings.color || '#ffffff';
+        const align = settings.align || 'left';
+
+        return `<div style="text-align:${align};">
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="border-collapse:separate; display:inline-table;">
+                <tr>
+                    <td bgcolor="${background}" style="background:${background}; border-radius:8px;">
+                        <a href="${url}" style="display:inline-block; background:${background}; color:${color}; padding:12px 18px; border-radius:8px; text-decoration:none; font-weight:600;">${label}</a>
+                    </td>
+                </tr>
+            </table>
+        </div>`;
     }
 
     function createBlock(type, content) {
@@ -205,7 +265,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     <button type="button" class="btn btn-light btn-sm email-remove-block">Remove</button>
                 </div>
             </div>
-            <div class="email-block-content p-2" contenteditable="${type === 'text' || type === 'divider' || type === 'spacer' ? 'false' : 'true'}">${blockTemplate(type, content)}</div>
+            <div class="email-block-content p-2" contenteditable="false">${blockTemplate(type, content)}</div>
             ${type === 'button' ? buttonSettingsTemplate(content) : ''}
         `;
         bindBlock(wrapper);
@@ -250,12 +310,14 @@ document.addEventListener('DOMContentLoaded', function () {
         container.innerHTML = content || blockTemplate('button');
         const wrapper = container.firstElementChild;
         const link = container.querySelector('a');
+        const cell = container.querySelector('td');
         const style = link?.getAttribute('style') || '';
+        const cellStyle = cell?.getAttribute('style') || '';
 
         return {
             label: link?.textContent?.trim() || 'Call to Action',
             url: link?.getAttribute('href') || '{button_url}',
-            background: colorValue(styleValue(style, 'background'), '#ff6c2f'),
+            background: colorValue(cell?.getAttribute('bgcolor') || styleValue(cellStyle, 'background') || styleValue(style, 'background'), '#ff6c2f'),
             color: colorValue(styleValue(style, 'color'), '#ffffff'),
             align: wrapper?.style?.textAlign || 'left',
         };
@@ -314,13 +376,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function updateButtonBlock(block) {
         const label = block.querySelector('.email-button-label')?.value.trim() || 'Call to Action';
-        const url = block.querySelector('.email-button-url')?.value.trim() || '#';
+        const url = block.querySelector('.email-button-url')?.value.trim() || '{button_url}';
         const background = block.querySelector('.email-button-bg')?.value || '#ff6c2f';
         const color = block.querySelector('.email-button-color')?.value || '#ffffff';
         const align = block.querySelector('.email-button-align')?.value || 'left';
         const content = block.querySelector('.email-block-content');
 
-        content.innerHTML = `<div style="text-align:${align};"><a href="${escapeAttribute(url)}" style="display:inline-block; background:${background}; color:${color}; padding:12px 18px; border-radius:8px; text-decoration:none; font-weight:600;">${escapeAttribute(label)}</a></div>`;
+        content.innerHTML = buttonMarkup({ label, url, background, color, align });
     }
 
     function initializeTextEditor(block) {
@@ -366,7 +428,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function renderBody() {
         return Array.from(canvas.querySelectorAll('.email-builder-block'))
-            .map((block) => blockContent(block))
+            .map((block) => `<!-- email-block:${block.dataset.type} -->${blockContent(block)}<!-- /email-block -->`)
             .join("\n");
     }
 
@@ -376,7 +438,16 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
-        canvas.appendChild(createBlock('text', html));
+        const matches = Array.from(html.matchAll(/<!--\s*email-block:([a-z]+)\s*-->([\s\S]*?)<!--\s*\/email-block\s*-->/gi));
+
+        if (!matches.length) {
+            canvas.appendChild(createBlock('text', html));
+            return;
+        }
+
+        matches.forEach(function (match) {
+            canvas.appendChild(createBlock(match[1], match[2].trim()));
+        });
     }
 
     document.querySelectorAll('.email-add-block').forEach(function (button) {
@@ -387,7 +458,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     previewToggle?.addEventListener('click', function () {
         const showingPreview = preview.classList.contains('d-none');
-        preview.innerHTML = renderBody();
+        preview.innerHTML = `<div style="background:#ffffff; border:1px solid #e2e8f0; border-radius:12px; padding:24px; min-height:360px;">${renderBody()}</div>`;
         preview.classList.toggle('d-none', !showingPreview);
         canvas.classList.toggle('d-none', showingPreview);
         previewToggle.textContent = showingPreview ? 'Builder Mode' : 'Preview Mode';

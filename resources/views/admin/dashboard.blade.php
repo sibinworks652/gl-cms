@@ -7,11 +7,6 @@
                     <div class="row">
                          <div class="col-xxl-12">
                               <div class="row">
-                                   <div class="col-12">
-                                        <div class="alert alert-primary text-truncate mb-3" role="alert">
-                                             We regret to inform you that our server is currently experiencing technical difficulties.
-                                        </div>
-                                   </div>
 
                                    <div class="col-md-3">
                                         <div class="card overflow-hidden">
@@ -19,22 +14,22 @@
                                                   <div class="row">
                                                        <div class="col-6">
                                                             <div class="avatar-md bg-soft-primary rounded">
-                                                                 <iconify-icon icon="solar:cart-5-bold-duotone" class="avatar-title fs-32 text-primary"></iconify-icon>
+                                                                 <iconify-icon icon="solar:gallery-wide-line-duotone" class="avatar-title fs-32 text-primary"></iconify-icon>
                                                             </div>
                                                        </div> <!-- end col -->
                                                        <div class="col-6 text-end">
-                                                            <p class="text-muted mb-0 text-truncate">Total Orders</p>
-                                                            <h3 class="text-dark mt-1 mb-0">13, 647</h3>
+                                                            <p class="text-muted mb-0 text-truncate">Total Gallery Albums</p>
+                                                            <h3 class="text-dark mt-1 mb-0">{{ $galleryCount }}</h3>
                                                        </div> <!-- end col -->
                                                   </div> <!-- end row-->
                                              </div> <!-- end card body -->
                                              <div class="card-footer py-2 bg-light bg-opacity-50">
                                                   <div class="d-flex align-items-center justify-content-between">
                                                        <div>
-                                                            <span class="text-success"> <i class="bx bxs-up-arrow fs-12"></i> 2.3%</span>
-                                                            <span class="text-muted ms-1 fs-12">Last Week</span>
+                                                            <span class="text-success">{{ $galleryImageCount }}</span>
+                                                            <span class="text-muted ms-1 fs-12">Images</span>
                                                        </div>
-                                                       <a href="#!" class="text-reset fw-semibold fs-12">View More</a>
+                                                       <a href="{{ route('admin.gallery.index') }}" class="text-reset fw-semibold fs-12">View More</a>
                                                   </div>
                                              </div> <!-- end card body -->
                                         </div> <!-- end card -->

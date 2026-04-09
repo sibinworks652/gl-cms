@@ -42,10 +42,14 @@ h6{
 }
 p{
     font-size: 14px;
-    margin: 0;
+    margin: 0px !important;
 }
 a{
     font-size: 12px;
+}
+.custom-footer-container p{
+    font-size: 12px !important;
+    margin: 0px !important;
 }
 </style>
 </head>
@@ -84,7 +88,7 @@ a{
                                 </div>
                             @endif
                             @if(!empty($footer))
-                                <div style="border-top:1px solid {{ $borderColor }}; padding:18px 28px; color:{{ $mutedColor }}; font-size:13px; text-align:center;">
+                                <div class="custom-footer-container" style="border-top:1px solid {{ $borderColor }}; padding:18px 28px; color:{{ $mutedColor }}; font-size:11px !important; text-align:center;">
                                     {!! $footer !!}
                                 </div>
                             @endif

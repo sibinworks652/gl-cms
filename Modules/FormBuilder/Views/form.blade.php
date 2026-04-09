@@ -85,6 +85,7 @@
                 </div>
 
                 <div class="col-xl-8">
+                    <div class="commons-ticky-template-toolbar">
                     <div class="card">
                         <div class="card-header">
                             <h4 class="card-title mb-1">Form Schema Builder</h4>
@@ -102,6 +103,7 @@
                     <div class="d-flex gap-2">
                         <button type="submit" class="btn btn-primary">{{ $isEdit ? 'Update Form' : 'Create Form' }}</button>
                         <a href="{{ route('admin.forms.index') }}" class="btn btn-light">Back</a>
+                    </div>
                     </div>
                 </div>
             </div>

@@ -76,6 +76,17 @@
                     </li>
                @endif
 
+               @if($adminUser?->can('pages.view'))
+                    <li class="nav-item">
+                         <a class="nav-link {{ request()->routeIs('admin.pages.*') ? 'active' : '' }}" href="{{ route('admin.pages.index') }}">
+                              <span class="nav-icon">
+                                   <iconify-icon icon="solar:document-text-bold-duotone"></iconify-icon>
+                              </span>
+                              <span class="nav-text"> Pages </span>
+                         </a>
+                    </li>
+               @endif
+
                @if($adminUser?->can('banners.view'))
                     <li class="nav-item">
                          <a class="nav-link {{ request()->routeIs('admin.banners.*') ? 'active' : '' }}" href="{{ route('admin.banners.index') }}">
@@ -128,6 +139,37 @@
                                    @if($adminUser?->can('service-categories.view'))
                                         <li class="sub-nav-item">
                                              <a class="sub-nav-link {{ request()->routeIs('admin.service-categories.*') ? 'active' : '' }}" href="{{ route('admin.service-categories.index') }}">Categories</a>
+                                        </li>
+                                   @endif
+                              </ul>
+                         </div>
+                    </li>
+               @endif
+
+               @if($adminUser?->can('careers.jobs.view') || $adminUser?->can('careers.categories.view') || $adminUser?->can('careers.applications.view'))
+                    @php($careersMenuOpen = request()->routeIs('admin.jobs.*') || request()->routeIs('admin.job-categories.*') || request()->routeIs('admin.applications.*'))
+                    <li class="nav-item">
+                         <a class="nav-link menu-arrow {{ $careersMenuOpen ? 'active' : '' }}" href="#sidebarCareers" data-bs-toggle="collapse" role="button" aria-expanded="{{ $careersMenuOpen ? 'true' : 'false' }}" aria-controls="sidebarCareers">
+                              <span class="nav-icon">
+                                   <iconify-icon icon="solar:case-round-minimalistic-bold-duotone"></iconify-icon>
+                              </span>
+                              <span class="nav-text"> Careers </span>
+                         </a>
+                         <div class="collapse {{ $careersMenuOpen ? 'show' : '' }}" id="sidebarCareers">
+                              <ul class="nav sub-navbar-nav">
+                                   @if($adminUser?->can('careers.jobs.view'))
+                                        <li class="sub-nav-item">
+                                             <a class="sub-nav-link {{ request()->routeIs('admin.jobs.*') ? 'active' : '' }}" href="{{ route('admin.jobs.index') }}">Jobs</a>
+                                        </li>
+                                   @endif
+                                   @if($adminUser?->can('careers.categories.view'))
+                                        <li class="sub-nav-item">
+                                             <a class="sub-nav-link {{ request()->routeIs('admin.job-categories.*') ? 'active' : '' }}" href="{{ route('admin.job-categories.index') }}">Categories</a>
+                                        </li>
+                                   @endif
+                                   @if($adminUser?->can('careers.applications.view'))
+                                        <li class="sub-nav-item">
+                                             <a class="sub-nav-link {{ request()->routeIs('admin.applications.*') ? 'active' : '' }}" href="{{ route('admin.applications.index') }}">Applications</a>
                                         </li>
                                    @endif
                               </ul>

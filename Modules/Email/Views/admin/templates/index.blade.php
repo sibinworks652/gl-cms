@@ -22,6 +22,7 @@
                             <tr>
                                 <th>Name</th>
                                 <th>Subject</th>
+                                <th>Recipients</th>
                                 <th>Variables</th>
                                 <th>Status</th>
                                 <th class="text-end">Actions</th>
@@ -35,6 +36,12 @@
                                         <div class="text-muted small">{{ $template->slug }}</div>
                                     </td>
                                     <td>{{ $template->subject }}</td>
+                                    <td>
+                                        <div class="small">
+                                            <div><strong>To:</strong> {{ ($template->to_emails ?? []) ? implode(', ', $template->to_emails) : '-' }}</div>
+                                            <div><strong>Cc:</strong> {{ ($template->cc_emails ?? []) ? implode(', ', $template->cc_emails) : '-' }}</div>
+                                        </div>
+                                    </td>
                                     <td>
                                         @foreach(($template->variables ?? []) as $variable)
                                             <span class="badge bg-light text-dark me-1">&#123;{{ $variable }}&#125;</span>
@@ -63,7 +70,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="5" class="text-center text-muted py-5">No email templates found.</td>
+                                    <td colspan="6" class="text-center text-muted py-5">No email templates found.</td>
                                 </tr>
                             @endforelse
                         </tbody>

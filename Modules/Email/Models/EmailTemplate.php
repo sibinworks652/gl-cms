@@ -13,6 +13,8 @@ class EmailTemplate extends Model
         'subject',
         'body',
         'variables',
+        'to_emails',
+        'cc_emails',
         'use_header',
         'use_footer',
         'use_signature',
@@ -23,6 +25,8 @@ class EmailTemplate extends Model
     {
         return [
             'variables' => 'array',
+            'to_emails' => 'array',
+            'cc_emails' => 'array',
             'use_header' => 'boolean',
             'use_footer' => 'boolean',
             'use_signature' => 'boolean',

@@ -8,16 +8,23 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Modules\Backup\Services\BackupManager;
 use Modules\Email\Mail\GenericMail;
+use Modules\Email\Services\EmailService;
 
 class BackupController extends Controller
 {
-    public function __construct(protected BackupManager $backups)
+    public function __construct(
+        protected BackupManager $backups,
+        protected EmailService $email
+    )
     {
     }
 
     public function index()
     {
         $admin = auth('admin')->user()?->load('googleAccount');
+
+        $template = emailTemplate('backup-notification') ?: emailTemplate('backup_notification');
+        // dd($template->to_emails);
 
         return view('backup::index', [
             'backups' => $this->backups->backups(),
@@ -61,8 +68,18 @@ class BackupController extends Controller
             ->with('warning', 'Backup created locally. Google Drive upload skipped: ' . $result['google_error'] . ' Fallback upload failed: ' . $result['fallback_error']);
     }
 
-    protected function queueBackupNotification(array $result): void
+    protected function queueBackupNotification(array $result, $recipient = null): void
     {
+        $recipient ??= setting('mail_from_address', config('mail.from.address'));
+
+        if (blank($recipient)) {
+            Log::warning('Backup notification skipped because no recipient is configured.', [
+                'backup_filename' => $result['filename'] ?? null,
+            ]);
+
+            return;
+        }
+
         $template = emailTemplate('backup-notification') ?: emailTemplate('backup_notification');
 
         if (! $template) {
@@ -75,7 +92,7 @@ class BackupController extends Controller
         }
 
         try {
-            Mail::to(setting('mail_from_address', config('mail.from.address')))
+            Mail::to($recipient)
                 ->queue(new GenericMail($template, [
                     'backup_name' => $result['filename'] ?? 'Backup Creation',
                     'backup_date' => now()->format('d M Y H:i:s A'),
@@ -85,6 +102,15 @@ class BackupController extends Controller
                     'fallback_status' => ($result['fallback_uploaded'] ?? false) ? 'Fallback uploaded' : 'Fallback not used',
                     'fallback_error' => $result['fallback_error'] ?? '',
                 ]));
+            $this->email->sendTemplate($template, [
+                'backup_name' => $result['filename'] ?? 'Backup Creation',
+                'backup_date' => now()->format('d M Y H:i:s A'),
+                'file_size' => $this->formatBytes((int) ($result['size'] ?? 0)),
+                'google_status' => ($result['google_uploaded'] ?? false) ? 'Uploaded to Google Drive' : 'Not uploaded to Google Drive',
+                'google_error' => $result['google_error'] ?? '',
+                'fallback_status' => ($result['fallback_uploaded'] ?? false) ? 'Fallback uploaded' : 'Fallback not used',
+                'fallback_error' => $result['fallback_error'] ?? '',
+            ], $recipient);
         } catch (\Throwable $exception) {
             Log::error('Unable to queue backup notification email.', [
                 'backup_filename' => $result['filename'] ?? null,

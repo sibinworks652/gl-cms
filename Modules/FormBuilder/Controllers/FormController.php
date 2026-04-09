@@ -187,7 +187,7 @@ class FormController extends Controller
 
         if ($recipient) {
             try {
-                Mail::to($recipient)->send(new FormSubmissionNotification($form, $submission));
+                Mail::to($recipient)->queue(new FormSubmissionNotification($form, $submission));
             } catch (\Throwable $exception) {
                 Log::warning('Form submission email failed to send.', [
                     'form_id' => $form->id,

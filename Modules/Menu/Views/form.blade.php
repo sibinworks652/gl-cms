@@ -87,6 +87,12 @@
                             <div class="mb-3">
                                 <label class="form-label" id="item-target-label">Target</label>
                                 <input type="text" id="item-target" class="form-control" placeholder="about-us">
+                                <select id="item-page-target" class="form-select d-none">
+                                    <option value="">Select a page</option>
+                                    @foreach ($pages as $page)
+                                        <option value="{{ $page->slug }}">{{ $page->title }} (/{{ $page->slug }})</option>
+                                    @endforeach
+                                </select>
                                 <small class="text-muted" id="item-target-help">For pages, enter a slug or relative path like about-us.</small>
                             </div>
 
@@ -270,6 +276,7 @@
     const titleInput = document.getElementById('item-title');
     const typeInput = document.getElementById('item-type');
     const targetInput = document.getElementById('item-target');
+    const pageTargetInput = document.getElementById('item-page-target');
     const targetLabel = document.getElementById('item-target-label');
     const targetHelp = document.getElementById('item-target-help');
     const cssClassInput = document.getElementById('item-css-class');
@@ -280,9 +287,9 @@
 
     const targetHelpText = {
         page: {
-            label: 'Page Slug / Path',
+            label: 'Page',
             placeholder: 'about-us',
-            help: 'For pages, enter a slug or relative path like about-us.',
+            help: 'Choose one of the created pages.',
         },
         custom: {
             label: 'Custom URL',
@@ -530,7 +537,9 @@
 
     function collectFormData() {
         const title = titleInput.value.trim();
-        const target = targetInput.value.trim();
+        const target = typeInput.value === 'page'
+            ? pageTargetInput.value.trim()
+            : targetInput.value.trim();
 
         if (!title || !target) {
             alert('Each menu item needs both a label and a target.');
@@ -557,12 +566,15 @@
 
         editingItemIdInput.value = String(match.node.id);
         titleInput.value = match.node.title;
-        targetInput.value = match.node.target;
         typeInput.value = match.node.type;
+        ensurePageOption(match.node.target);
+        pageTargetInput.value = match.node.target;
+        targetInput.value = match.node.target;
         cssClassInput.value = match.node.css_class || '';
         newTabInput.checked = !!match.node.open_in_new_tab;
 
         saveButton.textContent = 'Update Item';
+        updateTargetFieldMeta();
     }
 
     function resetEditor() {
@@ -572,6 +584,7 @@
         cssClassInput.value = '';
         newTabInput.checked = false;
         typeInput.value = 'page';
+        pageTargetInput.value = '';
 
         saveButton.textContent = 'Add Item';
         updateTargetFieldMeta();
@@ -582,6 +595,18 @@
         targetLabel.textContent = config.label;
         targetInput.placeholder = config.placeholder;
         targetHelp.textContent = config.help;
+        const isPageType = typeInput.value === 'page';
+        targetInput.classList.toggle('d-none', isPageType);
+        pageTargetInput.classList.toggle('d-none', !isPageType);
+    }
+
+    function ensurePageOption(value) {
+        if (!value || Array.from(pageTargetInput.options).some(option => option.value === value)) {
+            return;
+        }
+
+        const option = new Option(value, value, true, true);
+        pageTargetInput.appendChild(option);
     }
 
     function moveItem(sourceId, targetId, position) {

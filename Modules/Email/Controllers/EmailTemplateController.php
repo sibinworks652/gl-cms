@@ -30,6 +30,8 @@ class EmailTemplateController extends Controller
             'template' => new EmailTemplate([
                 'status' => true,
                 'variables' => [],
+                'to_emails' => [],
+                'cc_emails' => [],
                 'use_header' => true,
                 'use_footer' => true,
                 'use_signature' => true,

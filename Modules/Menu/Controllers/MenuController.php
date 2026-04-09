@@ -11,6 +11,7 @@ use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 use Modules\Menu\Models\Menu;
 use Modules\Menu\Models\MenuItem;
+use Modules\Page\Models\Page;
 
 class MenuController extends Controller
 {
@@ -35,6 +36,7 @@ class MenuController extends Controller
             'isEdit' => false,
             'locations' => Menu::locations(),
             'linkTypes' => MenuItem::linkTypes(),
+            'pages' => $this->pages(),
             'itemsPayload' => '[]',
         ]);
     }
@@ -70,6 +72,7 @@ class MenuController extends Controller
             'isEdit' => true,
             'locations' => Menu::locations(),
             'linkTypes' => MenuItem::linkTypes(),
+            'pages' => $this->pages(),
             'itemsPayload' => json_encode($this->mapItemsForBuilder($menu->rootItems), JSON_PRETTY_PRINT),
         ]);
     }
@@ -183,6 +186,12 @@ class MenuController extends Controller
             if ($target === '') {
                 throw ValidationException::withMessages([
                     'items_payload' => 'Every menu item needs a page slug, URL, or module route.',
+                ]);
+            }
+
+            if ($type === 'page' && ! Page::query()->where('slug', $target)->exists()) {
+                throw ValidationException::withMessages([
+                    'items_payload' => 'A menu item points to a page that does not exist anymore.',
                 ]);
             }
 
@@ -316,5 +325,12 @@ class MenuController extends Controller
                 'children' => $this->transformMenuItems($item->childrenRecursive),
             ];
         })->values()->all();
+    }
+
+    protected function pages()
+    {
+        return Page::query()
+            ->orderBy('title')
+            ->get(['id', 'title', 'slug']);
     }
 }

@@ -2,6 +2,7 @@
 
 namespace Modules\Email\Services;
 
+use InvalidArgumentException;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Mail;
@@ -78,7 +79,7 @@ class EmailService
             'footer' => $footer,
             'signature' => $signature,
             'logoUrl' => ! empty($settings['email_logo']) ? asset('storage/' . $settings['email_logo']) : null,
-            'themeColor' => $settings['email_theme_color'] ?? 'var(--bs-primary)',
+            'themeColor' => $settings['email_theme_color'] ?? '#ff6c2f',
             'emailTextColor' => $settings['email_text_color'] ?? null,
             'siteName' => $settings['site_name'] ?? config('app.name'),
         ])->render();
@@ -89,11 +90,34 @@ class EmailService
         return $this->replaceVariables($template->subject, $data);
     }
 
-    public function sendTest(EmailTemplate $template, string|array $email, array $data = []): void
+    public function sendTest(EmailTemplate $template, string|array $email, array $data = [], string|array $cc = []): void
+    {
+        $this->sendTemplate($template, $data, $email, $cc);
+    }
+
+    public function sendTemplate(EmailTemplate $template, array $data = [], string|array $to = [], string|array $cc = []): void
     {
         $this->applySavedMailConfig();
 
-        Mail::to($email)->send(new GenericMail($template, $data));
+        $toRecipients = $this->mergeRecipients($template->to_emails ?? [], $to);
+        $ccRecipients = $this->mergeRecipients($template->cc_emails ?? [], $cc);
+
+        if ($toRecipients === [] && $ccRecipients !== []) {
+            $toRecipients = $ccRecipients;
+            $ccRecipients = [];
+        }
+
+        if ($toRecipients === []) {
+            throw new InvalidArgumentException('No email recipients configured for this template.');
+        }
+
+        $mailer = Mail::to($toRecipients);
+
+        if ($ccRecipients !== []) {
+            $mailer->cc($ccRecipients);
+        }
+
+        $mailer->send(new GenericMail($template, $data));
     }
 
     public function uploadBuilderImage(mixed $image): array
@@ -213,5 +237,22 @@ class EmailService
         $safeName = Str::slug($name) ?: 'file';
 
         return $safeName . '-' . now()->format('Y-m-d-His') . ($extension ? '.' . strtolower($extension) : '');
+    }
+
+    protected function mergeRecipients(array|string|null ...$groups): array
+    {
+        return collect($groups)
+            ->flatMap(function (array|string|null $group) {
+                if (is_string($group)) {
+                    return preg_split('/[\r\n,;]+/', $group) ?: [];
+                }
+
+                return $group ?: [];
+            })
+            ->map(fn ($email) => strtolower(trim((string) $email)))
+            ->filter(fn ($email) => filter_var($email, FILTER_VALIDATE_EMAIL))
+            ->unique()
+            ->values()
+            ->all();
     }
 }

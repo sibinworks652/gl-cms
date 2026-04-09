@@ -29,10 +29,19 @@
                         </div>
                         <div class="col-md-4">
                             <label class="form-label">Page Key</label>
-                            <div class="input-group">
+                            <div class="input-group" id="seo-page-key-input-group">
                                 <span class="input-group-text" >{{ url('/') }}/</span>
                                 <input type="text" name="page_key" id="seo-page-key" class="form-control @error('page_key') is-invalid @enderror" value="{{ old('page_key', $seoSetting->page_key) }}" placeholder="about-us">
                             </div>
+                            <select name="page_key" id="seo-page-select" class="form-select @error('page_key') is-invalid @enderror d-none">
+                                <option value="">Select a page</option>
+                                @foreach($pages as $page)
+                                    <option value="{{ $page->slug }}" @selected(old('page_key', $seoSetting->page_key) === $page->slug)>{{ $page->title }} (/{{ $page->slug }})</option>
+                                @endforeach
+                                @if(old('page_key', $seoSetting->page_key) && ! $pages->contains('slug', old('page_key', $seoSetting->page_key)))
+                                    <option value="{{ old('page_key', $seoSetting->page_key) }}" selected>{{ old('page_key', $seoSetting->page_key) }}</option>
+                                @endif
+                            </select>
                             <small class="text-muted" id="seo-page-key-help">For a normal page, enter the URL path without the domain, like about-us or contact.</small>
                             @error('page_key')<div class="invalid-feedback">{{ $message }}</div>@enderror
                         </div>
@@ -119,12 +128,14 @@
         document.addEventListener('DOMContentLoaded', function () {
             const typeInput = document.getElementById('seo-page-type');
             const keyInput = document.getElementById('seo-page-key');
+            const pageSelect = document.getElementById('seo-page-select');
+            const keyInputGroup = document.getElementById('seo-page-key-input-group');
             const keyHelp = document.getElementById('seo-page-key-help');
 
             const helpByType = {
                 page: {
                     placeholder: 'about-us',
-                    help: 'For a normal page, enter the URL path without the domain, like about-us or contact.'
+                    help: 'Choose one of the created pages from the list.'
                 },
                 route: {
                     placeholder: 'admin.dashboard',
@@ -150,11 +161,16 @@
 
             function updatePageKeyHelp() {
                 const config = helpByType[typeInput.value] || helpByType.page;
+                const isPageType = typeInput.value === 'page';
                 keyInput.placeholder = config.placeholder;
                 keyHelp.textContent = config.help;
+                keyInputGroup.classList.toggle('d-none', isPageType);
+                keyInput.disabled = isPageType;
+                pageSelect.classList.toggle('d-none', !isPageType);
+                pageSelect.disabled = !isPageType;
             }
 
-            if (typeInput && keyInput && keyHelp) {
+            if (typeInput && keyInput && keyHelp && pageSelect && keyInputGroup) {
                 typeInput.addEventListener('change', updatePageKeyHelp);
                 updatePageKeyHelp();
             }

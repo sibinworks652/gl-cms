@@ -128,7 +128,7 @@
                     border-color: {!! $adminSettings['admin_primary_color'] !!} !important;
                 }
                 .btn:hover {
-                    color:#ffffff !important;
+                    color: var(--bs-main-nav-item-hover-color) !important;
                 }
                 .btn-outline-input{
                     border:var(--bs-border-width) solid var(--bs-input-border-color);
