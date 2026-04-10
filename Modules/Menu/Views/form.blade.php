@@ -82,6 +82,9 @@
                                         <option value="{{ $value }}">{{ $label }}</option>
                                     @endforeach
                                 </select>
+                                @unless($pageModuleAvailable)
+                                    <div class="form-text">Page-based menu items are hidden because the Page module is missing, disabled, or its expected files do not match.</div>
+                                @endunless
                             </div>
 
                             <div class="mb-3">
@@ -264,6 +267,7 @@
 @push('scripts')
 <script>
 (() => {
+    const pageModuleAvailable = @json($pageModuleAvailable);
     const itemsPayloadInput = document.getElementById('items-payload');
     const treeContainer = document.getElementById('menu-builder-tree');
     const emptyState = document.getElementById('menu-builder-empty');
@@ -583,7 +587,7 @@
         targetInput.value = '';
         cssClassInput.value = '';
         newTabInput.checked = false;
-        typeInput.value = 'page';
+        typeInput.value = pageModuleAvailable ? 'page' : 'custom';
         pageTargetInput.value = '';
 
         saveButton.textContent = 'Add Item';

@@ -201,11 +201,17 @@ document.addEventListener('DOMContentLoaded', function () {
             placeholder: 'Write the full job description...',
             modules: {
                 toolbar: [
-                    [{ header: [1, 2, 3, false] }],
-                    ['bold', 'italic', 'underline'],
+                    [{ header: [1, 2, 3, 4, 5, 6, false] }],
+                    ['bold', 'italic', 'underline', 'strike'],        // Added 'strike' (strikethrough)
+                    [{ color: [] }, { background: [] }],             // Added text and highlight color
+                    [{ script: 'sub' }, { script: 'super' }],      // Added subscript/superscript
                     [{ list: 'ordered' }, { list: 'bullet' }],
-                    ['link', 'blockquote'],
-                    ['clean']
+                    [{ indent: '-1' }, { indent: '+1' }],          // Added outdent/indent
+                    [{ direction: 'rtl' }],                         // Added text direction
+                    [{ align: [] }],                                // Added text alignment
+                    ['link', 'blockquote', 'code-block'],           // Added code-block
+                    ['image', 'video', 'formula'],                  // Added media support
+                    ['clean']                                       // Remove formatting
                 ]
             }
         });

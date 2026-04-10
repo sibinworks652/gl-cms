@@ -1,5 +1,6 @@
 @extends('admin.layouts.app')
 @section('content')
+@use('App\Support\ModuleRegistry')
                <!-- Start Container Fluid -->
                <div class="container-fluid">
 
@@ -7,7 +8,7 @@
                     <div class="row">
                          <div class="col-xxl-12">
                               <div class="row">
-
+                                @if(ModuleRegistry::enabled('gallery'))
                                    <div class="col-md-3">
                                         <div class="card overflow-hidden">
                                              <div class="card-body">
@@ -23,17 +24,21 @@
                                                        </div> <!-- end col -->
                                                   </div> <!-- end row-->
                                              </div> <!-- end card body -->
+
                                              <div class="card-footer py-2 bg-light bg-opacity-50">
                                                   <div class="d-flex align-items-center justify-content-between">
                                                        <div>
                                                             <span class="text-success">{{ $galleryImageCount }}</span>
                                                             <span class="text-muted ms-1 fs-12">Images</span>
                                                        </div>
-                                                       <a href="{{ route('admin.gallery.index') }}" class="text-reset fw-semibold fs-12">View More</a>
+                                                       @if (Route::has('admin.gallery.index'))
+                                                            <a href="{{ route('admin.gallery.index') }}" class="text-reset fw-semibold fs-12">View More</a>
+                                                       @endif
                                                   </div>
                                              </div> <!-- end card body -->
                                         </div> <!-- end card -->
                                    </div> <!-- end col -->
+                                   @endif
                                    <div class="col-md-3">
                                         <div class="card overflow-hidden">
                                              <div class="card-body">
@@ -113,6 +118,24 @@
                                         </div> <!-- end card -->
                                    </div> <!-- end col -->
                               </div> <!-- end row -->
+                              @if(ModuleRegistry::enabled('activity_logs'))
+                              <div class="card mt-3">
+                                   <div class="card-header d-flex justify-content-between align-items-center">
+                                        <div>
+                                             <h5 class="card-title mb-1">Recent Activity</h5>
+                                             <p class="text-muted mb-0">Latest admin actions across the CMS.</p>
+                                        </div>
+                                        {{-- @if(Route::has('admin.activity-logs.index')) --}}
+                                        @if(auth('admin')->user()?->can('activity-logs.view') || auth('admin')->user()?->can('activity-logs.view-own'))
+                                             <a href="{{ route('admin.activity-logs.index') }}" class="btn btn-light btn-sm">View Timeline</a>
+                                        @endif
+                                        {{-- @endif --}}
+                                   </div>
+                                   <div class="card-body custom-scrollbar" style="max-height:450px; overflow-y: auto; overscroll-behavior: contain;">
+                                        @include('activity-logs::partials.timeline-items', ['logs' => $recentActivities ?? collect()])
+                                   </div>
+                              </div>
+                              @endif
                          </div> <!-- end col -->
                     </div> <!-- end row -->
                </div>

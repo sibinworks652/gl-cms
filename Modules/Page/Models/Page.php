@@ -11,6 +11,8 @@ class Page extends Model
         'slug',
         'view_path',
         'description',
+        'content_mode',
+        'content',
         'is_active',
     ];
 
@@ -18,6 +20,15 @@ class Page extends Model
     {
         return [
             'is_active' => 'boolean',
+        ];
+    }
+
+    public static function contentModes(): array
+    {
+        return [
+            'blade' => 'Blade View File',
+            'content' => 'Rich Content',
+            'html' => 'HTML / Blade Design',
         ];
     }
 

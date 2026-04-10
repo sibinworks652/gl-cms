@@ -1,14 +1,17 @@
 <div class="main-nav">
      @php($adminUser = auth('admin')->user())
      @php($adminLogo = \Modules\Settings\Models\Setting::value('admin_logo'))
+     @php($hasRoute = static fn (string $name): bool => \Illuminate\Support\Facades\Route::has($name))
+     @php($routeUrl = static fn (string $name, mixed $parameters = []): string => $hasRoute($name) ? route($name, $parameters) : 'javascript:void(0);')
+     @php($moduleEnabled = static fn (string $name): bool => \App\Support\ModuleRegistry::enabled($name))
      <!-- Sidebar Logo -->
      <div class="logo-box">
-          <a href="{{ route('admin.dashboard') }}" class="logo-dark">
+          <a href="{{ $routeUrl('admin.dashboard') }}" class="logo-dark">
                <img src="{{ $adminLogo ? asset('storage/' . $adminLogo) : asset('admin/assets/images/logo-sm.png') }}" class="logo-sm" alt="logo sm">
                <img src="{{ $adminLogo ? asset('storage/' . $adminLogo) : asset('admin/assets/images/logo-dark.png') }}" class="logo-lg" alt="logo dark">
           </a>
 
-          <a href="{{ route('admin.dashboard') }}" class="logo-light">
+          <a href="{{ $routeUrl('admin.dashboard') }}" class="logo-light">
                <img src="{{ $adminLogo ? asset('storage/' . $adminLogo) : asset('admin/assets/images/logo-sm.png') }}" class="logo-sm" alt="logo sm">
                <img src="{{ $adminLogo ? asset('storage/' . $adminLogo) : asset('admin/assets/images/logo-light.png') }}" class="logo-lg" alt="logo light">
           </a>
@@ -24,9 +27,9 @@
 
                {{-- <li class="menu-title">General</li> --}}
 
-               @if($adminUser?->can('dashboard.view'))
+               @if($adminUser?->can('dashboard.view') && $hasRoute('admin.dashboard'))
                     <li class="nav-item">
-                         <a class="nav-link" href="{{ route('admin.dashboard') }}">
+                         <a class="nav-link" href="{{ $routeUrl('admin.dashboard') }}">
                               <span class="nav-icon">
                                    <iconify-icon icon="solar:widget-5-bold-duotone"></iconify-icon>
                               </span>
@@ -35,7 +38,7 @@
                     </li>
                @endif
 
-               @if($adminUser?->can('admins.view') || $adminUser?->can('roles.view') || $adminUser?->can('permissions.view'))
+               @if(($adminUser?->can('admins.view') && $hasRoute('admin.admins.index')) || ($adminUser?->can('roles.view') && $hasRoute('admin.roles.index')) || ($adminUser?->can('permissions.view') && $hasRoute('admin.permissions.index')))
                     <li class="nav-item">
                          <a class="nav-link menu-arrow" href="#adminManagment" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="adminManagment">
                               <span class="nav-icon">
@@ -45,14 +48,14 @@
                          </a>
                          <div class="collapse" id="adminManagment">
                               <ul class="nav sub-navbar-nav">
-                                   @if($adminUser?->can('admins.view'))
+                                   @if($adminUser?->can('admins.view') && $hasRoute('admin.admins.index'))
                                         <li class="sub-nav-item">
-                                             <a class="sub-nav-link" href="{{ route('admin.admins.index') }}">Admins</a>
+                                             <a class="sub-nav-link" href="{{ $routeUrl('admin.admins.index') }}">Admins</a>
                                         </li>
                                    @endif
-                                   @if($adminUser?->can('roles.view'))
+                                   @if($adminUser?->can('roles.view') && $hasRoute('admin.roles.index'))
                                         <li class="sub-nav-item">
-                                             <a class="sub-nav-link" href="{{ route('admin.roles.index') }}">Roles</a>
+                                             <a class="sub-nav-link" href="{{ $routeUrl('admin.roles.index') }}">Roles</a>
                                         </li>
                                    @endif
                                    {{-- @if($adminUser?->can('permissions.view'))
@@ -65,9 +68,9 @@
                     </li>
                @endif
                {{-- <li class="menu-title">Page</li> --}}
-               @if($adminUser?->can('gallery.view'))
+               @if($moduleEnabled('gallery') && $adminUser?->can('gallery.view') && $hasRoute('admin.gallery.index'))
                     <li class="nav-item">
-                         <a class="nav-link" href="{{ route('admin.gallery.index') }}">
+                         <a class="nav-link" href="{{ $routeUrl('admin.gallery.index') }}">
                               <span class="nav-icon">
                                    <iconify-icon icon="solar:gallery-bold-duotone"></iconify-icon>
                               </span>
@@ -76,9 +79,9 @@
                     </li>
                @endif
 
-               @if($adminUser?->can('pages.view'))
+               @if($moduleEnabled('page') && $adminUser?->can('pages.view') && $hasRoute('admin.pages.index'))
                     <li class="nav-item">
-                         <a class="nav-link {{ request()->routeIs('admin.pages.*') ? 'active' : '' }}" href="{{ route('admin.pages.index') }}">
+                         <a class="nav-link {{ request()->routeIs('admin.pages.*') ? 'active' : '' }}" href="{{ $routeUrl('admin.pages.index') }}">
                               <span class="nav-icon">
                                    <iconify-icon icon="solar:document-text-bold-duotone"></iconify-icon>
                               </span>
@@ -87,9 +90,9 @@
                     </li>
                @endif
 
-               @if($adminUser?->can('banners.view'))
+               @if($moduleEnabled('banner') && $adminUser?->can('banners.view') && $hasRoute('admin.banners.index'))
                     <li class="nav-item">
-                         <a class="nav-link {{ request()->routeIs('admin.banners.*') ? 'active' : '' }}" href="{{ route('admin.banners.index') }}">
+                         <a class="nav-link {{ request()->routeIs('admin.banners.*') ? 'active' : '' }}" href="{{ $routeUrl('admin.banners.index') }}">
                               <span class="nav-icon">
                                    <iconify-icon icon="solar:gallery-wide-line-duotone"></iconify-icon>
                               </span>
@@ -98,9 +101,9 @@
                     </li>
                @endif
 
-               @if($adminUser?->can('menus.view'))
+               @if($moduleEnabled('menu') && $adminUser?->can('menus.view') && $hasRoute('admin.menus.index'))
                     <li class="nav-item">
-                         <a class="nav-link {{ request()->routeIs('admin.menus.*') ? 'active' : '' }}" href="{{ route('admin.menus.index') }}">
+                         <a class="nav-link {{ request()->routeIs('admin.menus.*') ? 'active' : '' }}" href="{{ $routeUrl('admin.menus.index') }}">
                               <span class="nav-icon">
                                    <iconify-icon icon="solar:hamburger-menu-bold-duotone"></iconify-icon>
                               </span>
@@ -109,9 +112,9 @@
                     </li>
                @endif
 
-               @if($adminUser?->can('forms.view'))
+               @if($moduleEnabled('form_builder') && $adminUser?->can('forms.view') && $hasRoute('admin.forms.index'))
                     <li class="nav-item">
-                         <a class="nav-link {{ request()->routeIs('admin.forms.*') ? 'active' : '' }}" href="{{ route('admin.forms.index') }}">
+                         <a class="nav-link {{ request()->routeIs('admin.forms.*') ? 'active' : '' }}" href="{{ $routeUrl('admin.forms.index') }}">
                               <span class="nav-icon">
                                    <iconify-icon icon="solar:document-add-bold-duotone"></iconify-icon>
                               </span>
@@ -120,7 +123,33 @@
                     </li>
                @endif
 
-               @if($adminUser?->can('services.view') || $adminUser?->can('service-categories.view'))
+               @if($moduleEnabled('activity_logs') && ((($adminUser?->can('activity-logs.view') || $adminUser?->can('activity-logs.view-own')) && $hasRoute('admin.activity-logs.index')) || (($adminUser?->can('login-histories.view') || $adminUser?->can('login-histories.view-own')) && $hasRoute('admin.login-histories.index'))))
+                    @php($activityMenuOpen = request()->routeIs('admin.activity-logs.*') || request()->routeIs('admin.login-histories.*'))
+                    <li class="nav-item">
+                         <a class="nav-link menu-arrow {{ $activityMenuOpen ? 'active' : '' }}" href="#sidebarActivityLogs" data-bs-toggle="collapse" role="button" aria-expanded="{{ $activityMenuOpen ? 'true' : 'false' }}" aria-controls="sidebarActivityLogs">
+                              <span class="nav-icon">
+                                   <iconify-icon icon="solar:history-bold-duotone"></iconify-icon>
+                              </span>
+                              <span class="nav-text"> Activity Logs </span>
+                         </a>
+                         <div class="collapse {{ $activityMenuOpen ? 'show' : '' }}" id="sidebarActivityLogs">
+                              <ul class="nav sub-navbar-nav">
+                                   @if(($adminUser?->can('activity-logs.view') || $adminUser?->can('activity-logs.view-own')) && $hasRoute('admin.activity-logs.index'))
+                                        <li class="sub-nav-item">
+                                             <a class="sub-nav-link {{ request()->routeIs('admin.activity-logs.*') ? 'active' : '' }}" href="{{ $routeUrl('admin.activity-logs.index') }}">Timeline</a>
+                                        </li>
+                                   @endif
+                                   @if(($adminUser?->can('login-histories.view') || $adminUser?->can('login-histories.view-own')) && $hasRoute('admin.login-histories.index'))
+                                        <li class="sub-nav-item">
+                                             <a class="sub-nav-link {{ request()->routeIs('admin.login-histories.*') ? 'active' : '' }}" href="{{ $routeUrl('admin.login-histories.index') }}">Login History</a>
+                                        </li>
+                                   @endif
+                              </ul>
+                         </div>
+                    </li>
+               @endif
+
+               @if($moduleEnabled('services') && (($adminUser?->can('services.view') && $hasRoute('admin.services.index')) || ($adminUser?->can('service-categories.view') && $hasRoute('admin.service-categories.index'))))
                     @php($servicesMenuOpen = request()->routeIs('admin.services.*') || request()->routeIs('admin.service-categories.*'))
                     <li class="nav-item">
                          <a class="nav-link menu-arrow {{ $servicesMenuOpen ? 'active' : '' }}" href="#sidebarServices" data-bs-toggle="collapse" role="button" aria-expanded="{{ $servicesMenuOpen ? 'true' : 'false' }}" aria-controls="sidebarServices">
@@ -131,14 +160,14 @@
                          </a>
                          <div class="collapse {{ $servicesMenuOpen ? 'show' : '' }}" id="sidebarServices">
                               <ul class="nav sub-navbar-nav">
-                                   @if($adminUser?->can('services.view'))
+                                   @if($adminUser?->can('services.view') && $hasRoute('admin.services.index'))
                                         <li class="sub-nav-item">
-                                             <a class="sub-nav-link {{ request()->routeIs('admin.services.*') ? 'active' : '' }}" href="{{ route('admin.services.index') }}">Services</a>
+                                             <a class="sub-nav-link {{ request()->routeIs('admin.services.*') ? 'active' : '' }}" href="{{ $routeUrl('admin.services.index') }}">Services</a>
                                         </li>
                                    @endif
-                                   @if($adminUser?->can('service-categories.view'))
+                                   @if($adminUser?->can('service-categories.view') && $hasRoute('admin.service-categories.index'))
                                         <li class="sub-nav-item">
-                                             <a class="sub-nav-link {{ request()->routeIs('admin.service-categories.*') ? 'active' : '' }}" href="{{ route('admin.service-categories.index') }}">Categories</a>
+                                             <a class="sub-nav-link {{ request()->routeIs('admin.service-categories.*') ? 'active' : '' }}" href="{{ $routeUrl('admin.service-categories.index') }}">Categories</a>
                                         </li>
                                    @endif
                               </ul>
@@ -146,7 +175,70 @@
                     </li>
                @endif
 
-               @if($adminUser?->can('careers.jobs.view') || $adminUser?->can('careers.categories.view') || $adminUser?->can('careers.applications.view'))
+               @if($moduleEnabled('testimonials') && $adminUser?->can('testimonials.view') && $hasRoute('admin.testimonials.index'))
+                    <li class="nav-item">
+                         <a class="nav-link {{ request()->routeIs('admin.testimonials.*') ? 'active' : '' }}" href="{{ $routeUrl('admin.testimonials.index') }}">
+                              <span class="nav-icon">
+                                   <iconify-icon icon="solar:chat-round-like-bold-duotone"></iconify-icon>
+                              </span>
+                              <span class="nav-text"> Testimonials </span>
+                         </a>
+                    </li>
+               @endif
+
+               @if($moduleEnabled('faq') && (($adminUser?->can('faqs.view') && $hasRoute('admin.faqs.index')) || ($adminUser?->can('faq-categories.view') && $hasRoute('admin.faq-categories.index'))))
+                    @php($faqMenuOpen = request()->routeIs('admin.faqs.*') || request()->routeIs('admin.faq-categories.*'))
+                    <li class="nav-item">
+                         <a class="nav-link menu-arrow {{ $faqMenuOpen ? 'active' : '' }}" href="#sidebarFaq" data-bs-toggle="collapse" role="button" aria-expanded="{{ $faqMenuOpen ? 'true' : 'false' }}" aria-controls="sidebarFaq">
+                              <span class="nav-icon">
+                                   <iconify-icon icon="solar:question-circle-bold-duotone"></iconify-icon>
+                              </span>
+                              <span class="nav-text"> FAQ </span>
+                         </a>
+                         <div class="collapse {{ $faqMenuOpen ? 'show' : '' }}" id="sidebarFaq">
+                              <ul class="nav sub-navbar-nav">
+                                   @if($adminUser?->can('faqs.view') && $hasRoute('admin.faqs.index'))
+                                        <li class="sub-nav-item">
+                                             <a class="sub-nav-link {{ request()->routeIs('admin.faqs.*') ? 'active' : '' }}" href="{{ $routeUrl('admin.faqs.index') }}">FAQs</a>
+                                        </li>
+                                   @endif
+                                   @if($adminUser?->can('faq-categories.view') && $hasRoute('admin.faq-categories.index'))
+                                        <li class="sub-nav-item">
+                                             <a class="sub-nav-link {{ request()->routeIs('admin.faq-categories.*') ? 'active' : '' }}" href="{{ $routeUrl('admin.faq-categories.index') }}">Categories</a>
+                                        </li>
+                                   @endif
+                              </ul>
+                         </div>
+                    </li>
+               @endif
+
+               @if($moduleEnabled('team') && (($adminUser?->can('team-members.view') && $hasRoute('admin.team-members.index')) || ($adminUser?->can('team-departments.view') && $hasRoute('admin.team-departments.index'))))
+                    @php($teamMenuOpen = request()->routeIs('admin.team-members.*') || request()->routeIs('admin.team-departments.*'))
+                    <li class="nav-item">
+                         <a class="nav-link menu-arrow {{ $teamMenuOpen ? 'active' : '' }}" href="#sidebarTeam" data-bs-toggle="collapse" role="button" aria-expanded="{{ $teamMenuOpen ? 'true' : 'false' }}" aria-controls="sidebarTeam">
+                              <span class="nav-icon">
+                                   <iconify-icon icon="solar:users-group-two-rounded-bold-duotone"></iconify-icon>
+                              </span>
+                              <span class="nav-text"> Team </span>
+                         </a>
+                         <div class="collapse {{ $teamMenuOpen ? 'show' : '' }}" id="sidebarTeam">
+                              <ul class="nav sub-navbar-nav">
+                                   @if($adminUser?->can('team-members.view') && $hasRoute('admin.team-members.index'))
+                                        <li class="sub-nav-item">
+                                             <a class="sub-nav-link {{ request()->routeIs('admin.team-members.*') ? 'active' : '' }}" href="{{ $routeUrl('admin.team-members.index') }}">Members</a>
+                                        </li>
+                                   @endif
+                                   @if($adminUser?->can('team-departments.view') && $hasRoute('admin.team-departments.index'))
+                                        <li class="sub-nav-item">
+                                             <a class="sub-nav-link {{ request()->routeIs('admin.team-departments.*') ? 'active' : '' }}" href="{{ $routeUrl('admin.team-departments.index') }}">Departments</a>
+                                        </li>
+                                   @endif
+                              </ul>
+                         </div>
+                    </li>
+               @endif
+
+               @if($moduleEnabled('careers') && (($adminUser?->can('careers.jobs.view') && $hasRoute('admin.jobs.index')) || ($adminUser?->can('careers.categories.view') && $hasRoute('admin.job-categories.index')) || ($adminUser?->can('careers.applications.view') && $hasRoute('admin.applications.index'))))
                     @php($careersMenuOpen = request()->routeIs('admin.jobs.*') || request()->routeIs('admin.job-categories.*') || request()->routeIs('admin.applications.*'))
                     <li class="nav-item">
                          <a class="nav-link menu-arrow {{ $careersMenuOpen ? 'active' : '' }}" href="#sidebarCareers" data-bs-toggle="collapse" role="button" aria-expanded="{{ $careersMenuOpen ? 'true' : 'false' }}" aria-controls="sidebarCareers">
@@ -157,19 +249,19 @@
                          </a>
                          <div class="collapse {{ $careersMenuOpen ? 'show' : '' }}" id="sidebarCareers">
                               <ul class="nav sub-navbar-nav">
-                                   @if($adminUser?->can('careers.jobs.view'))
+                                   @if($adminUser?->can('careers.jobs.view') && $hasRoute('admin.jobs.index'))
                                         <li class="sub-nav-item">
-                                             <a class="sub-nav-link {{ request()->routeIs('admin.jobs.*') ? 'active' : '' }}" href="{{ route('admin.jobs.index') }}">Jobs</a>
+                                             <a class="sub-nav-link {{ request()->routeIs('admin.jobs.*') ? 'active' : '' }}" href="{{ $routeUrl('admin.jobs.index') }}">Jobs</a>
                                         </li>
                                    @endif
-                                   @if($adminUser?->can('careers.categories.view'))
+                                   @if($adminUser?->can('careers.categories.view') && $hasRoute('admin.job-categories.index'))
                                         <li class="sub-nav-item">
-                                             <a class="sub-nav-link {{ request()->routeIs('admin.job-categories.*') ? 'active' : '' }}" href="{{ route('admin.job-categories.index') }}">Categories</a>
+                                             <a class="sub-nav-link {{ request()->routeIs('admin.job-categories.*') ? 'active' : '' }}" href="{{ $routeUrl('admin.job-categories.index') }}">Categories</a>
                                         </li>
                                    @endif
-                                   @if($adminUser?->can('careers.applications.view'))
+                                   @if($adminUser?->can('careers.applications.view') && $hasRoute('admin.applications.index'))
                                         <li class="sub-nav-item">
-                                             <a class="sub-nav-link {{ request()->routeIs('admin.applications.*') ? 'active' : '' }}" href="{{ route('admin.applications.index') }}">Applications</a>
+                                             <a class="sub-nav-link {{ request()->routeIs('admin.applications.*') ? 'active' : '' }}" href="{{ $routeUrl('admin.applications.index') }}">Applications</a>
                                         </li>
                                    @endif
                               </ul>
@@ -177,9 +269,9 @@
                     </li>
                @endif
 
-               @if($adminUser?->can('backups.view'))
+               @if($moduleEnabled('backup') && $adminUser?->can('backups.view') && $hasRoute('admin.backups.index'))
                     <li class="nav-item">
-                         <a class="nav-link {{ request()->routeIs('admin.backups.*') ? 'active' : '' }}" href="{{ route('admin.backups.index') }}">
+                         <a class="nav-link {{ request()->routeIs('admin.backups.*') ? 'active' : '' }}" href="{{ $routeUrl('admin.backups.index') }}">
                               <span class="nav-icon">
                                    <iconify-icon icon="solar:cloud-upload-bold-duotone"></iconify-icon>
                               </span>
@@ -188,9 +280,9 @@
                     </li>
                @endif
 
-               @if($adminUser?->can('seo.view'))
+               @if($moduleEnabled('seo') && $adminUser?->can('seo.view') && $hasRoute('admin.seo.index'))
                     <li class="nav-item">
-                         <a class="nav-link {{ request()->routeIs('admin.seo.*') ? 'active' : '' }}" href="{{ route('admin.seo.index') }}">
+                         <a class="nav-link {{ request()->routeIs('admin.seo.*') ? 'active' : '' }}" href="{{ $routeUrl('admin.seo.index') }}">
                               <span class="nav-icon">
                                    <iconify-icon icon="solar:magnifer-bold-duotone"></iconify-icon>
                               </span>
@@ -199,7 +291,7 @@
                     </li>
                @endif
 
-               @if($adminUser?->can('settings.view') || $adminUser?->can('email.view'))
+               @if((($adminUser?->can('settings.view') || $adminUser?->can('settings.mail.update') || $adminUser?->can('settings.general.update') || $adminUser?->can('settings.system.update') || $adminUser?->can('settings.admin.update') || $adminUser?->can('settings.modules.update') || $adminUser?->can('settings.update') || $adminUser?->can('settings.social.update') || $adminUser?->can('settings.analytics.update')) && ($hasRoute('admin.settings.show') || $hasRoute('admin.settings.section.edit'))) || ($moduleEnabled('email') && $adminUser?->can('email.view') && $hasRoute('admin.email.settings.edit')))
                     @php($settingsMenuOpen = request()->routeIs('admin.settings.*') || request()->routeIs('admin.email.*'))
                     <li class="nav-item">
                          <a class="nav-link menu-arrow {{ $settingsMenuOpen ? 'active' : '' }}" href="#sidebarSettings" data-bs-toggle="collapse" role="button" aria-expanded="{{ $settingsMenuOpen ? 'true' : 'false' }}" aria-controls="sidebarSettings">
@@ -210,44 +302,49 @@
                          </a>
                          <div class="collapse {{ $settingsMenuOpen ? 'show' : '' }}" id="sidebarSettings">
                               <ul class="nav sub-navbar-nav">
-                                   @if($adminUser?->can('settings.view'))
+                                   @if($adminUser?->can('settings.view') && $hasRoute('admin.settings.show'))
                                         <li class="sub-nav-item">
-                                             <a class="sub-nav-link {{ request()->routeIs('admin.settings.show') && !request('section') ? 'active' : '' }}" href="{{ route('admin.settings.show') }}">Overview</a>
+                                             <a class="sub-nav-link {{ request()->routeIs('admin.settings.show') && !request('section') ? 'active' : '' }}" href="{{ $routeUrl('admin.settings.show') }}">Overview</a>
                                         </li>
                                    @endif
-                                   @if($adminUser?->can('settings.mail.update'))
+                                   @if($adminUser?->can('settings.mail.update') && $hasRoute('admin.settings.section.edit'))
                                         <li class="sub-nav-item">
-                                             <a class="sub-nav-link {{ request()->routeIs('admin.settings.section.edit') && request()->route('section') === 'mail' ? 'active' : '' }}" href="{{ route('admin.settings.section.edit', 'mail') }}">Mail Settings</a>
+                                             <a class="sub-nav-link {{ request()->routeIs('admin.settings.section.edit') && request()->route('section') === 'mail' ? 'active' : '' }}" href="{{ $routeUrl('admin.settings.section.edit', 'mail') }}">Mail Settings</a>
                                         </li>
                                    @endif
-                                   @if($adminUser?->can('settings.general.update'))
+                                   @if($adminUser?->can('settings.general.update') && $hasRoute('admin.settings.section.edit'))
                                         <li class="sub-nav-item">
-                                             <a class="sub-nav-link {{ request()->routeIs('admin.settings.section.edit') && request()->route('section') === 'general' ? 'active' : '' }}" href="{{ route('admin.settings.section.edit', 'general') }}">General Settings</a>
+                                             <a class="sub-nav-link {{ request()->routeIs('admin.settings.section.edit') && request()->route('section') === 'general' ? 'active' : '' }}" href="{{ $routeUrl('admin.settings.section.edit', 'general') }}">General Settings</a>
                                         </li>
                                    @endif
-                                   @if($adminUser?->can('settings.system.update'))
+                                   @if($adminUser?->can('settings.system.update') && $hasRoute('admin.settings.section.edit'))
                                         <li class="sub-nav-item">
-                                             <a class="sub-nav-link {{ request()->routeIs('admin.settings.section.edit') && request()->route('section') === 'system' ? 'active' : '' }}" href="{{ route('admin.settings.section.edit', 'system') }}">System Settings</a>
+                                             <a class="sub-nav-link {{ request()->routeIs('admin.settings.section.edit') && request()->route('section') === 'system' ? 'active' : '' }}" href="{{ $routeUrl('admin.settings.section.edit', 'system') }}">System Settings</a>
                                         </li>
                                    @endif
-                                   @if($adminUser?->can('settings.admin.update'))
+                                   @if($adminUser?->can('settings.admin.update') && $hasRoute('admin.settings.section.edit'))
                                         <li class="sub-nav-item">
-                                             <a class="sub-nav-link {{ request()->routeIs('admin.settings.section.edit') && request()->route('section') === 'admin' ? 'active' : '' }}" href="{{ route('admin.settings.section.edit', 'admin') }}">Admin Panel</a>
+                                             <a class="sub-nav-link {{ request()->routeIs('admin.settings.section.edit') && request()->route('section') === 'admin' ? 'active' : '' }}" href="{{ $routeUrl('admin.settings.section.edit', 'admin') }}">Admin Panel</a>
                                         </li>
                                    @endif
-                                   @if($adminUser?->can('settings.social.update'))
+                                   @if(($adminUser?->can('settings.modules.update') || $adminUser?->can('settings.update')) && $hasRoute('admin.settings.section.edit'))
                                         <li class="sub-nav-item">
-                                             <a class="sub-nav-link {{ request()->routeIs('admin.settings.section.edit') && request()->route('section') === 'social' ? 'active' : '' }}" href="{{ route('admin.settings.section.edit', 'social') }}">Social Media</a>
+                                             <a class="sub-nav-link {{ request()->routeIs('admin.settings.section.edit') && request()->route('section') === 'modules' ? 'active' : '' }}" href="{{ $routeUrl('admin.settings.section.edit', 'modules') }}">Modules</a>
                                         </li>
                                    @endif
-                                   @if($adminUser?->can('settings.analytics.update'))
+                                   @if($adminUser?->can('settings.social.update') && $hasRoute('admin.settings.section.edit'))
                                         <li class="sub-nav-item">
-                                             <a class="sub-nav-link {{ request()->routeIs('admin.settings.section.edit') && request()->route('section') === 'analytics' ? 'active' : '' }}" href="{{ route('admin.settings.section.edit', 'analytics') }}">Analytics</a>
+                                             <a class="sub-nav-link {{ request()->routeIs('admin.settings.section.edit') && request()->route('section') === 'social' ? 'active' : '' }}" href="{{ $routeUrl('admin.settings.section.edit', 'social') }}">Social Media</a>
                                         </li>
                                    @endif
-                                   @if($adminUser?->can('email.view'))
+                                   @if($adminUser?->can('settings.analytics.update') && $hasRoute('admin.settings.section.edit'))
                                         <li class="sub-nav-item">
-                                             <a class="sub-nav-link {{ request()->routeIs('admin.email.*') ? 'active' : '' }}" href="{{ route('admin.email.settings.edit') }}">Email System</a>
+                                             <a class="sub-nav-link {{ request()->routeIs('admin.settings.section.edit') && request()->route('section') === 'analytics' ? 'active' : '' }}" href="{{ $routeUrl('admin.settings.section.edit', 'analytics') }}">Analytics</a>
+                                        </li>
+                                   @endif
+                                   @if($moduleEnabled('email') && $adminUser?->can('email.view') && $hasRoute('admin.email.settings.edit'))
+                                        <li class="sub-nav-item">
+                                             <a class="sub-nav-link {{ request()->routeIs('admin.email.*') ? 'active' : '' }}" href="{{ $routeUrl('admin.email.settings.edit') }}">Email System</a>
                                         </li>
                                    @endif
                                    {{-- @if($adminUser?->can('settings.update'))

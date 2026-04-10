@@ -3,37 +3,41 @@
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\RoleController;
+use App\Support\ModuleRegistry;
 use Illuminate\Support\Facades\Route;
 use Modules\Banner\Controllers\BannerController;
-use Modules\Gallery\Controllers\GalleryController;
 
-Route::prefix('modules')->name('api.modules.')->group(function () {
-    Route::get('banners', [BannerController::class, 'apiPublicIndex'])->name('banners.index');
-    Route::get('banners/{banner}', [BannerController::class, 'apiPublicShow'])->name('banners.show');
-});
+if (ModuleRegistry::enabled('banner')) {
+    Route::prefix('modules')->name('api.modules.')->group(function () {
+        Route::get('banners', [BannerController::class, 'apiPublicIndex'])->name('banners.index');
+        Route::get('banners/{banner}', [BannerController::class, 'apiPublicShow'])->name('banners.show');
+    });
+}
 
 Route::prefix('admin')->name('api.admin.')->group(function () {
-    Route::get('banners', [BannerController::class, 'index'])
-        ->middleware('permission:banners.view,admin')
-        ->name('banners.index');
-    Route::get('banners/create', [BannerController::class, 'create'])
-        ->middleware('permission:banners.create,admin')
-        ->name('banners.create');
-    Route::post('banners', [BannerController::class, 'store'])
-        ->middleware('permission:banners.create,admin')
-        ->name('banners.store');
-    Route::get('banners/{banner}/edit', [BannerController::class, 'edit'])
-        ->middleware('permission:banners.update,admin')
-        ->name('banners.edit');
-    Route::put('banners/{banner}', [BannerController::class, 'update'])
-        ->middleware('permission:banners.update,admin')
-        ->name('banners.update');
-    Route::post('banners/reorder', [BannerController::class, 'reorder'])
-        ->middleware('permission:banners.update,admin')
-        ->name('banners.reorder');
-    Route::delete('banners/{banner}', [BannerController::class, 'destroy'])
-        ->middleware('permission:banners.delete,admin')
-        ->name('banners.destroy');
+    if (ModuleRegistry::enabled('banner')) {
+        Route::get('banners', [BannerController::class, 'index'])
+            ->middleware('permission:banners.view,admin')
+            ->name('banners.index');
+        Route::get('banners/create', [BannerController::class, 'create'])
+            ->middleware('permission:banners.create,admin')
+            ->name('banners.create');
+        Route::post('banners', [BannerController::class, 'store'])
+            ->middleware('permission:banners.create,admin')
+            ->name('banners.store');
+        Route::get('banners/{banner}/edit', [BannerController::class, 'edit'])
+            ->middleware('permission:banners.update,admin')
+            ->name('banners.edit');
+        Route::put('banners/{banner}', [BannerController::class, 'update'])
+            ->middleware('permission:banners.update,admin')
+            ->name('banners.update');
+        Route::post('banners/reorder', [BannerController::class, 'reorder'])
+            ->middleware('permission:banners.update,admin')
+            ->name('banners.reorder');
+        Route::delete('banners/{banner}', [BannerController::class, 'destroy'])
+            ->middleware('permission:banners.delete,admin')
+            ->name('banners.destroy');
+    }
 
     Route::get('admins', [AdminController::class, 'index'])
         ->middleware('permission:admins.view,admin')

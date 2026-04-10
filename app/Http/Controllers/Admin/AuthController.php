@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Support\ModuleRegistry;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -37,6 +38,7 @@ class AuthController extends Controller
         }
 
         $request->session()->regenerate();
+        $this->activityLogs()?->recordLogin(Auth::guard('admin')->user(), $request);
 
         if ($request->expectsJson()) {
             return response()->json([
@@ -50,6 +52,12 @@ class AuthController extends Controller
 
     public function logout(Request $request): JsonResponse|RedirectResponse
     {
+        $admin = Auth::guard('admin')->user();
+
+        if ($admin) {
+            $this->activityLogs()?->recordLogout($admin, $request);
+        }
+
         Auth::guard('admin')->logout();
 
         $request->session()->invalidate();
@@ -63,5 +71,16 @@ class AuthController extends Controller
         }
 
         return redirect()->route('login');
+    }
+
+    protected function activityLogs(): ?object
+    {
+        $class = \Modules\ActivityLogs\Services\ActivityLogManager::class;
+
+        if (! ModuleRegistry::enabled('activity_logs') || ! class_exists($class)) {
+            return null;
+        }
+
+        return app($class);
     }
 }

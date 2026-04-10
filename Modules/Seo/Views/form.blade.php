@@ -25,6 +25,9 @@
                                     <option value="{{ $value }}" @selected(old('page_type', $seoSetting->page_type) === $value)>{{ $label }}</option>
                                 @endforeach
                             </select>
+                            @unless($pageModuleAvailable)
+                                <div class="form-text">Page-related SEO is hidden because the Page module is missing, disabled, or its expected files do not match.</div>
+                            @endunless
                             @error('page_type')<div class="invalid-feedback">{{ $message }}</div>@enderror
                         </div>
                         <div class="col-md-4">
@@ -160,7 +163,7 @@
             };
 
             function updatePageKeyHelp() {
-                const config = helpByType[typeInput.value] || helpByType.page;
+                const config = helpByType[typeInput.value] || helpByType.route || helpByType.custom;
                 const isPageType = typeInput.value === 'page';
                 keyInput.placeholder = config.placeholder;
                 keyHelp.textContent = config.help;

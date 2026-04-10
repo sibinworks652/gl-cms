@@ -3,11 +3,13 @@
 namespace Modules\Seo\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Support\ModuleRegistry;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
-use Modules\Page\Models\Page;
 use Modules\Seo\Models\SeoSetting;
 
 class SeoController extends Controller
@@ -24,16 +26,19 @@ class SeoController extends Controller
 
     public function create()
     {
+        $pageTypes = $this->pageTypes();
+
         return view('seo::form', [
             'seoSetting' => new SeoSetting([
-                'page_type' => 'page',
+                'page_type' => array_key_first($pageTypes) ?: 'custom',
                 'seo_twitter_card' => 'summary_large_image',
                 'seo_indexing' => 'index',
                 'is_active' => true,
             ]),
             'isEdit' => false,
             'pages' => $this->pages(),
-            'pageTypes' => $this->pageTypes(),
+            'pageTypes' => $pageTypes,
+            'pageModuleAvailable' => $this->pageModuleAvailable(),
             'twitterCards' => $this->twitterCards(),
         ]);
     }
@@ -63,6 +68,7 @@ class SeoController extends Controller
             'isEdit' => true,
             'pages' => $this->pages(),
             'pageTypes' => $this->pageTypes(),
+            'pageModuleAvailable' => $this->pageModuleAvailable(),
             'twitterCards' => $this->twitterCards(),
         ]);
     }
@@ -153,14 +159,19 @@ class SeoController extends Controller
 
     protected function pageTypes(): array
     {
-        return [
-            'page' => 'Created Page',
+        $types = [
             'route' => 'Route Name',
             // 'form' => 'Form',
             // 'gallery' => 'Gallery',
             // 'menu' => 'Menu',
             'custom' => 'Custom',
         ];
+
+        if ($this->pageModuleAvailable()) {
+            $types = ['page' => 'Created Page'] + $types;
+        }
+
+        return $types;
     }
 
     protected function twitterCards(): array
@@ -175,7 +186,11 @@ class SeoController extends Controller
 
     protected function pages()
     {
-        return Page::query()
+        if (! $this->pageModuleAvailable()) {
+            return collect();
+        }
+
+        return DB::table('pages')
             ->orderBy('title')
             ->get(['id', 'title', 'slug']);
     }
@@ -186,12 +201,30 @@ class SeoController extends Controller
             return;
         }
 
-        if (Page::query()->where('slug', $pageKey)->exists()) {
+        if (! $this->pageModuleAvailable()) {
+            throw ValidationException::withMessages([
+                'page_key' => 'The Page module is not available right now, so page-based SEO entries cannot be used.',
+            ]);
+        }
+
+        if (DB::table('pages')->where('slug', $pageKey)->exists()) {
             return;
         }
 
         throw ValidationException::withMessages([
             'page_key' => 'Please choose a valid page from the list.',
         ]);
+    }
+
+    protected function hasPagesTable(): bool
+    {
+        return Schema::hasTable('pages');
+    }
+
+    protected function pageModuleAvailable(): bool
+    {
+        return ModuleRegistry::enabled('page')
+            && class_exists(\Modules\Page\Models\Page::class)
+            && $this->hasPagesTable();
     }
 }

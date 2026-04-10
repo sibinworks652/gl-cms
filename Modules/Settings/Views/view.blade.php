@@ -3,7 +3,7 @@
 @section('content')
     <div class="container-xxl">
         @php($adminUser = auth('admin')->user())
-        @php($sectionPermissions = collect($sections)->mapWithKeys(fn ($section, $sectionKey) => [$sectionKey => 'settings.' . $sectionKey . '.update']))
+        @php($sectionPermissions = collect($sections)->mapWithKeys(fn ($section, $sectionKey) => [$sectionKey => $sectionKey === 'modules' ? 'settings.update' : 'settings.' . $sectionKey . '.update']))
         @php($editableSectionKey = collect($sections)->keys()->first(fn ($sectionKey) => $adminUser?->can($sectionPermissions[$sectionKey])))
         @php($canUpdateAnySection = $sectionPermissions->contains(fn ($permission) => $adminUser?->can($permission)))
         <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">

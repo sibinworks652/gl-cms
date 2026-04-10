@@ -192,9 +192,9 @@ document.addEventListener('DOMContentLoaded', function () {
     background: var(--bs-body-bg);
 }
 
-.email-editor-shell {
+/* .email-editor-shell {
     background: var(--bs-body-bg);
-}
+} */
 
 .email-rich-editor {
     min-height: 180px;

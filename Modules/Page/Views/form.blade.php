@@ -44,9 +44,33 @@
                                     @error('view_path')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                 </div>
                                 <div class="col-12">
+                                    <label class="form-label">Page Mode</label>
+                                    <select name="content_mode" id="page-content-mode" class="form-select @error('content_mode') is-invalid @enderror">
+                                        @foreach(\Modules\Page\Models\Page::contentModes() as $value => $label)
+                                            <option value="{{ $value }}" @selected(old('content_mode', $page->content_mode ?? 'blade') === $value)>{{ $label }}</option>
+                                        @endforeach
+                                    </select>
+                                    <div class="form-text">Choose whether this page should use an auto-generated Blade file, rich content, or a full HTML/Blade design.</div>
+                                    @error('content_mode')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                                </div>
+                                <div class="col-12">
                                     <label class="form-label">Description</label>
                                     <textarea name="description" rows="4" class="form-control @error('description') is-invalid @enderror" placeholder="Internal note about this page">{{ old('description', $page->description) }}</textarea>
                                     @error('description')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                                </div>
+                                <div class="col-12 d-none" id="page-content-editor-wrap">
+                                    <label class="form-label">Page Content</label>
+                                    <div class="border rounded">
+                                        <div id="page-content-editor" style="height: 320px;"></div>
+                                    </div>
+                                    <textarea name="content" id="page-content-input" hidden class="d-none @error('content') is-invalid @enderror">{{ old('content', $page->content) }}</textarea>
+                                    <div class="form-text">Use the rich editor for standard page sections and formatted content.</div>
+                                    @error('content')<div class="invalid-feedback d-block">{{ $message }}</div>@enderror
+                                </div>
+                                <div class="col-12 d-none" id="page-html-editor-wrap">
+                                    <label class="form-label">HTML / Blade Design</label>
+                                    <textarea id="page-html-editor" class="form-control @error('content') is-invalid @enderror" rows="14" spellcheck="false">{{ old('content', $page->content) }}</textarea>
+                                    <div class="form-text">Write full HTML or Blade markup here. The page will render this design directly.</div>
                                 </div>
                                 <div class="col-12">
                                     <div class="form-check form-switch">
@@ -63,11 +87,11 @@
                 <div class="col-lg-4">
                     <div class="card">
                         <div class="card-header">
-                            <h5 class="card-title mb-0">Generated File</h5>
+                            <h5 class="card-title mb-0">Page Output</h5>
                         </div>
                         <div class="card-body">
-                            <p class="text-muted mb-2">This file path will be generated when the page is saved:</p>
-                            <div class="p-3 bg-light rounded border">
+                            <p class="text-muted mb-2" id="page-output-copy">This file path will be generated when the page is saved:</p>
+                            <div class="p-3 bg-light rounded border" id="page-output-preview-wrap">
                                 <code id="page-file-preview">{{ resource_path('views/' . str_replace('.', '/', old('view_path', $page->view_path ?: ($page->slug ? 'pages.' . $page->slug : 'pages.home'))) . '.blade.php') }}</code>
                             </div>
                             @if($isEdit)
@@ -90,8 +114,29 @@ document.addEventListener('DOMContentLoaded', function () {
     const slugInput = document.getElementById('page-slug');
     const viewPathInput = document.getElementById('page-view-path');
     const filePreview = document.getElementById('page-file-preview');
+    const contentModeInput = document.getElementById('page-content-mode');
+    const outputCopy = document.getElementById('page-output-copy');
+    const contentWrap = document.getElementById('page-content-editor-wrap');
+    const htmlWrap = document.getElementById('page-html-editor-wrap');
+    const htmlEditor = document.getElementById('page-html-editor');
+    const hiddenContentInput = document.getElementById('page-content-input');
     let slugTouched = Boolean(slugInput?.value);
     let viewPathTouched = Boolean(viewPathInput?.value);
+    const quill = new Quill('#page-content-editor', {
+        theme: 'snow',
+        placeholder: 'Write page content...',
+        modules: {
+            toolbar: [
+                [{ header: [1, 2, 3, false] }],
+                ['bold', 'italic', 'underline'],
+                ['link', 'image'],
+                [{ list: 'ordered' }, { list: 'bullet' }],
+                ['clean']
+            ]
+        }
+    });
+
+    quill.root.innerHTML = @json(old('content', $page->content ?? ''));
 
     const slugify = function (value) {
         return value.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
@@ -110,6 +155,24 @@ document.addEventListener('DOMContentLoaded', function () {
         filePreview.textContent = @json(resource_path('views')) + '/' + normalizeViewPath(viewPathInput.value, slugInput?.value || '').replace(/\./g, '/') + '.blade.php';
     };
 
+    const syncModeUi = function () {
+        const mode = contentModeInput?.value || 'blade';
+        if (contentWrap) {
+            contentWrap.classList.toggle('d-none', mode !== 'content');
+        }
+        if (htmlWrap) {
+            htmlWrap.classList.toggle('d-none', mode !== 'html');
+        }
+        if (viewPathInput) {
+            viewPathInput.closest('.col-12')?.classList.toggle('opacity-75', mode !== 'blade');
+        }
+        if (outputCopy) {
+            outputCopy.textContent = mode === 'blade'
+                ? 'This file path will be generated when the page is saved:'
+                : 'This page will render directly from the stored editor content:';
+        }
+    };
+
     slugInput?.addEventListener('input', function () {
         slugTouched = true;
         if (!viewPathTouched) {
@@ -123,6 +186,8 @@ document.addEventListener('DOMContentLoaded', function () {
         updateFilePreview();
     });
 
+    contentModeInput?.addEventListener('change', syncModeUi);
+
     titleInput?.addEventListener('input', function () {
         if (!slugTouched && slugInput) {
             slugInput.value = slugify(titleInput.value);
@@ -133,7 +198,30 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
+    document.getElementById('page-form')?.addEventListener('submit', function () {
+        if (!hiddenContentInput) {
+            return;
+        }
+
+        if ((contentModeInput?.value || 'blade') === 'content') {
+            let html = quill.root.innerHTML;
+            if (html === '<p><br></p>') {
+                html = '';
+            }
+            hiddenContentInput.value = html;
+            return;
+        }
+
+        if ((contentModeInput?.value || 'blade') === 'html') {
+            hiddenContentInput.value = htmlEditor?.value || '';
+            return;
+        }
+
+        hiddenContentInput.value = '';
+    });
+
     updateFilePreview();
+    syncModeUi();
 });
 </script>
 @endpush

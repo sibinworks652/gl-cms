@@ -343,6 +343,34 @@
                     </div>
                 </div>
 
+                <div class="col-12" @if($activeSection && $activeSection !== 'modules') style="display:none;" @endif>
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title mb-1">Module Settings</h5>
+                            <p class="text-muted mb-0">Disable modules cleanly so related menu items, dashboard widgets, and routes stop loading.</p>
+                        </div>
+                        <div class="card-body">
+                            <div class="row g-3">
+                                @foreach($moduleDefinitions as $moduleKey => $moduleDefinition)
+                                    @php($settingKey = \App\Support\ModuleRegistry::settingKey($moduleKey))
+                                    @php($isInstalled = \App\Support\ModuleRegistry::installed($moduleKey))
+                                    <div class="col-md-4">
+                                        <label class="form-label">{{ $moduleDefinition['name'] }}</label>
+                                        <select name="{{ $settingKey }}" class="form-select @error($settingKey) is-invalid @enderror" @disabled(! $isInstalled)>
+                                            <option value="1" @selected((string) old($settingKey, $settings[$settingKey] ?? '1') === '1')>Enabled</option>
+                                            <option value="0" @selected((string) old($settingKey, $settings[$settingKey] ?? '1') === '0')>Disabled</option>
+                                        </select>
+                                        <div class="form-text">
+                                            {{ $isInstalled ? 'Installed module. Changes are applied on the next request.' : 'Module files were not found, so this option is unavailable.' }}
+                                        </div>
+                                        @error($settingKey)<div class="invalid-feedback">{{ $message }}</div>@enderror
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="col-lg-6" @if($activeSection && $activeSection !== 'social') style="display:none;" @endif>
                     <div class="card h-100">
                         <div class="card-header">

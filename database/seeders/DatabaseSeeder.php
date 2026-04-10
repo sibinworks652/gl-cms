@@ -36,7 +36,6 @@ class DatabaseSeeder extends Seeder
             }
         }
     }
-
    private function resolveSeederClass($file)
     {
         $file = str_replace(['/', '\\'], DIRECTORY_SEPARATOR, $file);

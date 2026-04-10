@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    
     @php
         $adminSettings = \Modules\Settings\Models\Setting::pairs();
         // dd($adminSettings);
@@ -24,7 +25,12 @@
         <link rel="shortcut icon" href="{{ asset('storage/' . $adminSettings['site_favicon']) }}">
         <link rel="icon" href="{{ asset('storage/' . $adminSettings['site_favicon']) }}">
     @endif
-    @include('seo::meta')
+
+
+
+    @if(\App\Support\ModuleRegistry::enabled('seo') && \Illuminate\Support\Facades\View::exists('seo::meta'))
+        @include('seo::meta')
+    @endif
 
     <script>
         window.adminPreferredTheme = @json($adminPreferredTheme);

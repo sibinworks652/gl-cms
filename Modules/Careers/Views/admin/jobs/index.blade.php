@@ -94,7 +94,7 @@
                                             <span class="badge bg-warning">Featured</span>
                                         @endif
                                         @if($job->isExpired())
-                                            <span class="badge bg-danger text-danger">Expired</span>
+                                            <span class="badge bg-danger text-white">Expired</span>
                                         @endif
                                     </td>
                                     <td>

@@ -5,13 +5,18 @@ use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\RoleController;
+use App\Support\ModuleRegistry;
 use Illuminate\Support\Facades\Route;
+use Modules\Team\Controllers\Web\TeamFrontController;
 
 /*********************
  * Admin Routes
  *********************/
 Route::get('/', [AuthController::class, 'showLoginForm']);
-Route::view('/menu-preview', 'menu-preview')->name('menu.preview');
+if (ModuleRegistry::enabled('menu')) {
+    Route::view('/menu-preview', 'menu-preview')->name('menu.preview');
+}
+
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('login.submit');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
@@ -78,3 +83,10 @@ Route::prefix('admin')->middleware('auth:admin')->name('admin.')->group(function
         ->middleware('permission:permissions.delete,admin')
         ->name('permissions.destroy');
 });
+if (ModuleRegistry::enabled('team')) {
+    Route::get('team', [TeamFrontController::class, 'index'])
+        ->name('team.index');
+
+    Route::get('team/{slug}', [TeamFrontController::class, 'show'])
+        ->name('team.show');
+}

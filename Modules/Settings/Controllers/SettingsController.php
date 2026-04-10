@@ -3,6 +3,7 @@
 namespace Modules\Settings\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Support\ModuleRegistry;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Crypt;
@@ -25,7 +26,7 @@ class SettingsController extends Controller
         $activeSection = request()->query('section');
 
         return view('settings::view', [
-            'settings' => $this->settingsForDisplay(),
+            'settings' => $this->withModuleDefaults($this->settingsForDisplay()),
             'sections' => $sections,
             'activeSection' => array_key_exists((string) $activeSection, $sections) ? (string) $activeSection : null,
         ]);
@@ -144,9 +145,10 @@ class SettingsController extends Controller
         $activeSection = $section ? $this->normalizeSection($section) : null;
 
         return view('settings::form', [
-            'settings' => $this->settingsForEdit(),
+            'settings' => $this->withModuleDefaults($this->settingsForEdit()),
             'sections' => $sections,
             'activeSection' => $activeSection,
+            'moduleDefinitions' => ModuleRegistry::definitions(),
             'timezones' => timezone_identifiers_list(),
             'mailers' => ['smtp' => 'SMTP', 'sendmail' => 'Sendmail', 'log' => 'Log'],
             'encryptions' => ['tls' => 'TLS', 'ssl' => 'SSL', '' => 'None'],
@@ -299,6 +301,10 @@ class SettingsController extends Controller
 
     protected function sectionPermission(string $section): string
     {
+        if ($section === 'modules') {
+            return 'settings.update';
+        }
+
         return 'settings.' . $section . '.update';
     }
 
@@ -380,6 +386,14 @@ class SettingsController extends Controller
             'google_tag_manager_id' => ['nullable', 'string', 'max:255'],
             'facebook_pixel_id' => ['nullable', 'string', 'max:255'],
         ];
+
+        foreach (ModuleRegistry::definitions() as $moduleKey => $definition) {
+            $settingKey = ModuleRegistry::settingKey($moduleKey);
+
+            if ($settingKey) {
+                $rules[$settingKey] = ['nullable', Rule::in(['0', '1'])];
+            }
+        }
 
         if (! $onlySection) {
             return $rules;
@@ -505,6 +519,11 @@ class SettingsController extends Controller
                     'admin_dark_mode_enabled' => ['label' => 'Dark Mode', 'type' => 'boolean'],
                 ],
             ],
+            'modules' => [
+                'title' => 'Module Settings',
+                'description' => 'Enable or disable optional CMS modules from one place.',
+                'fields' => ModuleRegistry::settingsFields(),
+            ],
             'social' => [
                 'title' => 'Social Media Settings',
                 'description' => 'Public profile links for header, footer, or contact areas.',
@@ -548,6 +567,17 @@ class SettingsController extends Controller
             'APP_URL' => $settings['app_url'] ?? config('app.url'),
         ];
 
+        foreach (ModuleRegistry::definitions() as $moduleKey => $definition) {
+            $settingKey = ModuleRegistry::settingKey($moduleKey);
+            $envKey = ModuleRegistry::envKey($moduleKey);
+
+            if (! $settingKey || ! $envKey) {
+                continue;
+            }
+
+            $replacements[$envKey] = $this->stringifyEnvBoolean($settings[$settingKey] ?? config('modules.' . $moduleKey, true));
+        }
+
         $updatedContent = $content;
 
         foreach ($replacements as $key => $value) {
@@ -573,6 +603,18 @@ class SettingsController extends Controller
             'mail.mailers.smtp.password' => $this->decryptSettingValue($settings['mail_password'] ?? null) ?? config('mail.mailers.smtp.password'),
             'settings.cache_enabled' => $this->toBoolean($settings['cache_enabled'] ?? '1'),
         ]);
+
+        foreach (ModuleRegistry::definitions() as $moduleKey => $definition) {
+            $settingKey = ModuleRegistry::settingKey($moduleKey);
+
+            if (! $settingKey) {
+                continue;
+            }
+
+            config([
+                'modules.' . $moduleKey => $this->toBoolean($settings[$settingKey] ?? config('modules.' . $moduleKey, true)),
+            ]);
+        }
     }
 
     protected function decryptSettingValue(?string $value): ?string
@@ -636,5 +678,20 @@ class SettingsController extends Controller
     protected function toBoolean(mixed $value): bool
     {
         return in_array(Str::lower(trim((string) $value)), ['1', 'true', 'on', 'yes'], true);
+    }
+
+    protected function withModuleDefaults(array $settings): array
+    {
+        foreach (ModuleRegistry::definitions() as $moduleKey => $definition) {
+            $settingKey = ModuleRegistry::settingKey($moduleKey);
+
+            if (! $settingKey || array_key_exists($settingKey, $settings)) {
+                continue;
+            }
+
+            $settings[$settingKey] = config('modules.' . $moduleKey, true) ? '1' : '0';
+        }
+
+        return $settings;
     }
 }

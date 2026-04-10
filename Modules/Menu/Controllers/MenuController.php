@@ -3,15 +3,16 @@
 namespace Modules\Menu\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Support\ModuleRegistry;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 use Modules\Menu\Models\Menu;
 use Modules\Menu\Models\MenuItem;
-use Modules\Page\Models\Page;
 
 class MenuController extends Controller
 {
@@ -35,7 +36,8 @@ class MenuController extends Controller
             'menu' => new Menu(['is_active' => true]),
             'isEdit' => false,
             'locations' => Menu::locations(),
-            'linkTypes' => MenuItem::linkTypes(),
+            'linkTypes' => $this->linkTypes(),
+            'pageModuleAvailable' => $this->pageModuleAvailable(),
             'pages' => $this->pages(),
             'itemsPayload' => '[]',
         ]);
@@ -71,7 +73,8 @@ class MenuController extends Controller
             'menu' => $menu,
             'isEdit' => true,
             'locations' => Menu::locations(),
-            'linkTypes' => MenuItem::linkTypes(),
+            'linkTypes' => $this->linkTypes(),
+            'pageModuleAvailable' => $this->pageModuleAvailable(),
             'pages' => $this->pages(),
             'itemsPayload' => json_encode($this->mapItemsForBuilder($menu->rootItems), JSON_PRETTY_PRINT),
         ]);
@@ -104,7 +107,13 @@ class MenuController extends Controller
 
     public function destroy(Menu $menu)
     {
-        $menu->delete();
+        DB::transaction(function () use ($menu) {
+            MenuItem::query()
+                ->where('menu_id', $menu->id)
+                ->delete();
+
+            $menu->delete();
+        });
 
         return redirect()
             ->route('admin.menus.index')
@@ -177,7 +186,7 @@ class MenuController extends Controller
                 ]);
             }
 
-            if (! array_key_exists($type, MenuItem::linkTypes())) {
+            if (! array_key_exists($type, $this->linkTypes())) {
                 throw ValidationException::withMessages([
                     'items_payload' => 'A menu item has an invalid link type.',
                 ]);
@@ -189,7 +198,13 @@ class MenuController extends Controller
                 ]);
             }
 
-            if ($type === 'page' && ! Page::query()->where('slug', $target)->exists()) {
+            if ($type === 'page' && ! $this->pageModuleAvailable()) {
+                throw ValidationException::withMessages([
+                    'items_payload' => 'The Page module is not available, so page-based menu items cannot be used.',
+                ]);
+            }
+
+            if ($type === 'page' && ! DB::table('pages')->where('slug', $target)->exists()) {
                 throw ValidationException::withMessages([
                     'items_payload' => 'A menu item points to a page that does not exist anymore.',
                 ]);
@@ -293,7 +308,7 @@ class MenuController extends Controller
             'data' => $this->transformMenu($menu),
         ]);
     }
-    
+
 
     protected function transformMenu(Menu $menu): array
     {
@@ -329,8 +344,30 @@ class MenuController extends Controller
 
     protected function pages()
     {
-        return Page::query()
+        if ($this->pageModuleAvailable()) {
+            return DB::table('pages')
             ->orderBy('title')
             ->get(['id', 'title', 'slug']);
+        }
+
+        return collect();
+    }
+
+    protected function linkTypes(): array
+    {
+        $types = MenuItem::linkTypes();
+
+        if (! $this->pageModuleAvailable()) {
+            unset($types['page']);
+        }
+
+        return $types;
+    }
+
+    protected function pageModuleAvailable(): bool
+    {
+        return ModuleRegistry::enabled('page')
+            && class_exists(\Modules\Page\Models\Page::class)
+            && Schema::hasTable('pages');
     }
 }

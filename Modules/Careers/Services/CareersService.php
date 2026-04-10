@@ -2,6 +2,7 @@
 
 namespace Modules\Careers\Services;
 
+use App\Support\ModuleRegistry;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\UploadedFile;
@@ -12,16 +13,10 @@ use Illuminate\Support\Str;
 use Modules\Careers\Models\Job;
 use Modules\Careers\Models\JobApplication;
 use Modules\Careers\Models\JobCategory;
-use Modules\Email\Models\EmailTemplate;
-use Modules\Email\Services\EmailService;
 use Modules\Settings\Models\Setting;
 
 class CareersService
 {
-    public function __construct(protected EmailService $email)
-    {
-    }
-
     public function settings(): array
     {
         return Setting::pairs();
@@ -300,7 +295,12 @@ class CareersService
 
     protected function sendTemplateMail(string $slug, string|array $recipient, array $data): void
     {
-        $template = EmailTemplate::query()
+        if (! $this->emailModuleAvailable()) {
+            return;
+        }
+
+        $emailTemplateClass = \Modules\Email\Models\EmailTemplate::class;
+        $template = $emailTemplateClass::query()
             ->active()
             ->where('slug', $slug)
             ->first();
@@ -310,7 +310,7 @@ class CareersService
         }
 
         try {
-            $this->email->sendTemplate($template, $data, $recipient);
+            $this->emailService()?->sendTemplate($template, $data, $recipient);
         } catch (\Throwable $exception) {
             Log::warning('Career email notification failed.', [
                 'template' => $slug,
@@ -337,5 +337,23 @@ class CareersService
             ->unique()
             ->values()
             ->all();
+    }
+
+    protected function emailService(): ?object
+    {
+        $class = \Modules\Email\Services\EmailService::class;
+
+        if (! $this->emailModuleAvailable() || ! class_exists($class)) {
+            return null;
+        }
+
+        return app($class);
+    }
+
+    protected function emailModuleAvailable(): bool
+    {
+        return ModuleRegistry::enabled('email')
+            && class_exists(\Modules\Email\Services\EmailService::class)
+            && class_exists(\Modules\Email\Models\EmailTemplate::class);
     }
 }

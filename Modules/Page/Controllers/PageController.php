@@ -3,6 +3,7 @@
 namespace Modules\Page\Controllers;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
@@ -27,6 +28,7 @@ class PageController extends Controller
         return view('page::form', [
             'page' => new Page([
                 'is_active' => true,
+                'content_mode' => 'blade',
             ]),
             'isEdit' => false,
         ]);
@@ -79,6 +81,19 @@ class PageController extends Controller
     public function show(Page $page)
     {
         abort_unless($page->is_active, 404);
+
+        if ($page->content_mode === 'content') {
+            return response()->view('page::render', [
+                'page' => $page,
+            ]);
+        }
+
+        if ($page->content_mode === 'html') {
+            return response(Blade::render($page->content ?: $this->defaultHtmlContent($page), [
+                'page' => $page,
+            ]));
+        }
+
         abort_unless(view()->exists($page->view_path), 404);
 
         return response()->view($page->view_path, [
@@ -99,6 +114,8 @@ class PageController extends Controller
             ],
             'view_path' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
+            'content_mode' => ['required', Rule::in(array_keys(Page::contentModes()))],
+            'content' => ['nullable', 'string'],
             'is_active' => ['nullable', 'boolean'],
         ], [
             'slug.regex' => 'The slug may only contain lowercase letters, numbers, and hyphens.',
@@ -106,6 +123,7 @@ class PageController extends Controller
 
         $validated['slug'] = Str::slug($validated['slug']);
         $validated['view_path'] = $this->normalizeViewPath($validated['view_path'], $validated['slug']);
+        $validated['content_mode'] = $validated['content_mode'] ?? 'blade';
         $validated['is_active'] = $request->boolean('is_active');
         $this->ensureBladeViewPathIsAvailable($validated['view_path'], $page);
 
@@ -209,7 +227,9 @@ class PageController extends Controller
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    @include('seo::meta')
+    @if(\App\Support\ModuleRegistry::enabled('seo') && \Illuminate\Support\Facades\View::exists('seo::meta'))
+        @include('seo::meta')
+    @endif
     <title>{{ $page->title }}</title>
     <style>
         body {
@@ -235,6 +255,29 @@ class PageController extends Controller
         <h1>{{ $page->title }}</h1>
         <p>Start editing this Blade file:</p>
         <p><code>{{ $page->view_path }}</code></p>
+    </main>
+</body>
+</html>
+BLADE;
+    }
+
+    protected function defaultHtmlContent(Page $page): string
+    {
+        return <<<'BLADE'
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    @if(\App\Support\ModuleRegistry::enabled('seo') && \Illuminate\Support\Facades\View::exists('seo::meta'))
+        @include('seo::meta')
+    @endif
+    <title>{{ $page->title }}</title>
+</head>
+<body style="margin:0;background:#f8fafc;color:#111827;font-family:Arial,sans-serif;">
+    <main style="max-width:1080px;margin:0 auto;padding:48px 16px;">
+        <h1>{{ $page->title }}</h1>
+        <p>Start customizing this page design.</p>
     </main>
 </body>
 </html>

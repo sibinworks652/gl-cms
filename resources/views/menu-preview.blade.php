@@ -122,7 +122,7 @@
     </style>
 </head>
 <body>
-    @php($headerMenu = $dynamicMenus->get('header'))
+    @php($headerMenu = ($dynamicMenus ?? collect())->get('header'))
     @php($settings = \Modules\Settings\Models\Setting::pairs())
     @php($siteName = $settings['site_name'] ?? 'CMS Demo')
     @php($footerCopyright = $settings['footer_copyright'] ?? ('© ' . now()->year . ' ' . $siteName . '. All rights reserved.'))
@@ -132,10 +132,10 @@
             <div class="brand">{{ $siteName }}</div>
 
             <nav aria-label="Header menu">
-                @if($headerMenu && $headerMenu->rootItems->isNotEmpty())
+                @if(\App\Support\ModuleRegistry::enabled('menu') && $headerMenu && $headerMenu->rootItems->isNotEmpty() && \Illuminate\Support\Facades\View::exists('menu::partials.render'))
                     @include('menu::partials.render', ['items' => $headerMenu->rootItems, 'class' => 'menu-list'])
                 @else
-                    <div class="empty">No active header menu found.</div>
+                    <div class="empty">Menu module is disabled or no active header menu was found.</div>
                 @endif
             </nav>
         </div>

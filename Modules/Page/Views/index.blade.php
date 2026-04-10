@@ -38,7 +38,7 @@
                                     <td>/{{ $page->slug }}</td>
                                     <td><code>{{ $page->view_path }}</code></td>
                                     <td>
-                                        <span class="badge {{ $page->is_active ? 'bg-success-subtle text-success' : 'bg-secondary-subtle text-secondary' }}">
+                                        <span class="badge {{ $page->is_active ? 'bg-success-subtle text-success' : 'bg-danger-subtle text-danger' }}">
                                             {{ $page->is_active ? 'Active' : 'Inactive' }}
                                         </span>
                                     </td>
