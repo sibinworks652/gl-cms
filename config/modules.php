@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'activity_logs' => env('CMS_MODULE_ACTIVITY_LOGS_ENABLED', false),
+    'activity_logs' => env('CMS_MODULE_ACTIVITY_LOGS_ENABLED', true),
     'backup' => env('CMS_MODULE_BACKUP_ENABLED', true),
     'banner' => env('CMS_MODULE_BANNER_ENABLED', true),
     'careers' => env('CMS_MODULE_CAREERS_ENABLED', true),
