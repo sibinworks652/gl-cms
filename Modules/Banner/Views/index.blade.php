@@ -54,7 +54,7 @@
                                                             <a href="{{ route('admin.banners.edit', $slide) }}" class="btn btn-soft-warning btn-sm"><iconify-icon icon="solar:pen-new-square-line-duotone" width="20" height="20" /></a>
                                                         @endif
                                                         @if($adminUser?->can('banners.delete'))
-                                                            <form method="POST" action="{{ route('admin.banners.destroy', $slide) }}" onsubmit="return confirm('Delete this banner slide?');">
+                                                            <form method="POST" action="{{ route('admin.banners.destroy', $slide) }}" data-confirm="Delete this banner slide?">
                                                                 @csrf
                                                                 @method('DELETE')
                                                                 <button type="submit" class="btn btn-soft-danger btn-sm"><iconify-icon icon="solar:trash-bin-trash-outline" width="16" height="16" /></button>

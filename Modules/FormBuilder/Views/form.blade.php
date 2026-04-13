@@ -20,17 +20,17 @@
                         <div class="card-body">
                             <div class="mb-3">
                                 <label class="form-label">Form Name</label>
-                                <input type="text" name="name" id="form-name" class="form-control @error('name') is-invalid @enderror" value="{{ old('name', $form->name) }}">
+                                <input type="text" name="name" id="form-name" class="form-control @error('name') error-input-bottom @enderror" value="{{ old('name', $form->name) }}">
                                 @error('name')<div class="invalid-feedback">{{ $message }}</div>@enderror
                             </div>
                             <div class="mb-3">
                                 <label class="form-label">Slug</label>
-                                <input type="text" name="slug" id="form-slug" class="form-control @error('slug') is-invalid @enderror" value="{{ old('slug', $form->slug) }}">
+                                <input type="text" name="slug" id="form-slug" class="form-control @error('slug') error-input-bottom @enderror" value="{{ old('slug', $form->slug) }}">
                                 @error('slug')<div class="invalid-feedback">{{ $message }}</div>@enderror
                             </div>
                             <div class="mb-3">
                                 <label class="form-label">Description</label>
-                                <textarea name="description" rows="4" class="form-control @error('description') is-invalid @enderror">{{ old('description', $form->description) }}</textarea>
+                                <textarea name="description" rows="4" class="form-control @error('description') error-input-bottom @enderror">{{ old('description', $form->description) }}</textarea>
                                 @error('description')<div class="invalid-feedback">{{ $message }}</div>@enderror
                             </div>
                             <div class="form-check form-switch mb-0">

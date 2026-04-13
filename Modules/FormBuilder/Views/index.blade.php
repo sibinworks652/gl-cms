@@ -48,7 +48,7 @@
                                                         <a href="{{ route('admin.forms.edit', $form) }}" class="btn btn-soft-warning btn-sm"><iconify-icon icon="solar:pen-new-square-line-duotone" width="16" height="16" /></a>
                                                     @endif
                                                     @if($adminUser?->can('forms.delete'))
-                                                        <form method="POST" action="{{ route('admin.forms.destroy', $form) }}" onsubmit="return confirm('Delete this form?');">
+                                                        <form method="POST" action="{{ route('admin.forms.destroy', $form) }}" data-confirm="Delete this form?">
                                                             @csrf
                                                             @method('DELETE')
                                                             <button type="submit" class="btn btn-soft-danger btn-sm"><iconify-icon icon="solar:trash-bin-trash-outline" width="16" height="16" /></button>

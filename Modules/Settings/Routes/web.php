@@ -23,5 +23,7 @@ Route::prefix('admin')->middleware('auth:admin')->name('admin.')->group(function
     Route::put('settings/{section}', [SettingsController::class, 'updateSection'])
         ->middleware('permission:settings.update,admin')
         ->name('settings.section.update');
+    Route::post('settings/dark-mode', [SettingsController::class, 'darkMode'])
+        ->name('dark-mode');
 
 });

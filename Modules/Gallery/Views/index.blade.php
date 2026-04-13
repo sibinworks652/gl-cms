@@ -35,7 +35,7 @@
                                                         <a href="{{ route('admin.gallery.edit', $album) }}" class="btn btn-soft-primary btn-sm"><iconify-icon icon="solar:pen-new-square-line-duotone" width="20" height="20" /></a>
                                                     @endif
                                                     @if($adminUser?->can('gallery.delete'))
-                                                        <form method="POST" action="{{ route('admin.gallery.destroy', $album) }}" onsubmit="return confirm('Delete this album and all images?');">
+                                                        <form method="POST" action="{{ route('admin.gallery.destroy', $album) }}" data-confirm="Delete this album and all images?">
                                                             @csrf
                                                             @method('DELETE')
                                                             <button type="submit" class="btn btn-soft-danger btn-sm"><iconify-icon icon="solar:trash-bin-trash-outline" width="16" height="16" /></button>

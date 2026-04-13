@@ -29,7 +29,7 @@
                                 <div class="border rounded email-editor-shell @error('email_header') border-danger @enderror">
                                     <div id="email-header-editor" class="email-rich-editor" data-placeholder="Write the global email header..."></div>
                                 </div>
-                                <textarea name="email_header" id="email-header-input" hidden class="d-none @error('email_header') is-invalid @enderror">{{ old('email_header', $settings['email_header'] ?? '') }}</textarea>
+                                <textarea name="email_header" id="email-header-input" hidden class="d-none @error('email_header') error-input-bottom @enderror">{{ old('email_header', $settings['email_header'] ?? '') }}</textarea>
                                 @error('email_header')<div class="invalid-feedback d-block">{{ $message }}</div>@enderror
                             </div>
                             <div class="mb-3">
@@ -37,7 +37,7 @@
                                 <div class="border rounded email-editor-shell @error('email_footer') border-danger @enderror">
                                     <div id="email-footer-editor" class="email-rich-editor" data-placeholder="Write the global email footer..."></div>
                                 </div>
-                                <textarea name="email_footer" id="email-footer-input" hidden class="d-none @error('email_footer') is-invalid @enderror">{{ old('email_footer', $settings['email_footer'] ?? '') }}</textarea>
+                                <textarea name="email_footer" id="email-footer-input" hidden class="d-none @error('email_footer') error-input-bottom @enderror">{{ old('email_footer', $settings['email_footer'] ?? '') }}</textarea>
                                 @error('email_footer')<div class="invalid-feedback d-block">{{ $message }}</div>@enderror
                             </div>
                             <div>
@@ -45,7 +45,7 @@
                                 <div class="border rounded email-editor-shell @error('email_signature') border-danger @enderror">
                                     <div id="email-signature-editor" class="email-rich-editor" data-placeholder="Write the global email signature..."></div>
                                 </div>
-                                <textarea name="email_signature" id="email-signature-input" hidden class="d-none @error('email_signature') is-invalid @enderror">{{ old('email_signature', $settings['email_signature'] ?? '') }}</textarea>
+                                <textarea name="email_signature" id="email-signature-input" hidden class="d-none @error('email_signature') error-input-bottom @enderror">{{ old('email_signature', $settings['email_signature'] ?? '') }}</textarea>
                                 @error('email_signature')<div class="invalid-feedback d-block">{{ $message }}</div>@enderror
                             </div>
                         </div>
@@ -61,7 +61,7 @@
                         <div class="card-body">
                             <div class="mb-3">
                                 <label class="form-label">Email Logo</label>
-                                <input type="file" name="email_logo" class="form-control @error('email_logo') is-invalid @enderror" accept="image/*">
+                                <input type="file" name="email_logo" class="form-control @error('email_logo') error-input-bottom @enderror" accept="image/*">
                                 @error('email_logo')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                 @if(!empty($settings['email_logo']))
                                     <div class="mt-3">
@@ -73,14 +73,14 @@
                             <div class="mb-3 text-center">
                                     <label class="form-label">Theme Color</label>
                                     <div class="d-flex justify-content-center">
-                                <input type="color" name="email_theme_color" class="form-control text-center form-control-color @error('email_theme_color') is-invalid @enderror" value="{{ old('email_theme_color', $settings['email_theme_color'] ?? 'var(--bs-primary)') }}">
+                                <input type="color" name="email_theme_color" class="form-control text-center form-control-color @error('email_theme_color') error-input-bottom @enderror" value="{{ old('email_theme_color', $settings['email_theme_color'] ?? 'var(--bs-primary)') }}">
                                 </div>
                                 @error('email_theme_color')<div class="invalid-feedback">{{ $message }}</div>@enderror
                             </div>
                             <div class="mb-3 text-center">
                                 <label class="form-label">Text Color</label>
                                 <div class="d-flex justify-content-center">
-                                <input type="color" name="email_text_color" class="form-control text-center form-control-color @error('email_text_color') is-invalid @enderror" value="{{ old('email_text_color', $settings['email_text_color'] ?? '#111827') }}">
+                                <input type="color" name="email_text_color" class="form-control text-center form-control-color @error('email_text_color') error-input-bottom @enderror" value="{{ old('email_text_color', $settings['email_text_color'] ?? '#111827') }}">
                                 </div>
                                 @error('email_text_color')<div class="invalid-feedback">{{ $message }}</div>@enderror
                             </div>

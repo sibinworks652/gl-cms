@@ -30,6 +30,8 @@ return Application::configure(basePath: dirname(__DIR__))
             'role' => RoleMiddleware::class,
             'permission' => PermissionMiddleware::class,
             'role_or_permission' => RoleOrPermissionMiddleware::class,
+            'lock' => \App\Http\Middleware\CheckIfLocked::class,
+            'vendor.approved' => \App\Http\Middleware\VendorApproved::class,
         ]);
 
         $middleware->web(append: [

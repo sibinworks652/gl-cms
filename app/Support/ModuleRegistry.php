@@ -14,6 +14,7 @@ class ModuleRegistry
             'backup' => ['name' => 'Backup', 'namespace' => 'Backup'],
             'banner' => ['name' => 'Banner', 'namespace' => 'Banner'],
             'careers' => ['name' => 'Careers', 'namespace' => 'Careers'],
+            'ecommerce' => ['name' => 'Ecommerce', 'namespace' => 'Ecommerce'],
             'email' => ['name' => 'Email', 'namespace' => 'Email'],
             'faq' => ['name' => 'FAQ', 'namespace' => 'Faq'],
             'form_builder' => ['name' => 'Form Builder', 'namespace' => 'FormBuilder'],

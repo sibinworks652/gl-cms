@@ -62,28 +62,28 @@ p {
                         <div class="card-body">
                             <div class="mb-3">
                                 <label class="form-label">Template Name</label>
-                                <input type="text" name="name" id="email-template-name" class="form-control @error('name') is-invalid @enderror" value="{{ old('name', $template->name) }}" required>
+                                <input type="text" name="name" id="email-template-name" class="form-control @error('name') error-input-bottom @enderror" value="{{ old('name', $template->name) }}" required>
                                 @error('name')<div class="invalid-feedback">{{ $message }}</div>@enderror
                             </div>
                             <div class="mb-3">
                                 <label class="form-label">Slug</label>
-                                <input type="text" name="slug" id="email-template-slug" class="form-control @error('slug') is-invalid @enderror" value="{{ old('slug', $template->slug) }}" placeholder="invoice">
+                                <input type="text" name="slug" id="email-template-slug" class="form-control @error('slug') error-input-bottom @enderror" value="{{ old('slug', $template->slug) }}" placeholder="invoice">
                                 @error('slug')<div class="invalid-feedback">{{ $message }}</div>@enderror
                             </div>
                             <div class="mb-3">
                                 <label class="form-label">Subject</label>
-                                <input type="text" name="subject" class="form-control @error('subject') is-invalid @enderror" value="{{ old('subject', $template->subject) }}" required>
+                                <input type="text" name="subject" class="form-control @error('subject') error-input-bottom @enderror" value="{{ old('subject', $template->subject) }}" required>
                                 @error('subject')<div class="invalid-feedback">{{ $message }}</div>@enderror
                             </div>
                             <div class="mb-3">
                                 <label class="form-label">To Email Addresses</label>
-                                <textarea name="to_emails" rows="3" class="form-control @error('to_emails') is-invalid @enderror" placeholder="hr@example.com, manager@example.com">{{ old('to_emails', implode(', ', $template->to_emails ?? [])) }}</textarea>
+                                <textarea name="to_emails" rows="3" class="form-control @error('to_emails') error-input-bottom @enderror" placeholder="hr@example.com, manager@example.com">{{ old('to_emails', implode(', ', $template->to_emails ?? [])) }}</textarea>
                                 <div class="form-text">Optional default recipients for this template. Separate multiple emails with commas, semicolons, or new lines.</div>
                                 @error('to_emails')<div class="invalid-feedback">{{ $message }}</div>@enderror
                             </div>
                             <div class="mb-3">
                                 <label class="form-label">CC Email Addresses</label>
-                                <textarea name="cc_emails" rows="2" class="form-control @error('cc_emails') is-invalid @enderror" placeholder="owner@example.com, audit@example.com">{{ old('cc_emails', implode(', ', $template->cc_emails ?? [])) }}</textarea>
+                                <textarea name="cc_emails" rows="2" class="form-control @error('cc_emails') error-input-bottom @enderror" placeholder="owner@example.com, audit@example.com">{{ old('cc_emails', implode(', ', $template->cc_emails ?? [])) }}</textarea>
                                 <div class="form-text">Optional CC recipients that should always receive this template.</div>
                                 @error('cc_emails')<div class="invalid-feedback">{{ $message }}</div>@enderror
                             </div>

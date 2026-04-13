@@ -27,7 +27,7 @@
 
                         <div class="mb-3">
                             <label class="form-label">Template</label>
-                            <select name="template_id" id="email-test-template" class="form-select @error('template_id') is-invalid @enderror">
+                            <select name="template_id" id="email-test-template" class="form-select @error('template_id') error-input-bottom @enderror">
                                 <option value="">Select template</option>
                                 @foreach($templates as $template)
                                     <option
@@ -42,13 +42,13 @@
                         </div>
                         <div class="mb-3">
                             <label class="form-label">To Email Addresses</label>
-                            <textarea name="email" rows="3" class="form-control @error('email') is-invalid @enderror" placeholder="admin@example.com, team@example.com">{{ old('email', $settings['mail_from_address'] ?? $settings['site_email'] ?? '') }}</textarea>
+                            <textarea name="email" rows="3" class="form-control @error('email') error-input-bottom @enderror" placeholder="admin@example.com, team@example.com">{{ old('email', $settings['mail_from_address'] ?? $settings['site_email'] ?? '') }}</textarea>
                             <div class="form-text">Optional if the selected template already has default To recipients.</div>
                             @error('email')<div class="invalid-feedback">{{ $message }}</div>@enderror
                         </div>
                         <div class="mb-3">
                             <label class="form-label">CC Email Addresses</label>
-                            <textarea name="cc_email" rows="2" class="form-control @error('cc_email') is-invalid @enderror" placeholder="owner@example.com, audit@example.com">{{ old('cc_email') }}</textarea>
+                            <textarea name="cc_email" rows="2" class="form-control @error('cc_email') error-input-bottom @enderror" placeholder="owner@example.com, audit@example.com">{{ old('cc_email') }}</textarea>
                             <div class="form-text">Optional extra CC recipients for this test send.</div>
                             @error('cc_email')<div class="invalid-feedback">{{ $message }}</div>@enderror
                         </div>

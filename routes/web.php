@@ -21,7 +21,14 @@ Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('login.submit');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
+
 Route::prefix('admin')->middleware('auth:admin')->name('admin.')->group(function () {
+
+    Route::get('/lock', [AuthController::class, 'lock'])->name('lock');
+
+    Route::get('/unlock', [AuthController::class, 'showUnlock'])->name('unlock');
+    Route::post('/unlock', [AuthController::class, 'unlock']);
+
     Route::get('/dashboard', [DashboardController::class, 'index'])
         ->middleware('permission:dashboard.view,admin')
         ->name('dashboard');

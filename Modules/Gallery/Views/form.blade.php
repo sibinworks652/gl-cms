@@ -3,7 +3,7 @@
 @section('content')
     <div class="container-xxl">
         <div class="row justify-content-center">
-            <div class="col-lg-10">
+            <div class="col-lg-12">
                 <div class="card">
                     <div class="card-header">
                         <h4 class="card-title mb-1">{{ $isEdit ? 'Edit Album' : 'Create Album' }}</h4>
@@ -19,7 +19,7 @@
                             <div class="row">
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label">Album Title</label>
-                                    <input type="text" name="title" class="form-control @error('title') is-invalid @enderror" value="{{ old('title', $album->title) }}">
+                                    <input type="text" name="title" class="form-control @error('title') error-input-bottom @enderror" value="{{ old('title', $album->title) }}">
                                     @error('title')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
@@ -36,7 +36,7 @@
 
                             <div class="mb-3">
                                 <label class="form-label">Description</label>
-                                <textarea name="description" rows="4" class="form-control @error('description') is-invalid @enderror">{{ old('description', $album->description) }}</textarea>
+                                <textarea name="description" rows="4" class="form-control @error('description') error-input-bottom @enderror">{{ old('description', $album->description) }}</textarea>
                                 @error('description')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -44,7 +44,7 @@
 
                             <div class="mb-4">
                                 <label class="form-label">{{ $isEdit ? 'Add More Images' : 'Images' }}</label>
-                                <input type="file" name="images[]" class="form-control @error('images') is-invalid @enderror @error('images.*') is-invalid @enderror" multiple accept="image/*">
+                                <input type="file" name="images[]" class="form-control @error('images') error-input-bottom @enderror @error('images.*') error-input-bottom @enderror" multiple accept="image/*">
                                 <small class="text-muted">You can select multiple images at once.</small>
                                 @error('images')
                                     <div class="invalid-feedback d-block">{{ $message }}</div>

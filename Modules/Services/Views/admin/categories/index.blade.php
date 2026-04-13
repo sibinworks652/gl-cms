@@ -51,7 +51,7 @@
                                                 <a href="{{ route('admin.service-categories.edit', $category) }}" class="btn btn-soft-warning btn-sm"><iconify-icon icon="solar:pen-new-square-line-duotone" width="18" height="18"></iconify-icon></a>
                                             @endif
                                             @if($adminUser?->can('service-categories.delete'))
-                                                <form method="POST" action="{{ route('admin.service-categories.destroy', $category) }}" onsubmit="return confirm('Delete this category? Services will stay but become uncategorized.');">
+                                                <form method="POST" action="{{ route('admin.service-categories.destroy', $category) }}" data-confirm="Delete this category? Services will stay but become uncategorized.">
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="submit" class="btn btn-soft-danger btn-sm"><iconify-icon icon="solar:trash-bin-trash-outline" width="16" height="16"></iconify-icon></button>

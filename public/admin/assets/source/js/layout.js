@@ -256,7 +256,7 @@ class ThemeLayout {
 
      setSwitchFromConfig() {
 
-          sessionStorage.setItem('__LARKON_CONFIG__', JSON.stringify(this.config));
+          sessionStorage.setItem('__GL_INFOTECH_CONFIG__', JSON.stringify(this.config));
 
           document.querySelectorAll('.settings-bar input[type=radio]').forEach(function (checkbox) {
                checkbox.checked = false;

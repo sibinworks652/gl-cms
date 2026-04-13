@@ -31,6 +31,7 @@
                             </thead>
                             <tbody>
                                 @forelse ($admins as $admin)
+                                    @if(Auth::user()->hasRole('Super Admin') || !$admin->hasRole('Super Admin'))
                                     <tr>
                                         <td>{{ $admin->id }}</td>
                                         <td>{{ $admin->name }}</td>
@@ -55,8 +56,9 @@
                                                 @if($adminUser?->can('admins.update'))
                                                     <a href="{{ route('admin.admins.edit', $admin) }}" class="btn btn-soft-warning btn-sm"><iconify-icon icon="solar:pen-new-square-line-duotone" width="16" height="16" /></a>
                                                 @endif
-                                                @if($adminUser?->can('admins.delete'))
-                                                    <form action="{{ route('admin.admins.destroy', $admin) }}" method="POST" onsubmit="return confirm('Delete this admin?');">
+
+                                                @if($adminUser?->can('admins.delete') && $admin->role !== 'Super Admin')
+                                                    <form action="{{ route('admin.admins.destroy', $admin) }}" method="POST" data-confirm="Delete this admin?">
                                                         @csrf
                                                         @method('DELETE')
                                                         <button type="submit" class="btn btn-soft-danger btn-sm"><iconify-icon icon="solar:trash-bin-trash-outline" width="16" height="16" /></button>
@@ -65,6 +67,7 @@
                                             </div>
                                         </td>
                                     </tr>
+                                    @endif
                                 @empty
                                     <tr>
                                         <td colspan="6" class="text-center py-4 text-muted">No admins found.</td>

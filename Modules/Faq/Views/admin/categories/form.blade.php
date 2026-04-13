@@ -24,17 +24,17 @@
                     <div class="row g-3">
                         <div class="col-md-6">
                             <label class="form-label">Name</label>
-                            <input type="text" name="name" id="faq-category-name" class="form-control @error('name') is-invalid @enderror" value="{{ old('name', $category->name) }}" required>
+                            <input type="text" name="name" id="faq-category-name" class="form-control @error('name') error-input-bottom @enderror" value="{{ old('name', $category->name) }}" required>
                             @error('name')<div class="invalid-feedback">{{ $message }}</div>@enderror
                         </div>
                         <div class="col-md-6">
                             <label class="form-label">Slug</label>
-                            <input type="text" name="slug" id="faq-category-slug" class="form-control @error('slug') is-invalid @enderror" value="{{ old('slug', $category->slug) }}" placeholder="billing">
+                            <input type="text" name="slug" id="faq-category-slug" class="form-control @error('slug') error-input-bottom @enderror" value="{{ old('slug', $category->slug) }}" placeholder="billing">
                             @error('slug')<div class="invalid-feedback">{{ $message }}</div>@enderror
                         </div>
                         <div class="col-md-4">
                             <label class="form-label">Order</label>
-                            <input type="number" name="order" class="form-control @error('order') is-invalid @enderror" value="{{ old('order', $category->order) }}">
+                            <input type="number" name="order" class="form-control @error('order') error-input-bottom @enderror" value="{{ old('order', $category->order) }}">
                             @error('order')<div class="invalid-feedback">{{ $message }}</div>@enderror
                         </div>
                         <div class="col-md-4 d-flex align-items-end">

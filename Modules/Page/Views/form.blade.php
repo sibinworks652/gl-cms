@@ -29,23 +29,23 @@
                             <div class="row g-3">
                                 <div class="col-md-8">
                                     <label class="form-label">Title</label>
-                                    <input type="text" name="title" id="page-title" class="form-control @error('title') is-invalid @enderror" value="{{ old('title', $page->title) }}" required>
+                                    <input type="text" name="title" id="page-title" class="form-control @error('title') error-input-bottom @enderror" value="{{ old('title', $page->title) }}" required>
                                     @error('title')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                 </div>
                                 <div class="col-md-4">
                                     <label class="form-label">Slug</label>
-                                    <input type="text" name="slug" id="page-slug" class="form-control @error('slug') is-invalid @enderror" value="{{ old('slug', $page->slug) }}" placeholder="about-us" required>
+                                    <input type="text" name="slug" id="page-slug" class="form-control @error('slug') error-input-bottom @enderror" value="{{ old('slug', $page->slug) }}" placeholder="about-us" required>
                                     @error('slug')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                 </div>
                                 <div class="col-12">
                                     <label class="form-label">Blade View Path</label>
-                                    <input type="text" name="view_path" id="page-view-path" class="form-control @error('view_path') is-invalid @enderror" value="{{ old('view_path', $page->view_path ?: ($page->slug ? 'pages.' . $page->slug : 'pages.home')) }}" placeholder="pages.about-us" required>
+                                    <input type="text" name="view_path" id="page-view-path" class="form-control @error('view_path') error-input-bottom @enderror" value="{{ old('view_path', $page->view_path ?: ($page->slug ? 'pages.' . $page->slug : 'pages.home')) }}" placeholder="pages.about-us" required>
                                     <div class="form-text">Use dot notation or folders. Example: <code>pages.about-us</code> or <code>pages/company/about</code>. The Blade file will be created automatically if it does not exist.</div>
                                     @error('view_path')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                 </div>
                                 <div class="col-12">
                                     <label class="form-label">Page Mode</label>
-                                    <select name="content_mode" id="page-content-mode" class="form-select @error('content_mode') is-invalid @enderror">
+                                    <select name="content_mode" id="page-content-mode" class="form-select @error('content_mode') error-input-bottom @enderror">
                                         @foreach(\Modules\Page\Models\Page::contentModes() as $value => $label)
                                             <option value="{{ $value }}" @selected(old('content_mode', $page->content_mode ?? 'blade') === $value)>{{ $label }}</option>
                                         @endforeach
@@ -55,7 +55,7 @@
                                 </div>
                                 <div class="col-12">
                                     <label class="form-label">Description</label>
-                                    <textarea name="description" rows="4" class="form-control @error('description') is-invalid @enderror" placeholder="Internal note about this page">{{ old('description', $page->description) }}</textarea>
+                                    <textarea name="description" rows="4" class="form-control @error('description') error-input-bottom @enderror" placeholder="Internal note about this page">{{ old('description', $page->description) }}</textarea>
                                     @error('description')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                 </div>
                                 <div class="col-12 d-none" id="page-content-editor-wrap">
@@ -63,13 +63,13 @@
                                     <div class="border rounded">
                                         <div id="page-content-editor" style="height: 320px;"></div>
                                     </div>
-                                    <textarea name="content" id="page-content-input" hidden class="d-none @error('content') is-invalid @enderror">{{ old('content', $page->content) }}</textarea>
+                                    <textarea name="content" id="page-content-input" hidden class="d-none @error('content') error-input-bottom @enderror">{{ old('content', $page->content) }}</textarea>
                                     <div class="form-text">Use the rich editor for standard page sections and formatted content.</div>
                                     @error('content')<div class="invalid-feedback d-block">{{ $message }}</div>@enderror
                                 </div>
                                 <div class="col-12 d-none" id="page-html-editor-wrap">
                                     <label class="form-label">HTML / Blade Design</label>
-                                    <textarea id="page-html-editor" class="form-control @error('content') is-invalid @enderror" rows="14" spellcheck="false">{{ old('content', $page->content) }}</textarea>
+                                    <textarea id="page-html-editor" class="form-control @error('content') error-input-bottom @enderror" rows="14" spellcheck="false">{{ old('content', $page->content) }}</textarea>
                                     <div class="form-text">Write full HTML or Blade markup here. The page will render this design directly.</div>
                                 </div>
                                 <div class="col-12">

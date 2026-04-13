@@ -7,7 +7,7 @@
 
 (function () {
 
-     var savedConfig = localStorage.getItem("__LARKON_CONFIG__") || sessionStorage.getItem("__LARKON_CONFIG__");
+     var savedConfig = localStorage.getItem("__GL_INFOTECH_CONFIG__") || sessionStorage.getItem("__GL_INFOTECH_CONFIG__");
 
      var html = document.getElementsByTagName("html")[0];
      var adminPreferredTheme = ['dark', 'light'].includes(window.adminPreferredTheme)

@@ -24,17 +24,17 @@
                     <div class="row g-3">
                         <div class="col-md-6">
                             <label class="form-label">Name</label>
-                            <input type="text" name="name" id="career-category-name" value="{{ old('name', $category->name) }}" class="form-control @error('name') is-invalid @enderror" required>
+                            <input type="text" name="name" id="career-category-name" value="{{ old('name', $category->name) }}" class="form-control @error('name') error-input-bottom @enderror" required>
                             @error('name')<div class="invalid-feedback">{{ $message }}</div>@enderror
                         </div>
                         <div class="col-md-6">
                             <label class="form-label">Slug</label>
-                            <input type="text" name="slug" id="career-category-slug" value="{{ old('slug', $category->slug) }}" class="form-control @error('slug') is-invalid @enderror" placeholder="development">
+                            <input type="text" name="slug" id="career-category-slug" value="{{ old('slug', $category->slug) }}" class="form-control @error('slug') error-input-bottom @enderror" placeholder="development">
                             @error('slug')<div class="invalid-feedback">{{ $message }}</div>@enderror
                         </div>
                         <div class="col-12">
                             <label class="form-label">Description</label>
-                            <textarea name="description" rows="4" class="form-control @error('description') is-invalid @enderror">{{ old('description', $category->description) }}</textarea>
+                            <textarea name="description" rows="4" class="form-control @error('description') error-input-bottom @enderror">{{ old('description', $category->description) }}</textarea>
                             @error('description')<div class="invalid-feedback">{{ $message }}</div>@enderror
                         </div>
                         <div class="col-12">

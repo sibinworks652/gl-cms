@@ -18,7 +18,7 @@
 
                             <div class="mb-3">
                                 <label class="form-label">Role Name</label>
-                                <input type="text" name="name" class="form-control @error('name') is-invalid @enderror" value="{{ old('name', $role->name) }}">
+                                <input type="text" name="name" class="form-control @error('name') error-input-bottom @enderror" value="{{ old('name', $role->name) }}">
                                 @error('name')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror

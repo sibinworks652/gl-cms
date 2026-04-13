@@ -5,6 +5,7 @@ use Modules\Backup\BackupServiceProvider;
 use Modules\ActivityLogs\ActivityLogsServiceProvider;
 use Modules\Banner\BannerServiceProvider;
 use Modules\Careers\CareersServiceProvider;
+use Modules\Ecommerce\EcommerceServiceProvider;
 use Modules\Faq\FaqServiceProvider;
 use Modules\FormBuilder\FormBuilderServiceProvider;
 use Modules\Gallery\GalleryServiceProvider;
@@ -27,6 +28,7 @@ $providers = [
     BackupServiceProvider::class,
     BannerServiceProvider::class,
     CareersServiceProvider::class,
+    EcommerceServiceProvider::class,
     FaqServiceProvider::class,
     FormBuilderServiceProvider::class,
     GalleryServiceProvider::class,
@@ -45,6 +47,7 @@ $providerModules = [
     BackupServiceProvider::class => 'backup',
     BannerServiceProvider::class => 'banner',
     CareersServiceProvider::class => 'careers',
+    EcommerceServiceProvider::class => 'ecommerce',
     FaqServiceProvider::class => 'faq',
     FormBuilderServiceProvider::class => 'form_builder',
     GalleryServiceProvider::class => 'gallery',

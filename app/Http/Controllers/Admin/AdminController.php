@@ -143,6 +143,9 @@ class AdminController extends Controller
 
     public function destroy(Request $request, Admin $admin)
     {
+        if ($admin->hasRole('Super Admin')) {
+            return back()->with('error', 'The Super Admin cannot be deleted.');
+        }
         $admin->delete();
 
         if ($request->expectsJson()) {

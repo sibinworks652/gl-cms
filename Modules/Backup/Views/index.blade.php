@@ -58,7 +58,7 @@
                     </div>
                     @if($adminUser?->can('backups.create'))
                         @if($googleAccount)
-                            <form action="{{ route('admin.backups.google.disconnect') }}" method="POST" onsubmit="return confirm('Disconnect Google Drive?');">
+                            <form action="{{ route('admin.backups.google.disconnect') }}" method="POST" data-confirm="Disconnect Google Drive?" data-confirm-button="Yes, disconnect">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="btn btn-outline-danger btn-sm">Disconnect</button>
@@ -100,7 +100,7 @@
                                                 <a href="{{ route('admin.backups.download', $backup['filename']) }}" class="btn btn-soft-success btn-sm w-100"><iconify-icon icon="solar:download-minimalistic-broken" width="20" height="20" /></a>
                                             @endif
                                             @if($adminUser?->can('backups.delete'))
-                                                <form action="{{ route('admin.backups.destroy', $backup['filename']) }}" method="POST" onsubmit="return confirm('Delete this backup?');">
+                                                <form action="{{ route('admin.backups.destroy', $backup['filename']) }}" method="POST" data-confirm="Delete this backup?">
                                                     @csrf
                                                     @method('DELETE')
                                                     <input type="hidden" name="delete_google" value="1">

@@ -59,7 +59,7 @@
                                                 <a href="{{ route('admin.email.templates.edit', $template) }}" class="btn btn-soft-warning btn-sm"><iconify-icon icon="solar:pen-new-square-linear" width="20" height="20" /></a>
                                             @endif
                                             @if($adminUser?->can('email.templates.delete'))
-                                                <form method="POST" action="{{ route('admin.email.templates.destroy', $template) }}" onsubmit="return confirm('Delete this template?');">
+                                                <form method="POST" action="{{ route('admin.email.templates.destroy', $template) }}" data-confirm="Delete this template?">
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="submit" class="btn btn-soft-danger btn-sm"><iconify-icon icon="solar:trash-bin-trash-broken" width="20" height="20" /></button>

@@ -18,24 +18,24 @@
                             <div class="row">
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label">Title</label>
-                                    <input type="text" name="title" class="form-control @error('title') is-invalid @enderror" value="{{ old('title', $slide->title) }}">
+                                    <input type="text" name="title" class="form-control @error('title') error-input-bottom @enderror" value="{{ old('title', $slide->title) }}">
                                     @error('title')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label">Subtitle</label>
-                                    <input type="text" name="subtitle" class="form-control @error('subtitle') is-invalid @enderror" value="{{ old('subtitle', $slide->subtitle) }}">
+                                    <input type="text" name="subtitle" class="form-control @error('subtitle') error-input-bottom @enderror" value="{{ old('subtitle', $slide->subtitle) }}">
                                     @error('subtitle')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                 </div>
                             </div>
                             <div class="mb-3">
                                 <label class="form-label">Description</label>
-                                <textarea name="description" rows="4" class="form-control @error('description') is-invalid @enderror">{{ old('description', $slide->description) }}</textarea>
+                                <textarea name="description" rows="4" class="form-control @error('description') error-input-bottom @enderror">{{ old('description', $slide->description) }}</textarea>
                                 @error('description')<div class="invalid-feedback">{{ $message }}</div>@enderror
                             </div>
                             <div class="row">
                                 <div class="col-md-4 mb-3">
                                     <label class="form-label">Media Type</label>
-                                    <select name="media_type" id="banner-media-type" class="form-select @error('media_type') is-invalid @enderror">
+                                    <select name="media_type" id="banner-media-type" class="form-select @error('media_type') error-input-bottom @enderror">
                                         @foreach ($mediaTypes as $value => $label)
                                             <option value="{{ $value }}" @selected(old('media_type', $slide->media_type) === $value)>{{ $label }}</option>
                                         @endforeach
@@ -44,7 +44,7 @@
                                 </div>
                                 <div class="col-md-8 mb-3" id="banner-image-field">
                                     <label class="form-label">{{ $isEdit ? 'Replace Image' : 'Banner Image' }}</label>
-                                    <input type="file" name="image" class="form-control @error('image') is-invalid @enderror" accept="image/*">
+                                    <input type="file" name="image" class="form-control @error('image') error-input-bottom @enderror" accept="image/*">
                                     @error('image')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                     @if ($slide->image_path)
                                         <div class="mt-2"><img src="{{ asset('storage/' . $slide->image_path) }}" alt="{{ $slide->title }}" class="img-fluid rounded" style="max-height: 160px;"></div>
@@ -52,19 +52,19 @@
                                 </div>
                                 <div class="col-md-8 mb-3" id="banner-video-field">
                                     <label class="form-label">Video URL</label>
-                                    <input type="url" name="video_url" class="form-control @error('video_url') is-invalid @enderror" value="{{ old('video_url', $slide->video_url) }}" placeholder="https://www.youtube.com/watch?v=...">
+                                    <input type="url" name="video_url" class="form-control @error('video_url') error-input-bottom @enderror" value="{{ old('video_url', $slide->video_url) }}" placeholder="https://www.youtube.com/watch?v=...">
                                     @error('video_url')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-4 mb-3">
                                     <label class="form-label">Button Label</label>
-                                    <input type="text" name="button_label" class="form-control @error('button_label') is-invalid @enderror" value="{{ old('button_label', $slide->button_label) }}">
+                                    <input type="text" name="button_label" class="form-control @error('button_label') error-input-bottom @enderror" value="{{ old('button_label', $slide->button_label) }}">
                                     @error('button_label')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                 </div>
                                 <div class="col-md-3 mb-3">
                                     <label class="form-label">Link Type</label>
-                                    <select name="button_link_type" id="banner-link-type" class="form-select @error('button_link_type') is-invalid @enderror">
+                                    <select name="button_link_type" id="banner-link-type" class="form-select @error('button_link_type') error-input-bottom @enderror">
                                         @foreach ($linkTypes as $value => $label)
                                             <option value="{{ $value }}" @selected(old('button_link_type', $slide->button_link_type) === $value)>{{ $label }}</option>
                                         @endforeach
@@ -73,7 +73,7 @@
                                 </div>
                                 <div class="col-md-5 mb-3">
                                     <label class="form-label" id="banner-link-label">Button Link</label>
-                                    <input type="text" name="button_link" id="banner-link-input" class="form-control @error('button_link') is-invalid @enderror" value="{{ old('button_link', $slide->button_link) }}" list="banner-page-suggestions">
+                                    <input type="text" name="button_link" id="banner-link-input" class="form-control @error('button_link') error-input-bottom @enderror" value="{{ old('button_link', $slide->button_link) }}" list="banner-page-suggestions">
                                     <datalist id="banner-page-suggestions">
                                         @foreach ($pageSuggestions as $suggestion)
                                             <option value="{{ $suggestion }}"></option>
@@ -85,13 +85,13 @@
                             <div class="row">
                                 <div class="col-md-4 mb-3">
                                     <label class="form-label">Start Date</label>
-                                    <input type="datetime-local" name="starts_at" class="form-control @error('starts_at') is-invalid @enderror" value="{{ old('starts_at', $slide->starts_at?->format('Y-m-d\TH:i')) }}">
+                                    <input type="datetime-local" name="starts_at" class="form-control @error('starts_at') error-input-bottom @enderror" value="{{ old('starts_at', $slide->starts_at?->format('Y-m-d\TH:i')) }}">
                                     <small class="text-muted d-block mt-1">The banner starts showing from this date and time. Leave blank to show it immediately.</small>
                                     @error('starts_at')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                 </div>
                                 <div class="col-md-4 mb-3">
                                     <label class="form-label">End Date</label>
-                                    <input type="datetime-local" name="ends_at" class="form-control @error('ends_at') is-invalid @enderror" value="{{ old('ends_at', $slide->ends_at?->format('Y-m-d\TH:i')) }}">
+                                    <input type="datetime-local" name="ends_at" class="form-control @error('ends_at') error-input-bottom @enderror" value="{{ old('ends_at', $slide->ends_at?->format('Y-m-d\TH:i')) }}">
                                     <small class="text-muted d-block mt-1">The banner stops showing after this date and time. Leave blank to keep it visible with no expiry.</small>
                                     @error('ends_at')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                 </div>

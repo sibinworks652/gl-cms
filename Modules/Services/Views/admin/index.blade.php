@@ -81,7 +81,7 @@
                                                     <a href="{{ route('admin.services.edit', $service) }}" class="btn btn-soft-warning btn-sm"><iconify-icon icon="solar:pen-new-square-line-duotone" width="18" height="18"></iconify-icon></a>
                                                 @endif
                                                 @if($adminUser?->can('services.delete'))
-                                                    <form method="POST" action="{{ route('admin.services.destroy', $service) }}" onsubmit="return confirm('Delete this service?');">
+                                                    <form method="POST" action="{{ route('admin.services.destroy', $service) }}" data-confirm="Delete this service?">
                                                         @csrf
                                                         @method('DELETE')
                                                         <button type="submit" class="btn btn-soft-danger btn-sm"><iconify-icon icon="solar:trash-bin-trash-outline" width="16" height="16"></iconify-icon></button>

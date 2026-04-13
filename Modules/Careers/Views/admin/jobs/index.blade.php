@@ -109,7 +109,7 @@
                                                 <a href="{{ route('admin.jobs.edit', $job) }}" class="btn btn-soft-warning btn-sm"><iconify-icon icon="solar:pen-new-square-line-duotone" width="18" height="18"></iconify-icon></a>
                                             @endif
                                             @if($adminUser?->can('careers.jobs.delete'))
-                                                <form method="POST" action="{{ route('admin.jobs.destroy', $job) }}" onsubmit="return confirm('Delete this job and its applications?');">
+                                                <form method="POST" action="{{ route('admin.jobs.destroy', $job) }}" data-confirm="Delete this job and its applications?">
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="submit" class="btn btn-soft-danger btn-sm"><iconify-icon icon="solar:trash-bin-trash-line-duotone" width="18" height="18"></iconify-icon></button>

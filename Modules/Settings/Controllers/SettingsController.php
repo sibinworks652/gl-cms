@@ -164,7 +164,7 @@ class SettingsController extends Controller
 
             foreach ($sections as $group => $section) {
                 foreach ($section['fields'] as $key => $field) {
-                    if (in_array($key, ['site_logo', 'site_favicon', 'admin_logo'], true)) {
+                    if (in_array($key, ['site_logo', 'site_favicon', 'admin_logo', 'admin_login_logo'], true)) {
                         continue;
                     }
 
@@ -203,6 +203,7 @@ class SettingsController extends Controller
 
             if (! $onlySection || $onlySection === 'admin') {
                 $this->storeUploadedSetting($request, 'admin_logo', 'settings/admin', 'admin');
+                $this->storeUploadedSetting($request, 'admin_login_logo', 'settings/admin', 'admin');
             }
         });
 
@@ -301,10 +302,6 @@ class SettingsController extends Controller
 
     protected function sectionPermission(string $section): string
     {
-        if ($section === 'modules') {
-            return 'settings.update';
-        }
-
         return 'settings.' . $section . '.update';
     }
 
@@ -352,6 +349,7 @@ class SettingsController extends Controller
             'site_logo' => ['nullable', 'file', 'mimes:jpg,jpeg,png,svg,webp', 'max:4096'],
             'site_favicon' => ['nullable', 'file', 'mimes:jpg,jpeg,png,ico,svg,webp', 'max:2048'],
             'admin_logo' => ['nullable', 'file', 'mimes:jpg,jpeg,png,svg,webp', 'max:4096'],
+            'admin_login_logo' => ['nullable', 'file', 'mimes:jpg,jpeg,png,svg,webp', 'max:4096'],
             'site_email' => ['nullable', 'email', 'max:255'],
             'site_phone' => ['nullable', 'string', 'max:50'],
             'site_address' => ['nullable', 'string', 'max:1000'],
@@ -509,6 +507,7 @@ class SettingsController extends Controller
                 'description' => 'Admin branding and theme colors for the backend panel.',
                 'fields' => [
                     'admin_logo' => ['label' => 'Admin Panel Logo', 'type' => 'image'],
+                    'admin_login_logo' => ['label' => 'Admin Login Logo', 'type' => 'image'],
                     'admin_primary_color' => ['label' => 'Admin Primary Color', 'type' => 'color'],
                     'admin_topbar_bg' => ['label' => 'Admin Topbar Background', 'type' => 'color'],
                     'admin_topbar_text_color' => ['label' => 'Admin Topbar Text Color', 'type' => 'color'],
@@ -693,5 +692,30 @@ class SettingsController extends Controller
         }
 
         return $settings;
+    }
+
+    public function darkMode(Request $request)
+    {
+        $request->validate([
+            'admin_dark_mode_enabled' => 'required|in:0,1',
+        ]);
+
+        $mode = (string) $request->input('admin_dark_mode_enabled');
+
+        Setting::updateOrCreate(
+            ['key' => 'admin_dark_mode_enabled'],
+            [
+                'group' => 'admin',
+                'value' => $mode,
+            ]
+        );
+
+        Setting::clearCache();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Appearance updated successfully',
+            'current_mode' => $mode,
+        ]);
     }
 }

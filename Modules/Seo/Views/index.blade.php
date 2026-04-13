@@ -49,7 +49,7 @@
                                                 <a href="{{ route('admin.seo.edit', $seo) }}" class="btn btn-soft-warning btn-sm"><iconify-icon icon="solar:pen-new-square-line-duotone" width="16" height="16" /></a>
                                             @endif
                                             @if($adminUser?->can('seo.delete'))
-                                                <form action="{{ route('admin.seo.destroy', $seo) }}" method="POST" onsubmit="return confirm('Delete this SEO setting?');">
+                                                <form action="{{ route('admin.seo.destroy', $seo) }}" method="POST" data-confirm="Delete this SEO setting?">
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="submit" class="btn btn-soft-danger btn-sm"><iconify-icon icon="solar:trash-bin-trash-outline" width="16" height="16" /></button>

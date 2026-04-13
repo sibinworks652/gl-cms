@@ -29,37 +29,37 @@
                             <div class="row g-3">
                                 <div class="col-md-8">
                                     <label class="form-label">Name</label>
-                                    <input type="text" name="name" id="testimonial-name" class="form-control @error('name') is-invalid @enderror" value="{{ old('name', $testimonial->name) }}" required>
+                                    <input type="text" name="name" id="testimonial-name" class="form-control @error('name') error-input-bottom @enderror" value="{{ old('name', $testimonial->name) }}" required>
                                     @error('name')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                 </div>
                                 <div class="col-md-4">
                                     <label class="form-label">Slug</label>
-                                    <input type="text" name="slug" id="testimonial-slug" class="form-control @error('slug') is-invalid @enderror" value="{{ old('slug', $testimonial->slug) }}" placeholder="john-doe-review">
+                                    <input type="text" name="slug" id="testimonial-slug" class="form-control @error('slug') error-input-bottom @enderror" value="{{ old('slug', $testimonial->slug) }}" placeholder="john-doe-review">
                                     @error('slug')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label">Company</label>
-                                    <input type="text" name="company" class="form-control @error('company') is-invalid @enderror" value="{{ old('company', $testimonial->company) }}">
+                                    <input type="text" name="company" class="form-control @error('company') error-input-bottom @enderror" value="{{ old('company', $testimonial->company) }}">
                                     @error('company')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label">Designation</label>
-                                    <input type="text" name="designation" class="form-control @error('designation') is-invalid @enderror" value="{{ old('designation', $testimonial->designation) }}">
+                                    <input type="text" name="designation" class="form-control @error('designation') error-input-bottom @enderror" value="{{ old('designation', $testimonial->designation) }}">
                                     @error('designation')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label">Location</label>
-                                    <input type="text" name="location" class="form-control @error('location') is-invalid @enderror" value="{{ old('location', $testimonial->location) }}">
+                                    <input type="text" name="location" class="form-control @error('location') error-input-bottom @enderror" value="{{ old('location', $testimonial->location) }}">
                                     @error('location')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label">Project / Service</label>
-                                    <input type="text" name="project_name" class="form-control @error('project_name') is-invalid @enderror" value="{{ old('project_name', $testimonial->project_name) }}">
+                                    <input type="text" name="project_name" class="form-control @error('project_name') error-input-bottom @enderror" value="{{ old('project_name', $testimonial->project_name) }}">
                                     @error('project_name')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                 </div>
                                 <div class="col-12">
                                     <label class="form-label">Content</label>
-                                    <textarea name="content" rows="7" class="form-control @error('content') is-invalid @enderror" required>{{ old('content', $testimonial->content) }}</textarea>
+                                    <textarea name="content" rows="7" class="form-control @error('content') error-input-bottom @enderror" required>{{ old('content', $testimonial->content) }}</textarea>
                                     @error('content')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                 </div>
                             </div>
@@ -74,12 +74,12 @@
                             <div class="row g-3">
                                 <div class="col-12">
                                     <label class="form-label">Meta Title</label>
-                                    <input type="text" name="meta_title" class="form-control @error('meta_title') is-invalid @enderror" value="{{ old('meta_title', $testimonial->meta_title) }}">
+                                    <input type="text" name="meta_title" class="form-control @error('meta_title') error-input-bottom @enderror" value="{{ old('meta_title', $testimonial->meta_title) }}">
                                     @error('meta_title')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                 </div>
                                 <div class="col-12">
                                     <label class="form-label">Meta Description</label>
-                                    <textarea name="meta_description" rows="4" class="form-control @error('meta_description') is-invalid @enderror">{{ old('meta_description', $testimonial->meta_description) }}</textarea>
+                                    <textarea name="meta_description" rows="4" class="form-control @error('meta_description') error-input-bottom @enderror">{{ old('meta_description', $testimonial->meta_description) }}</textarea>
                                     @error('meta_description')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                 </div>
                             </div>
@@ -96,7 +96,7 @@
                         <div class="card-body">
                             <div class="mb-3">
                                 <label class="form-label">Rating</label>
-                                <select name="rating" class="form-select @error('rating') is-invalid @enderror">
+                                <select name="rating" class="form-select @error('rating') error-input-bottom @enderror">
                                     @for($i = 5; $i >= 1; $i--)
                                         <option value="{{ $i }}" @selected((int) old('rating', $testimonial->rating) === $i)>{{ $i }} Star{{ $i > 1 ? 's' : '' }}</option>
                                     @endfor
@@ -105,7 +105,7 @@
                             </div>
                             <div class="mb-3">
                                 <label class="form-label">Order</label>
-                                <input type="number" name="order" class="form-control @error('order') is-invalid @enderror" value="{{ old('order', $testimonial->order) }}">
+                                <input type="number" name="order" class="form-control @error('order') error-input-bottom @enderror" value="{{ old('order', $testimonial->order) }}">
                                 @error('order')<div class="invalid-feedback">{{ $message }}</div>@enderror
                             </div>
                             <div class="form-check form-switch mb-2">
@@ -127,7 +127,7 @@
                         </div>
                         <div class="card-body">
                             <label class="form-label">Image</label>
-                            <input type="file" name="image" class="form-control @error('image') is-invalid @enderror" accept="image/*">
+                            <input type="file" name="image" class="form-control @error('image') error-input-bottom @enderror" accept="image/*">
                             @error('image')<div class="invalid-feedback">{{ $message }}</div>@enderror
                             @if($testimonial->image_url)
                                 <img src="{{ $testimonial->image_url }}" alt="{{ $testimonial->name }}" class="img-fluid rounded mt-3">

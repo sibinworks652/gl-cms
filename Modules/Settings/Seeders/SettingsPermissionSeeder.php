@@ -21,6 +21,7 @@ class SettingsPermissionSeeder extends Seeder
             'settings.general.update',
             'settings.system.update',
             'settings.admin.update',
+            'settings.modules.update',
             'settings.social.update',
             'settings.analytics.update',
         ];

@@ -1,143 +1,68 @@
 @extends('admin.layouts.app')
+
 @section('content')
 @use('App\Support\ModuleRegistry')
-               <!-- Start Container Fluid -->
-               <div class="container-fluid">
-
-                    <!-- Start here.... -->
-                    <div class="row">
-                         <div class="col-xxl-12">
-                              <div class="row">
-                                @if(ModuleRegistry::enabled('gallery'))
-                                   <div class="col-md-3">
-                                        <div class="card overflow-hidden">
-                                             <div class="card-body">
-                                                  <div class="row">
-                                                       <div class="col-6">
-                                                            <div class="avatar-md bg-soft-primary rounded">
-                                                                 <iconify-icon icon="solar:gallery-wide-line-duotone" class="avatar-title fs-32 text-primary"></iconify-icon>
-                                                            </div>
-                                                       </div> <!-- end col -->
-                                                       <div class="col-6 text-end">
-                                                            <p class="text-muted mb-0 text-truncate">Total Gallery Albums</p>
-                                                            <h3 class="text-dark mt-1 mb-0">{{ $galleryCount }}</h3>
-                                                       </div> <!-- end col -->
-                                                  </div> <!-- end row-->
-                                             </div> <!-- end card body -->
-
-                                             <div class="card-footer py-2 bg-light bg-opacity-50">
-                                                  <div class="d-flex align-items-center justify-content-between">
-                                                       <div>
-                                                            <span class="text-success">{{ $galleryImageCount }}</span>
-                                                            <span class="text-muted ms-1 fs-12">Images</span>
-                                                       </div>
-                                                       @if (Route::has('admin.gallery.index'))
-                                                            <a href="{{ route('admin.gallery.index') }}" class="text-reset fw-semibold fs-12">View More</a>
-                                                       @endif
-                                                  </div>
-                                             </div> <!-- end card body -->
-                                        </div> <!-- end card -->
-                                   </div> <!-- end col -->
-                                   @endif
-                                   <div class="col-md-3">
-                                        <div class="card overflow-hidden">
-                                             <div class="card-body">
-                                                  <div class="row">
-                                                       <div class="col-6">
-                                                            <div class="avatar-md bg-soft-primary rounded">
-                                                                 <i class="bx bx-award avatar-title fs-24 text-primary"></i>
-                                                            </div>
-                                                       </div> <!-- end col -->
-                                                       <div class="col-6 text-end">
-                                                            <p class="text-muted mb-0 text-truncate">New Leads</p>
-                                                            <h3 class="text-dark mt-1 mb-0">9, 526</h3>
-                                                       </div> <!-- end col -->
-                                                  </div> <!-- end row-->
-                                             </div> <!-- end card body -->
-                                             <div class="card-footer py-2 bg-light bg-opacity-50">
-                                                  <div class="d-flex align-items-center justify-content-between">
-                                                       <div>
-                                                            <span class="text-success"> <i class="bx bxs-up-arrow fs-12"></i> 8.1%</span>
-                                                            <span class="text-muted ms-1 fs-12">Last Month</span>
-                                                       </div>
-                                                       <a href="#!" class="text-reset fw-semibold fs-12">View More</a>
-                                                  </div>
-                                             </div> <!-- end card body -->
-                                        </div> <!-- end card -->
-                                   </div> <!-- end col -->
-                                   <div class="col-md-3">
-                                        <div class="card overflow-hidden">
-                                             <div class="card-body">
-                                                  <div class="row">
-                                                       <div class="col-6">
-                                                            <div class="avatar-md bg-soft-primary rounded">
-                                                                 <i class="bx bxs-backpack avatar-title fs-24 text-primary"></i>
-                                                            </div>
-                                                       </div> <!-- end col -->
-                                                       <div class="col-6 text-end">
-                                                            <p class="text-muted mb-0 text-truncate">Deals</p>
-                                                            <h3 class="text-dark mt-1 mb-0">976</h3>
-                                                       </div> <!-- end col -->
-                                                  </div> <!-- end row-->
-                                             </div> <!-- end card body -->
-                                             <div class="card-footer py-2 bg-light bg-opacity-50">
-                                                  <div class="d-flex align-items-center justify-content-between">
-                                                       <div>
-                                                            <span class="text-danger"> <i class="bx bxs-down-arrow fs-12"></i> 0.3%</span>
-                                                            <span class="text-muted ms-1 fs-12">Last Month</span>
-                                                       </div>
-                                                       <a href="#!" class="text-reset fw-semibold fs-12">View More</a>
-                                                  </div>
-                                             </div> <!-- end card body -->
-                                        </div> <!-- end card -->
-                                   </div> <!-- end col -->
-                                   <div class="col-md-3">
-                                        <div class="card overflow-hidden">
-                                             <div class="card-body">
-                                                  <div class="row">
-                                                       <div class="col-6">
-                                                            <div class="avatar-md bg-soft-primary rounded">
-                                                                 <i class="bx bx-dollar-circle avatar-title text-primary fs-24"></i>
-                                                            </div>
-                                                       </div> <!-- end col -->
-                                                       <div class="col-6 text-end">
-                                                            <p class="text-muted mb-0 text-truncate">Booked Revenue</p>
-                                                            <h3 class="text-dark mt-1 mb-0">$123.6k</h3>
-                                                       </div> <!-- end col -->
-                                                  </div> <!-- end row-->
-                                             </div> <!-- end card body -->
-                                             <div class="card-footer py-2 bg-light bg-opacity-50">
-                                                  <div class="d-flex align-items-center justify-content-between">
-                                                       <div>
-                                                            <span class="text-danger"> <i class="bx bxs-down-arrow fs-12"></i> 10.6%</span>
-                                                            <span class="text-muted ms-1 fs-12">Last Month</span>
-                                                       </div>
-                                                       <a href="#!" class="text-reset fw-semibold fs-12">View More</a>
-                                                  </div>
-                                             </div> <!-- end card body -->
-                                        </div> <!-- end card -->
-                                   </div> <!-- end col -->
-                              </div> <!-- end row -->
-                              @if(ModuleRegistry::enabled('activity_logs'))
-                              <div class="card mt-3">
-                                   <div class="card-header d-flex justify-content-between align-items-center">
-                                        <div>
-                                             <h5 class="card-title mb-1">Recent Activity</h5>
-                                             <p class="text-muted mb-0">Latest admin actions across the CMS.</p>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            @if(($dashboardCards ?? collect())->isNotEmpty())
+                <div class="row">
+                    @foreach($dashboardCards as $card)
+                        <div class="col-sm-6 col-xl-3 mb-3">
+                            <div class="card overflow-hidden h-100">
+                                <div class="card-body">
+                                    <div class="row align-items-center">
+                                        <div class="col-6">
+                                            <div class="avatar-md {{ $card['iconWrapperClass'] ?? 'bg-soft-primary' }} rounded">
+                                                <iconify-icon icon="{{ $card['icon'] }}" class="avatar-title fs-32 {{ $card['iconClass'] ?? 'text-primary' }}"></iconify-icon>
+                                            </div>
                                         </div>
-                                        {{-- @if(Route::has('admin.activity-logs.index')) --}}
-                                        @if(auth('admin')->user()?->can('activity-logs.view') || auth('admin')->user()?->can('activity-logs.view-own'))
-                                             <a href="{{ route('admin.activity-logs.index') }}" class="btn btn-light btn-sm">View Timeline</a>
-                                        @endif
-                                        {{-- @endif --}}
-                                   </div>
-                                   <div class="card-body custom-scrollbar" style="max-height:450px; overflow-y: auto; overscroll-behavior: contain;">
-                                        @include('activity-logs::partials.timeline-items', ['logs' => $recentActivities ?? collect()])
-                                   </div>
-                              </div>
-                              @endif
-                         </div> <!-- end col -->
-                    </div> <!-- end row -->
-               </div>
-               <!-- End Container Fluid -->
+                                        <div class="col-6 text-end">
+                                            <p class="text-muted mb-0 text-truncate">{{ $card['title'] }}</p>
+                                            <h3 class="text-dark mt-1 mb-0">{{ $card['value'] }}</h3>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="card-footer py-2 bg-light bg-opacity-50">
+                                    <div class="d-flex align-items-center justify-content-between gap-2">
+                                        <div class="text-truncate">
+                                            <span class="{{ $card['metaClass'] ?? 'text-success' }}">{{ $card['metaValue'] }}</span>
+                                            <span class="text-muted ms-1 fs-12">{{ $card['metaLabel'] }}</span>
+                                        </div>
+                                        <a href="{{ $card['link'] }}" class="text-reset fw-semibold fs-12 text-nowrap">{{ $card['linkLabel'] }}</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            @else
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title mb-1">Dashboard Overview</h5>
+                        <p class="text-muted mb-0">No functional dashboard cards are available yet for your current enabled modules and permissions.</p>
+                    </div>
+                </div>
+            @endif
+
+            @if(ModuleRegistry::enabled('activity_logs'))
+                <div class="card mt-3">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <div>
+                            <h5 class="card-title mb-1">Recent Activity</h5>
+                            <p class="text-muted mb-0">Latest admin actions across the CMS.</p>
+                        </div>
+                        @if(auth('admin')->user()?->can('activity-logs.view') || auth('admin')->user()?->can('activity-logs.view-own'))
+                            <a href="{{ route('admin.activity-logs.index') }}" class="btn btn-light btn-sm">View Timeline</a>
+                        @endif
+                    </div>
+                    <div class="card-body custom-scrollbar" style="max-height:450px; overflow-y: auto; overscroll-behavior: contain;">
+                        @include('activity-logs::partials.timeline-items', ['logs' => $recentActivities ?? collect()])
+                    </div>
+                </div>
+            @endif
+        </div>
+    </div>
+</div>
 @endsection

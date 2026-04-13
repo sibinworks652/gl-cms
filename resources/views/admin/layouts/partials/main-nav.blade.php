@@ -175,6 +175,42 @@
                     </li>
                @endif
 
+               @if($moduleEnabled('ecommerce') && (($adminUser?->can('products.view') && $hasRoute('admin.ecommerce.products.index')) || ($adminUser?->can('product-categories.view') && $hasRoute('admin.ecommerce.categories.index')) || ($adminUser?->can('vendors.view') && $hasRoute('admin.ecommerce.vendors.index')) || ($adminUser?->can('orders.view') && $hasRoute('admin.ecommerce.orders.index'))))
+                    @php($ecommerceMenuOpen = request()->routeIs('admin.ecommerce.*'))
+                    <li class="nav-item">
+                         <a class="nav-link menu-arrow {{ $ecommerceMenuOpen ? 'active' : '' }}" href="#sidebarEcommerce" data-bs-toggle="collapse" role="button" aria-expanded="{{ $ecommerceMenuOpen ? 'true' : 'false' }}" aria-controls="sidebarEcommerce">
+                              <span class="nav-icon">
+                                   <iconify-icon icon="solar:shop-2-bold-duotone"></iconify-icon>
+                              </span>
+                              <span class="nav-text"> Ecommerce </span>
+                         </a>
+                         <div class="collapse {{ $ecommerceMenuOpen ? 'show' : '' }}" id="sidebarEcommerce">
+                              <ul class="nav sub-navbar-nav">
+                                   @if($adminUser?->can('products.view') && $hasRoute('admin.ecommerce.products.index'))
+                                        <li class="sub-nav-item">
+                                             <a class="sub-nav-link {{ request()->routeIs('admin.ecommerce.products.*') ? 'active' : '' }}" href="{{ $routeUrl('admin.ecommerce.products.index') }}">Products</a>
+                                        </li>
+                                   @endif
+                                   @if($adminUser?->can('product-categories.view') && $hasRoute('admin.ecommerce.categories.index'))
+                                        <li class="sub-nav-item">
+                                             <a class="sub-nav-link {{ request()->routeIs('admin.ecommerce.categories.*') ? 'active' : '' }}" href="{{ $routeUrl('admin.ecommerce.categories.index') }}">Categories</a>
+                                        </li>
+                                   @endif
+                                   @if($adminUser?->can('vendors.view') && $hasRoute('admin.ecommerce.vendors.index'))
+                                        <li class="sub-nav-item">
+                                             <a class="sub-nav-link {{ request()->routeIs('admin.ecommerce.vendors.*') ? 'active' : '' }}" href="{{ $routeUrl('admin.ecommerce.vendors.index') }}">Vendors</a>
+                                        </li>
+                                   @endif
+                                   @if($adminUser?->can('orders.view') && $hasRoute('admin.ecommerce.orders.index'))
+                                        <li class="sub-nav-item">
+                                             <a class="sub-nav-link {{ request()->routeIs('admin.ecommerce.orders.*') ? 'active' : '' }}" href="{{ $routeUrl('admin.ecommerce.orders.index') }}">Orders</a>
+                                        </li>
+                                   @endif
+                              </ul>
+                         </div>
+                    </li>
+               @endif
+
                @if($moduleEnabled('testimonials') && $adminUser?->can('testimonials.view') && $hasRoute('admin.testimonials.index'))
                     <li class="nav-item">
                          <a class="nav-link {{ request()->routeIs('admin.testimonials.*') ? 'active' : '' }}" href="{{ $routeUrl('admin.testimonials.index') }}">

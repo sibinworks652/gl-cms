@@ -14,20 +14,42 @@
 </div>
 <style>
     div:where(.swal2-container) .swal2-html-container{
-        padding: 0;
+        padding: 0 !important;
     }
     div:where(.swal2-container) div:where(.swal2-actions){
-        margin: 0 auto;
+        margin: 0 auto !important;
     }
     .swal2-popup .swal2-actions{
-        margin: 0;
+        margin: 0 !important;
     }
     div:where(.swal2-icon){
-            margin: 0.5em auto -2em;
+            margin: 0.5em auto -2em !important;
     }
     div:where(.swal2-container) div:where(.swal2-popup){
-        width: 30em;
+        width: 30em !important;
     }
+    /* Force small icon BEFORE animation runs */
+.swal2-popup .swal2-icon {
+    transform: scale(0.6) !important;
+    margin-top: 10px !important;
+    margin-bottom: 0 !important;
+}
+
+/* Optional: reduce animation impact */
+.swal2-show .swal2-icon {
+    animation: none !important;
+}
+.swal2-html-container{
+    font-size: 14px !important;
+}
+div:where(.swal2-container) h2:where(.swal2-title){
+    padding: 0 !important;
+}
+.swal2-popup .swal2-content, .swal2-popup .swal2-html-container{
+    margin-top: 0.5rem !important;
+    padding-right: 20px !important;
+    padding-left: 20px !important;
+}
 </style>
 <script>
     window.showAdminToast = function (message, type = 'success', timeText = 'just now') {
@@ -93,13 +115,52 @@
         bootstrap.Toast.getOrCreateInstance(toastElement).show();
     };
 
-    document.addEventListener('DOMContentLoaded', function () {
-        @if (session('success'))
-            window.showAdminToast(@js(session('success')), 'success');
-        @endif
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelectorAll('form[data-confirm]').forEach(function (form) {
+                form.addEventListener('submit', function (event) {
+                    if (form.dataset.confirmed === 'true') {
+                        form.dataset.confirmed = 'false';
+                        return;
+                    }
 
-        @if (session('error'))
-            window.showAdminToast(@js(session('error')), 'error');
-        @endif
-    });
+                    event.preventDefault();
+
+                    if (typeof Swal === 'undefined') {
+                        form.dataset.confirmed = 'true';
+                        form.submit();
+                        return;
+                    }
+
+                    Swal.fire({
+                        title: form.dataset.confirmTitle || 'Are you sure?',
+                        text: form.dataset.confirm || 'This action cannot be undone.',
+                        icon: form.dataset.confirmIcon || 'warning',
+                        showCancelButton: true,
+                        confirmButtonText: form.dataset.confirmButton || 'Yes, delete it',
+                        cancelButtonText: form.dataset.cancelButton || 'Cancel',
+                        customClass: {
+                            confirmButton: 'btn btn-primary me-2',
+                            cancelButton: 'btn btn-outline-secondary',
+                        },
+                        buttonsStyling: false,
+                        reverseButtons: true,
+                    }).then(function (result) {
+                        if (!result.isConfirmed) {
+                            return;
+                        }
+
+                        form.dataset.confirmed = 'true';
+                        form.requestSubmit ? form.requestSubmit() : form.submit();
+                    });
+                });
+            });
+
+            @if (session('success'))
+                window.showAdminToast(@js(session('success')), 'success');
+            @endif
+
+            @if (session('error'))
+                window.showAdminToast(@js(session('error')), 'error');
+            @endif
+        });
 </script>

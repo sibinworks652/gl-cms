@@ -4,6 +4,7 @@ namespace Modules\Settings\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Schema;
 
 class Setting extends Model
 {
@@ -28,6 +29,10 @@ class Setting extends Model
 
     public static function freshPairs(): array
     {
+        if (! Schema::hasTable('settings')) {
+            return [];
+        }
+
         return static::query()
             ->pluck('value', 'key')
             ->map(fn ($value) => is_string($value) ? trim($value) : $value)

@@ -32,17 +32,17 @@
                             <div class="row g-3">
                                 <div class="col-md-8">
                                     <label class="form-label">Job Title</label>
-                                    <input type="text" name="title" id="career-job-title" value="{{ old('title', $job->title) }}" class="form-control @error('title') is-invalid @enderror" required>
+                                    <input type="text" name="title" id="career-job-title" value="{{ old('title', $job->title) }}" class="form-control @error('title') error-input-bottom @enderror" required>
                                     @error('title')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                 </div>
                                 <div class="col-md-4">
                                     <label class="form-label">Slug</label>
-                                    <input type="text" name="slug" id="career-job-slug" value="{{ old('slug', $job->slug) }}" class="form-control @error('slug') is-invalid @enderror" placeholder="senior-php-developer">
+                                    <input type="text" name="slug" id="career-job-slug" value="{{ old('slug', $job->slug) }}" class="form-control @error('slug') error-input-bottom @enderror" placeholder="senior-php-developer">
                                     @error('slug')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                 </div>
                                 <div class="col-12">
                                     <label class="form-label">Short Description</label>
-                                    <textarea name="short_description" rows="3" class="form-control @error('short_description') is-invalid @enderror" required>{{ old('short_description', $job->short_description) }}</textarea>
+                                    <textarea name="short_description" rows="3" class="form-control @error('short_description') error-input-bottom @enderror" required>{{ old('short_description', $job->short_description) }}</textarea>
                                     @error('short_description')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                 </div>
                                 <div class="col-12">
@@ -50,27 +50,27 @@
                                     <div class="border rounded">
                                         <div id="career-job-editor" style="height: 320px;"></div>
                                     </div>
-                                    <textarea name="description" id="career-job-description" hidden class="d-none @error('description') is-invalid @enderror">{{ old('description', $job->description) }}</textarea>
+                                    <textarea name="description" id="career-job-description" hidden class="d-none @error('description') error-input-bottom @enderror">{{ old('description', $job->description) }}</textarea>
                                     @error('description')<div class="invalid-feedback d-block">{{ $message }}</div>@enderror
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label">Skills / Requirements</label>
-                                    <textarea name="skills" rows="6" class="form-control @error('skills') is-invalid @enderror" placeholder="Laravel, Vue, REST APIs">{{ old('skills', $job->skills) }}</textarea>
+                                    <textarea name="skills" rows="6" class="form-control @error('skills') error-input-bottom @enderror" placeholder="Laravel, Vue, REST APIs">{{ old('skills', $job->skills) }}</textarea>
                                     @error('skills')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label">Detailed Requirements</label>
-                                    <textarea name="requirements" rows="6" class="form-control @error('requirements') is-invalid @enderror">{{ old('requirements', $job->requirements) }}</textarea>
+                                    <textarea name="requirements" rows="6" class="form-control @error('requirements') error-input-bottom @enderror">{{ old('requirements', $job->requirements) }}</textarea>
                                     @error('requirements')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label">Responsibilities</label>
-                                    <textarea name="responsibilities" rows="6" class="form-control @error('responsibilities') is-invalid @enderror">{{ old('responsibilities', $job->responsibilities) }}</textarea>
+                                    <textarea name="responsibilities" rows="6" class="form-control @error('responsibilities') error-input-bottom @enderror">{{ old('responsibilities', $job->responsibilities) }}</textarea>
                                     @error('responsibilities')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label">Benefits</label>
-                                    <textarea name="benefits" rows="6" class="form-control @error('benefits') is-invalid @enderror">{{ old('benefits', $job->benefits) }}</textarea>
+                                    <textarea name="benefits" rows="6" class="form-control @error('benefits') error-input-bottom @enderror">{{ old('benefits', $job->benefits) }}</textarea>
                                     @error('benefits')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                 </div>
                             </div>
@@ -85,12 +85,12 @@
                             <div class="row g-3">
                                 <div class="col-12">
                                     <label class="form-label">Meta Title</label>
-                                    <input type="text" name="meta_title" value="{{ old('meta_title', $job->meta_title) }}" class="form-control @error('meta_title') is-invalid @enderror">
+                                    <input type="text" name="meta_title" value="{{ old('meta_title', $job->meta_title) }}" class="form-control @error('meta_title') error-input-bottom @enderror">
                                     @error('meta_title')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                 </div>
                                 <div class="col-12">
                                     <label class="form-label">Meta Description</label>
-                                    <textarea name="meta_description" rows="4" class="form-control @error('meta_description') is-invalid @enderror">{{ old('meta_description', $job->meta_description) }}</textarea>
+                                    <textarea name="meta_description" rows="4" class="form-control @error('meta_description') error-input-bottom @enderror">{{ old('meta_description', $job->meta_description) }}</textarea>
                                     @error('meta_description')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                 </div>
                             </div>
@@ -106,7 +106,7 @@
                         <div class="card-body">
                             <div class="mb-3">
                                 <label class="form-label">Category</label>
-                                <select name="category_id" class="form-select @error('category_id') is-invalid @enderror">
+                                <select name="category_id" class="form-select @error('category_id') error-input-bottom @enderror">
                                     <option value="">Uncategorized</option>
                                     @foreach($categories as $category)
                                         <option value="{{ $category->id }}" @selected((string) old('category_id', $job->category_id) === (string) $category->id)>{{ $category->name }}</option>
@@ -116,12 +116,12 @@
                             </div>
                             <div class="mb-3">
                                 <label class="form-label">Location</label>
-                                <input type="text" name="location" value="{{ old('location', $job->location) }}" class="form-control @error('location') is-invalid @enderror" placeholder="Ahmedabad / Remote" required>
+                                <input type="text" name="location" value="{{ old('location', $job->location) }}" class="form-control @error('location') error-input-bottom @enderror" placeholder="Ahmedabad / Remote" required>
                                 @error('location')<div class="invalid-feedback">{{ $message }}</div>@enderror
                             </div>
                             <div class="mb-3">
                                 <label class="form-label">Job Type</label>
-                                <select name="job_type" class="form-select @error('job_type') is-invalid @enderror" required>
+                                <select name="job_type" class="form-select @error('job_type') error-input-bottom @enderror" required>
                                     @foreach($jobTypes as $value => $label)
                                         <option value="{{ $value }}" @selected(old('job_type', $job->job_type) === $value)>{{ $label }}</option>
                                     @endforeach
@@ -130,25 +130,25 @@
                             </div>
                             <div class="mb-3">
                                 <label class="form-label">Experience Required</label>
-                                <input type="text" name="experience" value="{{ old('experience', $job->experience) }}" class="form-control @error('experience') is-invalid @enderror" placeholder="3+ years" required>
+                                <input type="text" name="experience" value="{{ old('experience', $job->experience) }}" class="form-control @error('experience') error-input-bottom @enderror" placeholder="3+ years" required>
                                 @error('experience')<div class="invalid-feedback">{{ $message }}</div>@enderror
                             </div>
                             <div class="row g-3">
                                 <div class="col-md-6">
                                     <label class="form-label">Salary Range</label>
-                                    <input type="text" name="salary" value="{{ old('salary', $job->salary) }}" class="form-control @error('salary') is-invalid @enderror" placeholder="5-8 LPA">
+                                    <input type="text" name="salary" value="{{ old('salary', $job->salary) }}" class="form-control @error('salary') error-input-bottom @enderror" placeholder="5-8 LPA">
                                     @error('salary')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label">Vacancies</label>
-                                    <input type="number" min="1" name="vacancies" value="{{ old('vacancies', $job->vacancies ?? 1) }}" class="form-control @error('vacancies') is-invalid @enderror" required>
+                                    <input type="number" min="1" name="vacancies" value="{{ old('vacancies', $job->vacancies ?? 1) }}" class="form-control @error('vacancies') error-input-bottom @enderror" required>
                                     @error('vacancies')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                 </div>
                             </div>
                             <div class="row g-3 mt-1">
                                 <div class="col-md-6">
                                     <label class="form-label">Status</label>
-                                    <select name="status" class="form-select @error('status') is-invalid @enderror" required>
+                                    <select name="status" class="form-select @error('status') error-input-bottom @enderror" required>
                                         @foreach($statusOptions as $value => $label)
                                             <option value="{{ $value }}" @selected(old('status', $job->status) === $value)>{{ $label }}</option>
                                         @endforeach
@@ -157,7 +157,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label">Expiry Date</label>
-                                    <input type="date" name="expiry_date" value="{{ old('expiry_date', $job->expiry_date?->format('Y-m-d')) }}" class="form-control @error('expiry_date') is-invalid @enderror">
+                                    <input type="date" name="expiry_date" value="{{ old('expiry_date', $job->expiry_date?->format('Y-m-d')) }}" class="form-control @error('expiry_date') error-input-bottom @enderror">
                                     @error('expiry_date')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                 </div>
                             </div>

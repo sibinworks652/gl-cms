@@ -24,17 +24,17 @@
                     <div class="row g-3">
                         <div class="col-md-6">
                             <label class="form-label">Name</label>
-                            <input type="text" name="name" id="team-department-name" class="form-control @error('name') is-invalid @enderror" value="{{ old('name', $department->name) }}" required>
+                            <input type="text" name="name" id="team-department-name" class="form-control @error('name') error-input-bottom @enderror" value="{{ old('name', $department->name) }}" required>
                             @error('name')<div class="invalid-feedback">{{ $message }}</div>@enderror
                         </div>
                         <div class="col-md-6">
                             <label class="form-label">Slug</label>
-                            <input type="text" name="slug" id="team-department-slug" class="form-control @error('slug') is-invalid @enderror" value="{{ old('slug', $department->slug) }}" placeholder="management">
+                            <input type="text" name="slug" id="team-department-slug" class="form-control @error('slug') error-input-bottom @enderror" value="{{ old('slug', $department->slug) }}" placeholder="management">
                             @error('slug')<div class="invalid-feedback">{{ $message }}</div>@enderror
                         </div>
                         <div class="col-md-4">
                             <label class="form-label">Order</label>
-                            <input type="number" name="order" class="form-control @error('order') is-invalid @enderror" value="{{ old('order', $department->order) }}">
+                            <input type="number" name="order" class="form-control @error('order') error-input-bottom @enderror" value="{{ old('order', $department->order) }}">
                             @error('order')<div class="invalid-feedback">{{ $message }}</div>@enderror
                         </div>
                         <div class="col-md-4 d-flex align-items-end">

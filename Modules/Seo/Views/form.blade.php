@@ -20,7 +20,7 @@
                     <div class="row g-3">
                         <div class="col-md-4">
                             <label class="form-label">Page Type</label>
-                            <select name="page_type" id="seo-page-type" class="form-select @error('page_type') is-invalid @enderror">
+                            <select name="page_type" id="seo-page-type" class="form-select @error('page_type') error-input-bottom @enderror">
                                 @foreach($pageTypes as $value => $label)
                                     <option value="{{ $value }}" @selected(old('page_type', $seoSetting->page_type) === $value)>{{ $label }}</option>
                                 @endforeach
@@ -34,9 +34,9 @@
                             <label class="form-label">Page Key</label>
                             <div class="input-group" id="seo-page-key-input-group">
                                 <span class="input-group-text" >{{ url('/') }}/</span>
-                                <input type="text" name="page_key" id="seo-page-key" class="form-control @error('page_key') is-invalid @enderror" value="{{ old('page_key', $seoSetting->page_key) }}" placeholder="about-us">
+                                <input type="text" name="page_key" id="seo-page-key" class="form-control @error('page_key') error-input-bottom @enderror" value="{{ old('page_key', $seoSetting->page_key) }}" placeholder="about-us">
                             </div>
-                            <select name="page_key" id="seo-page-select" class="form-select @error('page_key') is-invalid @enderror d-none">
+                            <select name="page_key" id="seo-page-select" class="form-select @error('page_key') error-input-bottom @enderror d-none">
                                 <option value="">Select a page</option>
                                 @foreach($pages as $page)
                                     <option value="{{ $page->slug }}" @selected(old('page_key', $seoSetting->page_key) === $page->slug)>{{ $page->title }} (/{{ $page->slug }})</option>
@@ -50,31 +50,31 @@
                         </div>
                         <div class="col-md-4">
                             <label class="form-label">Page Label</label>
-                            <input type="text" name="page_label" class="form-control @error('page_label') is-invalid @enderror" value="{{ old('page_label', $seoSetting->page_label) }}" placeholder="About Us">
+                            <input type="text" name="page_label" class="form-control @error('page_label') error-input-bottom @enderror" value="{{ old('page_label', $seoSetting->page_label) }}" placeholder="About Us">
                             @error('page_label')<div class="invalid-feedback">{{ $message }}</div>@enderror
                         </div>
 
                         <div class="col-12">
                             <label class="form-label">Meta Title</label>
-                            <input type="text" name="seo_meta_title" class="form-control @error('seo_meta_title') is-invalid @enderror" value="{{ old('seo_meta_title', $seoSetting->seo_meta_title) }}">
+                            <input type="text" name="seo_meta_title" class="form-control @error('seo_meta_title') error-input-bottom @enderror" value="{{ old('seo_meta_title', $seoSetting->seo_meta_title) }}">
                             @error('seo_meta_title')<div class="invalid-feedback">{{ $message }}</div>@enderror
                         </div>
 
                         <div class="col-12">
                             <label class="form-label">Meta Description</label>
-                            <textarea name="seo_meta_description" rows="3" class="form-control @error('seo_meta_description') is-invalid @enderror">{{ old('seo_meta_description', $seoSetting->seo_meta_description) }}</textarea>
+                            <textarea name="seo_meta_description" rows="3" class="form-control @error('seo_meta_description') error-input-bottom @enderror">{{ old('seo_meta_description', $seoSetting->seo_meta_description) }}</textarea>
                             @error('seo_meta_description')<div class="invalid-feedback">{{ $message }}</div>@enderror
                         </div>
 
                         <div class="col-12">
                             <label class="form-label">Meta Keywords</label>
-                            <textarea name="seo_meta_keywords" rows="2" class="form-control @error('seo_meta_keywords') is-invalid @enderror" placeholder="cms, website, services">{{ old('seo_meta_keywords', $seoSetting->seo_meta_keywords) }}</textarea>
+                            <textarea name="seo_meta_keywords" rows="2" class="form-control @error('seo_meta_keywords') error-input-bottom @enderror" placeholder="cms, website, services">{{ old('seo_meta_keywords', $seoSetting->seo_meta_keywords) }}</textarea>
                             @error('seo_meta_keywords')<div class="invalid-feedback">{{ $message }}</div>@enderror
                         </div>
 
                         <div class="col-md-6">
                             <label class="form-label">OG Image</label>
-                            <input type="file" name="seo_og_image" class="form-control @error('seo_og_image') is-invalid @enderror" accept="image/*">
+                            <input type="file" name="seo_og_image" class="form-control @error('seo_og_image') error-input-bottom @enderror" accept="image/*">
                             @error('seo_og_image')<div class="invalid-feedback">{{ $message }}</div>@enderror
                             @if($seoSetting->seo_og_image)
                                 <div class="mt-2">
@@ -85,7 +85,7 @@
 
                         <div class="col-md-6">
                             <label class="form-label">Twitter Card</label>
-                            <select name="seo_twitter_card" class="form-select @error('seo_twitter_card') is-invalid @enderror">
+                            <select name="seo_twitter_card" class="form-select @error('seo_twitter_card') error-input-bottom @enderror">
                                 @foreach($twitterCards as $value => $label)
                                     <option value="{{ $value }}" @selected(old('seo_twitter_card', $seoSetting->seo_twitter_card) === $value)>{{ $label }}</option>
                                 @endforeach
@@ -95,13 +95,13 @@
 
                         <div class="col-md-8">
                             <label class="form-label">Canonical URL</label>
-                            <input type="url" name="seo_canonical_url" class="form-control @error('seo_canonical_url') is-invalid @enderror" value="{{ old('seo_canonical_url', $seoSetting->seo_canonical_url) }}">
+                            <input type="url" name="seo_canonical_url" class="form-control @error('seo_canonical_url') error-input-bottom @enderror" value="{{ old('seo_canonical_url', $seoSetting->seo_canonical_url) }}">
                             @error('seo_canonical_url')<div class="invalid-feedback">{{ $message }}</div>@enderror
                         </div>
 
                         <div class="col-md-4">
                             <label class="form-label">Indexing</label>
-                            <select name="seo_indexing" class="form-select @error('seo_indexing') is-invalid @enderror">
+                            <select name="seo_indexing" class="form-select @error('seo_indexing') error-input-bottom @enderror">
                                 <option value="index" @selected(old('seo_indexing', $seoSetting->seo_indexing) === 'index')>index</option>
                                 <option value="noindex" @selected(old('seo_indexing', $seoSetting->seo_indexing) === 'noindex')>noindex</option>
                             </select>

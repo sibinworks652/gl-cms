@@ -20,7 +20,7 @@
                         <div class="card-body">
                             <div class="mb-3">
                                 <label class="form-label">Menu Name</label>
-                                <input type="text" name="name" id="menu-name" class="form-control @error('name') is-invalid @enderror" value="{{ old('name', $menu->name) }}">
+                                <input type="text" name="name" id="menu-name" class="form-control @error('name') error-input-bottom @enderror" value="{{ old('name', $menu->name) }}">
                                 @error('name')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -28,7 +28,7 @@
 
                             <div class="mb-3">
                                 <label class="form-label">Slug</label>
-                                <input type="text" name="slug" id="menu-slug" class="form-control @error('slug') is-invalid @enderror" value="{{ old('slug', $menu->slug) }}">
+                                <input type="text" name="slug" id="menu-slug" class="form-control @error('slug') error-input-bottom @enderror" value="{{ old('slug', $menu->slug) }}">
                                 @error('slug')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -36,7 +36,7 @@
 
                             <div class="mb-3">
                                 <label class="form-label">Location</label>
-                                <select name="location" class="form-select @error('location') is-invalid @enderror">
+                                <select name="location" class="form-select @error('location') error-input-bottom @enderror">
                                     <option value="">Select location</option>
                                     @foreach ($locations as $value => $label)
                                         <option value="{{ $value }}" @selected(old('location', $menu->location) === $value)>{{ $label }}</option>
@@ -49,7 +49,7 @@
 
                             <div class="mb-3">
                                 <label class="form-label">Description</label>
-                                <textarea name="description" rows="4" class="form-control @error('description') is-invalid @enderror">{{ old('description', $menu->description) }}</textarea>
+                                <textarea name="description" rows="4" class="form-control @error('description') error-input-bottom @enderror">{{ old('description', $menu->description) }}</textarea>
                                 @error('description')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror

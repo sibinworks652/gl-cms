@@ -28,7 +28,7 @@
                             <div class="row g-3">
                                 <div class="col-12">
                                     <label class="form-label">Question</label>
-                                    <input type="text" name="question" class="form-control @error('question') is-invalid @enderror" value="{{ old('question', $faq->question) }}" required>
+                                    <input type="text" name="question" class="form-control @error('question') error-input-bottom @enderror" value="{{ old('question', $faq->question) }}" required>
                                     @error('question')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                 </div>
                                 <div class="col-12">
@@ -36,7 +36,7 @@
                                     <div class="border rounded">
                                         <div id="faq-answer-editor" style="height: 320px;"></div>
                                     </div>
-                                    <textarea name="answer" id="faq-answer" hidden class="d-none @error('answer') is-invalid @enderror">{{ old('answer', $faq->answer) }}</textarea>
+                                    <textarea name="answer" id="faq-answer" hidden class="d-none @error('answer') error-input-bottom @enderror">{{ old('answer', $faq->answer) }}</textarea>
                                     @error('answer')<div class="invalid-feedback d-block">{{ $message }}</div>@enderror
                                 </div>
                             </div>
@@ -50,7 +50,7 @@
                         <div class="card-body">
                             <div class="mb-3">
                                 <label class="form-label">Category</label>
-                                <select name="faq_category_id" id="faq-category-select" class="form-select @error('faq_category_id') is-invalid @enderror">
+                                <select name="faq_category_id" id="faq-category-select" class="form-select @error('faq_category_id') error-input-bottom @enderror">
                                     <option value="">No category</option>
                                     @foreach($categories as $category)
                                         <option value="{{ $category->id }}" @selected((string) old('faq_category_id', $faq->faq_category_id) === (string) $category->id)>{{ $category->name }}</option>
@@ -70,7 +70,7 @@
                             </div>
                             <div class="mb-3">
                                 <label class="form-label">Order</label>
-                                <input type="number" name="order" class="form-control @error('order') is-invalid @enderror" value="{{ old('order', $faq->order) }}">
+                                <input type="number" name="order" class="form-control @error('order') error-input-bottom @enderror" value="{{ old('order', $faq->order) }}">
                                 @error('order')<div class="invalid-feedback">{{ $message }}</div>@enderror
                             </div>
                             <div class="form-check form-switch">

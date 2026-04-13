@@ -48,7 +48,7 @@
                                                 <a href="{{ route('admin.team-departments.edit', $department) }}" class="btn btn-soft-warning btn-sm"><iconify-icon icon="solar:pen-new-square-line-duotone" width="18" height="18"></iconify-icon></a>
                                             @endif
                                             @if($adminUser?->can('team-departments.delete'))
-                                                <form method="POST" action="{{ route('admin.team-departments.destroy', $department) }}" onsubmit="return confirm('Delete this department? Members will remain but become uncategorized.');">
+                                                <form method="POST" action="{{ route('admin.team-departments.destroy', $department) }}" data-confirm="Delete this department? Members will remain but become uncategorized.">
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="submit" class="btn btn-soft-danger btn-sm"><iconify-icon icon="solar:trash-bin-trash-outline" width="16" height="16"></iconify-icon></button>

@@ -51,7 +51,7 @@
                                                         <a href="{{ route('admin.menus.edit', $menu) }}" class="btn btn-soft-warning btn-sm"><iconify-icon icon="solar:pen-new-square-line-duotone" width="20" height="20" /></a>
                                                     @endif
                                                     @if($adminUser?->can('menus.delete'))
-                                                        <form method="POST" action="{{ route('admin.menus.destroy', $menu) }}" onsubmit="return confirm('Delete this menu and all menu items?');">
+                                                        <form method="POST" action="{{ route('admin.menus.destroy', $menu) }}" data-confirm="Delete this menu and all menu items?">
                                                             @csrf
                                                             @method('DELETE')
                                                             <button type="submit" class="btn btn-soft-danger btn-sm"><iconify-icon icon="solar:trash-bin-trash-outline" width="16" height="16" /></button>

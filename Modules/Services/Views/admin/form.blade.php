@@ -30,17 +30,17 @@
                             <div class="row g-3">
                                 <div class="col-md-8">
                                     <label class="form-label">Title</label>
-                                    <input type="text" name="title" id="service-title" class="form-control @error('title') is-invalid @enderror" value="{{ old('title', $service->title) }}" required>
+                                    <input type="text" name="title" id="service-title" class="form-control @error('title') error-input-bottom @enderror" value="{{ old('title', $service->title) }}" required>
                                     @error('title')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                 </div>
                                 <div class="col-md-4">
                                     <label class="form-label">Slug</label>
-                                    <input type="text" name="slug" id="service-slug" class="form-control @error('slug') is-invalid @enderror" value="{{ old('slug', $service->slug) }}" placeholder="web-development">
+                                    <input type="text" name="slug" id="service-slug" class="form-control @error('slug') error-input-bottom @enderror" value="{{ old('slug', $service->slug) }}" placeholder="web-development">
                                     @error('slug')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                 </div>
                                 <div class="col-12">
                                     <label class="form-label">Short Description</label>
-                                    <textarea name="short_description" rows="3" class="form-control @error('short_description') is-invalid @enderror">{{ old('short_description', $service->short_description) }}</textarea>
+                                    <textarea name="short_description" rows="3" class="form-control @error('short_description') error-input-bottom @enderror">{{ old('short_description', $service->short_description) }}</textarea>
                                     @error('short_description')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                 </div>
                                 <div class="col-12">
@@ -48,7 +48,7 @@
                                     <div class="border rounded">
                                         <div id="editor" style="height: 300px;"></div>
                                     </div>
-                                    <textarea name="full_description" id="content" hidden class="d-none @error('full_description') is-invalid @enderror">{{ old('full_description', $service->full_description) }}</textarea>
+                                    <textarea name="full_description" id="content" hidden class="d-none @error('full_description') error-input-bottom @enderror">{{ old('full_description', $service->full_description) }}</textarea>
                                     @error('full_description')<div class="invalid-feedback d-block">{{ $message }}</div>@enderror
                                 </div>
                             </div>
@@ -63,12 +63,12 @@
                             <div class="row g-3">
                                 <div class="col-12">
                                     <label class="form-label">Meta Title</label>
-                                    <input type="text" name="meta_title" class="form-control @error('meta_title') is-invalid @enderror" value="{{ old('meta_title', $service->meta_title) }}">
+                                    <input type="text" name="meta_title" class="form-control @error('meta_title') error-input-bottom @enderror" value="{{ old('meta_title', $service->meta_title) }}">
                                     @error('meta_title')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                 </div>
                                 <div class="col-12">
                                     <label class="form-label">Meta Description</label>
-                                    <textarea name="meta_description" rows="3" class="form-control @error('meta_description') is-invalid @enderror">{{ old('meta_description', $service->meta_description) }}</textarea>
+                                    <textarea name="meta_description" rows="3" class="form-control @error('meta_description') error-input-bottom @enderror">{{ old('meta_description', $service->meta_description) }}</textarea>
                                     @error('meta_description')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                 </div>
                             </div>
@@ -86,7 +86,7 @@
                         <div class="card-body">
                             <div class="mb-3">
                                 <label class="form-label">Category</label>
-                                <select name="service_category_id" id="service-category-select" class="form-select @error('service_category_id') is-invalid @enderror">
+                                <select name="service_category_id" id="service-category-select" class="form-select @error('service_category_id') error-input-bottom @enderror">
                                     <option value="">No category</option>
                                     @foreach($categories as $category)
                                         <option value="{{ $category->id }}" @selected((string) old('service_category_id', $service->service_category_id) === (string) $category->id)>{{ $category->name }}</option>
@@ -112,7 +112,7 @@
                             <div class="d-flex gap-2 justify-content-between align-items-center">
                             <div class="mb-3">
                                 <label class="form-label">Sort Order</label>
-                                <input type="number" name="sort_order" class="form-control @error('sort_order') is-invalid @enderror" value="{{ old('sort_order', $service->sort_order) }}">
+                                <input type="number" name="sort_order" class="form-control @error('sort_order') error-input-bottom @enderror" value="{{ old('sort_order', $service->sort_order) }}">
                                 @error('sort_order')<div class="invalid-feedback">{{ $message }}</div>@enderror
                             </div>
                             <div class="form-check form-switch">
@@ -136,13 +136,13 @@
                         <div class="card-body">
                             <div class="mb-3">
                                 <label class="form-label">Icon</label>
-                                <textarea name="icon" rows="3" class="form-control @error('icon') is-invalid @enderror" placeholder="solar:code-square-bold-duotone or fa fa-code or SVG">{{ old('icon', $service->icon) }}</textarea>
+                                <textarea name="icon" rows="3" class="form-control @error('icon') error-input-bottom @enderror" placeholder="solar:code-square-bold-duotone or fa fa-code or SVG">{{ old('icon', $service->icon) }}</textarea>
                                 <div class="form-text">Use an Iconify name, CSS icon class, or trusted SVG markup.</div>
                                 @error('icon')<div class="invalid-feedback">{{ $message }}</div>@enderror
                             </div>
                             <div class="mb-3">
                                 <label class="form-label">Image</label>
-                                <input type="file" name="image" class="form-control @error('image') is-invalid @enderror" accept="image/*">
+                                <input type="file" name="image" class="form-control @error('image') error-input-bottom @enderror" accept="image/*">
                                 @error('image')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                 @if($service->image_url)
                                     <img src="{{ $service->image_url }}" alt="{{ $service->title }}" class="img-fluid rounded mt-2">
@@ -150,12 +150,12 @@
                             </div>
                             <div class="mb-3">
                                 <label class="form-label">CTA Label</label>
-                                <input type="text" name="cta_label" class="form-control @error('cta_label') is-invalid @enderror" value="{{ old('cta_label', $service->cta_label) }}" placeholder="Get Quote">
+                                <input type="text" name="cta_label" class="form-control @error('cta_label') error-input-bottom @enderror" value="{{ old('cta_label', $service->cta_label) }}" placeholder="Get Quote">
                                 @error('cta_label')<div class="invalid-feedback">{{ $message }}</div>@enderror
                             </div>
                             <div>
                                 <label class="form-label">CTA URL</label>
-                                <input type="text" name="cta_url" class="form-control @error('cta_url') is-invalid @enderror" value="{{ old('cta_url', $service->cta_url) }}" placeholder="/contact">
+                                <input type="text" name="cta_url" class="form-control @error('cta_url') error-input-bottom @enderror" value="{{ old('cta_url', $service->cta_url) }}" placeholder="/contact">
                                 @error('cta_url')<div class="invalid-feedback">{{ $message }}</div>@enderror
                             </div>
                         </div>

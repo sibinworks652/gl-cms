@@ -3,6 +3,7 @@
 namespace Modules\Seo\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
 
 class SeoSetting extends Model
@@ -30,6 +31,10 @@ class SeoSetting extends Model
 
     public static function findFor(string $pageKey, string $pageType = 'page'): ?self
     {
+        if (! Schema::hasTable('seo_settings')) {
+            return null;
+        }
+
         return self::query()
             ->where('page_type', $pageType)
             ->where('page_key', trim($pageKey, '/'))
