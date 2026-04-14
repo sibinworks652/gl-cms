@@ -32,6 +32,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'role_or_permission' => RoleOrPermissionMiddleware::class,
             'lock' => \App\Http\Middleware\CheckIfLocked::class,
             'vendor.approved' => \App\Http\Middleware\VendorApproved::class,
+            'vendor.module' => \App\Http\Middleware\EcommerceVendorModuleEnabled::class,
         ]);
 
         $middleware->web(append: [

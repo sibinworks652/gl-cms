@@ -13,6 +13,11 @@ class CartResource extends JsonResource
             'id' => $this->id,
             'items_count' => $this->items_count,
             'subtotal' => $this->subtotal,
+            'coupon' => $this->coupon ? [
+                'id' => $this->coupon->id,
+                'code' => $this->coupon->code,
+                'discount_amount' => (float) $this->coupon_discount_amount,
+            ] : null,
             'items' => $this->items->map(fn ($item) => [
                 'id' => $item->id,
                 'quantity' => $item->quantity,

@@ -22,7 +22,7 @@
                         </select>
                     </div>
                     <div class="col-md-2">
-                        <button type="submit" class="btn btn-secondary">Filter</button>
+                        <button type="submit" class="btn btn-primary">Filter</button>
                     </div>
                 </form>
             </div>
@@ -66,20 +66,22 @@
                                     @endif
                                 </td>
                                 <td>{{ $vendor->created_at->format('M d, Y') }}</td>
-                                <td class="text-end d-flex gap-2 justify-content-end">
+                                <td class="text-end">
+                                    <div class="d-inline-flex gap-2">
                                     @if($vendor->status === 'pending')
                                         <form method="POST" action="{{ route('admin.ecommerce.vendors.approve', $vendor) }}" class="d-inline">
                                             @csrf
-                                            <button type="submit" class="btn btn-soft-success btn-sm"><iconify-icon icon="solar:check-circle-linear"></iconify-icon></button>
+                                            <button type="submit" class="btn btn-soft-success btn-sm"><iconify-icon icon="solar:check-circle-linear" width="16" height="16"></iconify-icon></button>
                                         </form>
-                                        <button type="button" class="btn btn-soft-danger btn-sm" data-bs-toggle="modal" data-bs-target="#rejectModal{{ $vendor->id }}"><iconify-icon icon="solar:close-circle-linear"></iconify-icon></button>
+                                        <button type="button" class="btn btn-soft-danger btn-sm" data-bs-toggle="modal" data-bs-target="#rejectModal{{ $vendor->id }}"><iconify-icon icon="solar:close-circle-linear" width="16" height="16"></iconify-icon></button>
                                     @endif
-                                    <a href="{{ route('admin.ecommerce.vendors.edit', $vendor) }}" class="btn btn-soft-warning btn-sm"><iconify-icon icon="solar:pen-new-square-linear"></iconify-icon></a>
+                                    <a href="{{ route('admin.ecommerce.vendors.edit', $vendor) }}" class="btn btn-soft-warning btn-sm"><iconify-icon icon="solar:pen-new-square-linear" width="16" height="16"></iconify-icon></a>
                                     <form method="POST" action="{{ route('admin.ecommerce.vendors.destroy', $vendor) }}" class="d-inline" data-confirm="Delete this vendor?">
                                         @csrf
                                         @method('DELETE')
-                                        <button class="btn btn-soft-danger btn-sm" type="submit"><iconify-icon icon="solar:trash-bin-trash-linear"></iconify-icon></button>
+                                        <button class="btn btn-soft-danger btn-sm" type="submit"><iconify-icon icon="solar:trash-bin-trash-linear" width="16" height="16"></iconify-icon></button>
                                     </form>
+                                    </div>
                                 </td>
                             </tr>
                             @if($vendor->status === 'pending')
@@ -99,7 +101,7 @@
                                                     </div>
                                                 </div>
                                                 <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cancel</button>
                                                     <button type="submit" class="btn btn-danger">Reject</button>
                                                 </div>
                                             </form>

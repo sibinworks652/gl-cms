@@ -22,6 +22,7 @@ class SettingsPermissionSeeder extends Seeder
             'settings.system.update',
             'settings.admin.update',
             'settings.modules.update',
+            'settings.ecommerce_settings.update',
             'settings.social.update',
             'settings.analytics.update',
         ];

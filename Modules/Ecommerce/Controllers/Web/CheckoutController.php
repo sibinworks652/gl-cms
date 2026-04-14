@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Modules\Ecommerce\Requests\CheckoutRequest;
 use Modules\Ecommerce\Services\CartManager;
 use Modules\Ecommerce\Services\OrderManager;
+use Modules\Ecommerce\Support\EcommerceSettings;
 
 class CheckoutController extends Controller
 {
@@ -23,6 +24,8 @@ class CheckoutController extends Controller
 
         return view('ecommerce::web.checkout', [
             'cart' => $cart,
+            'totals' => $this->cartManager->totals($cart),
+            'paymentMethods' => EcommerceSettings::enabledPaymentMethods(),
         ]);
     }
 

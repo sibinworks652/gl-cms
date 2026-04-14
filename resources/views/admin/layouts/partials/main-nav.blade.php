@@ -1,5 +1,7 @@
 <div class="main-nav">
      @php($adminUser = auth('admin')->user())
+     @php($vendorUser = auth()->user())
+     @php($vendorAccount = $vendorUser ? \Modules\Ecommerce\Models\Vendor::where('user_id', $vendorUser->id)->first() : null)
      @php($adminLogo = \Modules\Settings\Models\Setting::value('admin_logo'))
      @php($hasRoute = static fn (string $name): bool => \Illuminate\Support\Facades\Route::has($name))
      @php($routeUrl = static fn (string $name, mixed $parameters = []): string => $hasRoute($name) ? route($name, $parameters) : 'javascript:void(0);')
@@ -35,6 +37,45 @@
                               </span>
                               <span class="nav-text"> Dashboard </span>
                          </a>
+                    </li>
+               @endif
+
+               @if($vendorAccount && request()->routeIs('vendor.*'))
+                    @php($vendorMenuOpen = request()->routeIs('vendor.products.*') || request()->routeIs('vendor.orders.*') || request()->routeIs('vendor.dashboard'))
+                    <li class="nav-item">
+                         <a class="nav-link {{ request()->routeIs('vendor.dashboard') ? 'active' : '' }}" href="{{ $routeUrl('vendor.dashboard') }}">
+                              <span class="nav-icon">
+                                   <iconify-icon icon="solar:shop-2-bold-duotone"></iconify-icon>
+                              </span>
+                              <span class="nav-text"> Vendor Dashboard </span>
+                         </a>
+                    </li>
+                    <li class="nav-item">
+                         <a class="nav-link menu-arrow {{ $vendorMenuOpen ? 'active' : '' }}" href="#sidebarVendorPortal" data-bs-toggle="collapse" role="button" aria-expanded="{{ $vendorMenuOpen ? 'true' : 'false' }}" aria-controls="sidebarVendorPortal">
+                              <span class="nav-icon">
+                                   <iconify-icon icon="solar:bag-5-bold-duotone"></iconify-icon>
+                              </span>
+                              <span class="nav-text"> Vendor Portal </span>
+                         </a>
+                         <div class="collapse {{ $vendorMenuOpen ? 'show' : '' }}" id="sidebarVendorPortal">
+                              <ul class="nav sub-navbar-nav">
+                                   @if($hasRoute('vendor.products.index'))
+                                        <li class="sub-nav-item">
+                                             <a class="sub-nav-link {{ request()->routeIs('vendor.products.index') ? 'active' : '' }}" href="{{ $routeUrl('vendor.products.index') }}">My Products</a>
+                                        </li>
+                                   @endif
+                                   @if($hasRoute('vendor.products.create'))
+                                        <li class="sub-nav-item">
+                                             <a class="sub-nav-link {{ request()->routeIs('vendor.products.create') ? 'active' : '' }}" href="{{ $routeUrl('vendor.products.create') }}">Add Product</a>
+                                        </li>
+                                   @endif
+                                   @if($hasRoute('vendor.orders.index'))
+                                        <li class="sub-nav-item">
+                                             <a class="sub-nav-link {{ request()->routeIs('vendor.orders.*') ? 'active' : '' }}" href="{{ $routeUrl('vendor.orders.index') }}">Orders</a>
+                                        </li>
+                                   @endif
+                              </ul>
+                         </div>
                     </li>
                @endif
 
@@ -175,7 +216,7 @@
                     </li>
                @endif
 
-               @if($moduleEnabled('ecommerce') && (($adminUser?->can('products.view') && $hasRoute('admin.ecommerce.products.index')) || ($adminUser?->can('product-categories.view') && $hasRoute('admin.ecommerce.categories.index')) || ($adminUser?->can('vendors.view') && $hasRoute('admin.ecommerce.vendors.index')) || ($adminUser?->can('orders.view') && $hasRoute('admin.ecommerce.orders.index'))))
+               @if($moduleEnabled('ecommerce') && (($adminUser?->can('products.view') && $hasRoute('admin.ecommerce.products.index')) || ($adminUser?->can('product-categories.view') && $hasRoute('admin.ecommerce.categories.index')) || ($adminUser?->can('products.view') && $hasRoute('admin.ecommerce.brands.index')) || ($adminUser?->can('products.view') && $hasRoute('admin.ecommerce.attributes.index')) || ($adminUser?->can('products.view') && $hasRoute('admin.ecommerce.tags.index')) || ($adminUser?->can('products.view') && $hasRoute('admin.ecommerce.inventory.index')) || ($adminUser?->can('products.view') && $hasRoute('admin.ecommerce.discounts.index')) || ($adminUser?->can('products.view') && $hasRoute('admin.ecommerce.coupons.index')) || ($adminUser?->can('vendors.view') && $hasRoute('admin.ecommerce.vendors.index')) || ($adminUser?->can('orders.view') && $hasRoute('admin.ecommerce.orders.index'))))
                     @php($ecommerceMenuOpen = request()->routeIs('admin.ecommerce.*'))
                     <li class="nav-item">
                          <a class="nav-link menu-arrow {{ $ecommerceMenuOpen ? 'active' : '' }}" href="#sidebarEcommerce" data-bs-toggle="collapse" role="button" aria-expanded="{{ $ecommerceMenuOpen ? 'true' : 'false' }}" aria-controls="sidebarEcommerce">
@@ -194,6 +235,36 @@
                                    @if($adminUser?->can('product-categories.view') && $hasRoute('admin.ecommerce.categories.index'))
                                         <li class="sub-nav-item">
                                              <a class="sub-nav-link {{ request()->routeIs('admin.ecommerce.categories.*') ? 'active' : '' }}" href="{{ $routeUrl('admin.ecommerce.categories.index') }}">Categories</a>
+                                        </li>
+                                   @endif
+                                   @if($adminUser?->can('products.view') && $hasRoute('admin.ecommerce.brands.index'))
+                                        <li class="sub-nav-item">
+                                             <a class="sub-nav-link {{ request()->routeIs('admin.ecommerce.brands.*') ? 'active' : '' }}" href="{{ $routeUrl('admin.ecommerce.brands.index') }}">Brands</a>
+                                        </li>
+                                   @endif
+                                   @if($adminUser?->can('products.view') && $hasRoute('admin.ecommerce.attributes.index'))
+                                        <li class="sub-nav-item">
+                                             <a class="sub-nav-link {{ request()->routeIs('admin.ecommerce.attributes.*') ? 'active' : '' }}" href="{{ $routeUrl('admin.ecommerce.attributes.index') }}">Attributes</a>
+                                        </li>
+                                   @endif
+                                   @if($adminUser?->can('products.view') && $hasRoute('admin.ecommerce.tags.index'))
+                                        <li class="sub-nav-item">
+                                             <a class="sub-nav-link {{ request()->routeIs('admin.ecommerce.tags.*') ? 'active' : '' }}" href="{{ $routeUrl('admin.ecommerce.tags.index') }}">Tags</a>
+                                        </li>
+                                   @endif
+                                   @if($adminUser?->can('products.view') && $hasRoute('admin.ecommerce.inventory.index'))
+                                        <li class="sub-nav-item">
+                                             <a class="sub-nav-link {{ request()->routeIs('admin.ecommerce.inventory.*') ? 'active' : '' }}" href="{{ $routeUrl('admin.ecommerce.inventory.index') }}">Inventory</a>
+                                        </li>
+                                   @endif
+                                   @if($adminUser?->can('products.view') && $hasRoute('admin.ecommerce.discounts.index'))
+                                        <li class="sub-nav-item">
+                                             <a class="sub-nav-link {{ request()->routeIs('admin.ecommerce.discounts.*') ? 'active' : '' }}" href="{{ $routeUrl('admin.ecommerce.discounts.index') }}">Discounts</a>
+                                        </li>
+                                   @endif
+                                   @if($adminUser?->can('products.view') && $hasRoute('admin.ecommerce.coupons.index'))
+                                        <li class="sub-nav-item">
+                                             <a class="sub-nav-link {{ request()->routeIs('admin.ecommerce.coupons.*') ? 'active' : '' }}" href="{{ $routeUrl('admin.ecommerce.coupons.index') }}">Coupons</a>
                                         </li>
                                    @endif
                                    @if($adminUser?->can('vendors.view') && $hasRoute('admin.ecommerce.vendors.index'))
@@ -327,7 +398,7 @@
                     </li>
                @endif
 
-               @if((($adminUser?->can('settings.view') || $adminUser?->can('settings.mail.update') || $adminUser?->can('settings.general.update') || $adminUser?->can('settings.system.update') || $adminUser?->can('settings.admin.update') || $adminUser?->can('settings.modules.update') || $adminUser?->can('settings.update') || $adminUser?->can('settings.social.update') || $adminUser?->can('settings.analytics.update')) && ($hasRoute('admin.settings.show') || $hasRoute('admin.settings.section.edit'))) || ($moduleEnabled('email') && $adminUser?->can('email.view') && $hasRoute('admin.email.settings.edit')))
+               @if((($adminUser?->can('settings.view') || $adminUser?->can('settings.mail.update') || $adminUser?->can('settings.general.update') || $adminUser?->can('settings.system.update') || $adminUser?->can('settings.admin.update') || $adminUser?->can('settings.modules.update') || $adminUser?->can('settings.ecommerce_settings.update') || $adminUser?->can('settings.update') || $adminUser?->can('settings.social.update') || $adminUser?->can('settings.analytics.update')) && ($hasRoute('admin.settings.show') || $hasRoute('admin.settings.section.edit'))) || ($moduleEnabled('email') && $adminUser?->can('email.view') && $hasRoute('admin.email.settings.edit')))
                     @php($settingsMenuOpen = request()->routeIs('admin.settings.*') || request()->routeIs('admin.email.*'))
                     <li class="nav-item">
                          <a class="nav-link menu-arrow {{ $settingsMenuOpen ? 'active' : '' }}" href="#sidebarSettings" data-bs-toggle="collapse" role="button" aria-expanded="{{ $settingsMenuOpen ? 'true' : 'false' }}" aria-controls="sidebarSettings">
@@ -366,6 +437,11 @@
                                    @if(($adminUser?->can('settings.modules.update') || $adminUser?->can('settings.update')) && $hasRoute('admin.settings.section.edit'))
                                         <li class="sub-nav-item">
                                              <a class="sub-nav-link {{ request()->routeIs('admin.settings.section.edit') && request()->route('section') === 'modules' ? 'active' : '' }}" href="{{ $routeUrl('admin.settings.section.edit', 'modules') }}">Modules</a>
+                                        </li>
+                                   @endif
+                                   @if($adminUser?->can('settings.ecommerce_settings.update') && $hasRoute('admin.settings.section.edit'))
+                                        <li class="sub-nav-item">
+                                             <a class="sub-nav-link {{ request()->routeIs('admin.settings.section.edit') && request()->route('section') === 'ecommerce_settings' ? 'active' : '' }}" href="{{ $routeUrl('admin.settings.section.edit', 'ecommerce_settings') }}">Ecommerce Settings</a>
                                         </li>
                                    @endif
                                    @if($adminUser?->can('settings.social.update') && $hasRoute('admin.settings.section.edit'))

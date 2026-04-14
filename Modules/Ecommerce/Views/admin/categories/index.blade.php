@@ -29,12 +29,14 @@
                                 <td>{{ $category->parent?->name ?? 'Root' }}</td>
                                 <td><span class="badge {{ $category->status ? 'bg-success-subtle text-success' : 'bg-danger-subtle text-danger' }}">{{ $category->status ? 'Active' : 'Inactive' }}</span></td>
                                 <td class="text-end">
-                                    <a href="{{ route('admin.ecommerce.categories.edit', $category) }}" class="btn btn-soft-warning btn-sm">Edit</a>
+                                    <div class="d-inline-flex gap-2">
+                                    <a href="{{ route('admin.ecommerce.categories.edit', $category) }}" class="btn btn-soft-warning btn-sm"><iconify-icon icon="solar:pen-new-square-linear" width="16" height="16"></iconify-icon></a>
                                     <form method="POST" action="{{ route('admin.ecommerce.categories.destroy', $category) }}" class="d-inline" data-confirm="Delete this category?">
                                         @csrf
                                         @method('DELETE')
-                                        <button class="btn btn-soft-danger btn-sm" type="submit">Delete</button>
+                                        <button class="btn btn-soft-danger btn-sm" type="submit"><iconify-icon icon="solar:trash-bin-trash-linear" width="16" height="16"></iconify-icon></button>
                                     </form>
+                                    </div>
                                 </td>
                             </tr>
                         @empty

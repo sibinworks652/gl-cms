@@ -12,6 +12,9 @@ class Cart extends Model
     protected $fillable = [
         'user_id',
         'session_id',
+        'coupon_id',
+        'coupon_code',
+        'coupon_discount_amount',
     ];
 
     protected $appends = [
@@ -27,6 +30,11 @@ class Cart extends Model
     public function items(): HasMany
     {
         return $this->hasMany(CartItem::class);
+    }
+
+    public function coupon(): BelongsTo
+    {
+        return $this->belongsTo(Coupon::class);
     }
 
     public function getSubtotalAttribute(): float

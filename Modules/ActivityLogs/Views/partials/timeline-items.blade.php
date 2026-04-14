@@ -1,4 +1,5 @@
- <div class="row">
+<div id="activity-log-feed" data-feed-url="{{ route('admin.activity-logs.feed', request()->query()) }}">
+<div class="row">
      <div class="col-12">
          <h5 class="card-title mb-3">Activity Logs </h5>
          @forelse($groupedLogs as $date => $dayLogs)
@@ -45,3 +46,33 @@
          @endforelse
      </div>
  </div>
+</div>
+@push('scripts')
+<script>
+(() => {
+    const feed = document.getElementById('activity-log-feed');
+    if (!feed) return;
+
+    async function refreshFeed() {
+        try {
+            const response = await fetch(feed.dataset.feedUrl, {
+                headers: {
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest',
+                },
+                credentials: 'same-origin',
+            });
+
+            if (!response.ok) return;
+            const result = await response.json();
+            if (typeof result.html === 'string') {
+                feed.innerHTML = result.html;
+            }
+        } catch (error) {
+        }
+    }
+
+    window.setInterval(refreshFeed, 15000);
+})();
+</script>
+@endpush

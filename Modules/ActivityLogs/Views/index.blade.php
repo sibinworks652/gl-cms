@@ -38,9 +38,7 @@
             </div>
         </div>
 
-        <div id="activity-log-feed" data-feed-url="{{ route('admin.activity-logs.feed', request()->query()) }}">
-            @include('activity-logs::partials.timeline-items', ['groupedLogs' => $groupedLogs])
-        </div>
+        @include('activity-logs::partials.timeline-items', ['groupedLogs' => $groupedLogs])
 
         <div class="mt-3">
             {{ $logs->links('admin.vendor.pagination') }}
@@ -48,32 +46,4 @@
     </div>
 @endsection
 
-@push('scripts')
-<script>
-(() => {
-    const feed = document.getElementById('activity-log-feed');
-    if (!feed) return;
 
-    async function refreshFeed() {
-        try {
-            const response = await fetch(feed.dataset.feedUrl, {
-                headers: {
-                    'Accept': 'application/json',
-                    'X-Requested-With': 'XMLHttpRequest',
-                },
-                credentials: 'same-origin',
-            });
-
-            if (!response.ok) return;
-            const result = await response.json();
-            if (typeof result.html === 'string') {
-                feed.innerHTML = result.html;
-            }
-        } catch (error) {
-        }
-    }
-
-    window.setInterval(refreshFeed, 15000);
-})();
-</script>
-@endpush

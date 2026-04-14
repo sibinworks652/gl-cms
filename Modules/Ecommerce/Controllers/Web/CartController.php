@@ -4,6 +4,7 @@ namespace Modules\Ecommerce\Controllers\Web;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Modules\Ecommerce\Models\CartItem;
 use Modules\Ecommerce\Models\Product;
 use Modules\Ecommerce\Models\ProductVariant;
@@ -19,8 +20,11 @@ class CartController extends Controller
 
     public function index()
     {
+        $cart = $this->cartManager->resolve(auth()->user(), session()->getId());
+
         return view('ecommerce::web.cart', [
-            'cart' => $this->cartManager->resolve(auth()->user(), session()->getId()),
+            'cart' => $cart,
+            'totals' => $this->cartManager->totals($cart),
         ]);
     }
 
@@ -35,7 +39,9 @@ class CartController extends Controller
         $cart = $this->cartManager->add($cart, $product, $request->integer('quantity', 1), $variant);
 
         return response()->json([
+            'success' => true,
             'message' => 'Product added to cart.',
+            'cart_count' => $cart->items_count,
             'cart' => new \Modules\Ecommerce\Resources\CartResource($cart),
         ]);
     }
@@ -45,7 +51,9 @@ class CartController extends Controller
         $cart = $this->cartManager->updateQuantity($item, $request->integer('quantity', 1));
 
         return response()->json([
+            'success' => true,
             'message' => 'Cart updated successfully.',
+            'cart_count' => $cart->items_count,
             'cart' => new \Modules\Ecommerce\Resources\CartResource($cart),
         ]);
     }
@@ -55,7 +63,37 @@ class CartController extends Controller
         $cart = $this->cartManager->remove($item);
 
         return response()->json([
+            'success' => true,
             'message' => 'Item removed from cart.',
+            'cart_count' => $cart->items_count,
+            'cart' => new \Modules\Ecommerce\Resources\CartResource($cart),
+        ]);
+    }
+
+    public function applyCoupon(Request $request): JsonResponse
+    {
+        $request->validate([
+            'coupon_code' => ['required', 'string', 'max:50'],
+        ]);
+
+        $cart = $this->cartManager->resolve(auth()->user(), session()->getId());
+        $cart = $this->cartManager->applyCoupon($cart, $request->input('coupon_code'));
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Coupon applied successfully.',
+            'cart' => new \Modules\Ecommerce\Resources\CartResource($cart),
+        ]);
+    }
+
+    public function removeCoupon(): JsonResponse
+    {
+        $cart = $this->cartManager->resolve(auth()->user(), session()->getId());
+        $cart = $this->cartManager->removeCoupon($cart);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Coupon removed successfully.',
             'cart' => new \Modules\Ecommerce\Resources\CartResource($cart),
         ]);
     }

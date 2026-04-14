@@ -157,7 +157,7 @@
                          </a>
                          <div class="dropdown-menu dropdown-menu-end">
                               <!-- item-->
-                              <h6 class="dropdown-header">Welcome {{ auth('admin')->user()->name ?? 'Admin' }}!</h6>
+                              <h6 class="dropdown-header">Welcome {{ Auth::user()->name ?? 'Admin' }}!</h6>
                               <a class="dropdown-item" href="#">
                                    <i class="bx bx-user-circle text-muted fs-18 align-middle me-1"></i><span class="align-middle">Profile</span>
                               </a>

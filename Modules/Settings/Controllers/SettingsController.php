@@ -248,7 +248,14 @@ class SettingsController extends Controller
 
     protected function encryptedSettingKeys(): array
     {
-        return ['mail_password'];
+        return [
+            'mail_password',
+            'razorpay_secret',
+            'stripe_secret',
+            'stripe_webhook_secret',
+            'paypal_secret',
+            'paystack_secret_key',
+        ];
     }
 
     protected function shouldKeepSecret(mixed $value): bool
@@ -373,6 +380,25 @@ class SettingsController extends Controller
             'admin_sidebar_hover_color' => ['nullable', 'regex:/^#([A-Fa-f0-9]{6})$/'],
             'admin_page_bg' => ['nullable', 'regex:/^#([A-Fa-f0-9]{6})$/'],
             'admin_dark_mode_enabled' => ['nullable', Rule::in(['0', '1'])],
+            'ecommerce_vendor_module_enabled' => ['nullable', Rule::in(['0', '1'])],
+            'ecommerce_vendor_auto_approve' => ['nullable', Rule::in(['0', '1'])],
+            'ecommerce_vendor_default_commission_rate' => ['nullable', 'numeric', 'min:0', 'max:100'],
+            'ecommerce_payment_cod_enabled' => ['nullable', Rule::in(['0', '1'])],
+            'ecommerce_payment_razorpay_enabled' => ['nullable', Rule::in(['0', '1'])],
+            'ecommerce_payment_stripe_enabled' => ['nullable', Rule::in(['0', '1'])],
+            'ecommerce_payment_paypal_enabled' => ['nullable', Rule::in(['0', '1'])],
+            'ecommerce_payment_paystack_enabled' => ['nullable', Rule::in(['0', '1'])],
+            'ecommerce_payment_default_currency' => ['nullable', 'string', 'max:10'],
+            'razorpay_key' => ['nullable', 'string', 'max:255'],
+            'razorpay_secret' => ['nullable', 'string', 'max:255'],
+            'stripe_key' => ['nullable', 'string', 'max:255'],
+            'stripe_secret' => ['nullable', 'string', 'max:255'],
+            'stripe_webhook_secret' => ['nullable', 'string', 'max:255'],
+            'paypal_client_id' => ['nullable', 'string', 'max:255'],
+            'paypal_secret' => ['nullable', 'string', 'max:255'],
+            'paypal_mode' => ['nullable', Rule::in(['sandbox', 'live'])],
+            'paystack_public_key' => ['nullable', 'string', 'max:255'],
+            'paystack_secret_key' => ['nullable', 'string', 'max:255'],
 
             'facebook_url' => $this->socialUrlRules('Facebook', ['facebook.com', 'www.facebook.com']),
             'instagram_url' => $this->socialUrlRules('Instagram', ['instagram.com', 'www.instagram.com']),
@@ -523,6 +549,31 @@ class SettingsController extends Controller
                 'description' => 'Enable or disable optional CMS modules from one place.',
                 'fields' => ModuleRegistry::settingsFields(),
             ],
+            'ecommerce_settings' => [
+                'title' => 'Ecommerce Settings',
+                'description' => 'Vendor workflow and ecommerce payment method switches.',
+                'fields' => [
+                    'ecommerce_vendor_module_enabled' => ['label' => 'Vendor Module Enabled', 'type' => 'boolean'],
+                    'ecommerce_vendor_auto_approve' => ['label' => 'Vendor Auto Approve', 'type' => 'boolean'],
+                    'ecommerce_vendor_default_commission_rate' => ['label' => 'Default Vendor Commission Rate (%)', 'type' => 'text'],
+                    'ecommerce_payment_cod_enabled' => ['label' => 'COD Enabled', 'type' => 'boolean'],
+                    'ecommerce_payment_razorpay_enabled' => ['label' => 'Razorpay Enabled', 'type' => 'boolean'],
+                    'ecommerce_payment_stripe_enabled' => ['label' => 'Stripe Enabled', 'type' => 'boolean'],
+                    'ecommerce_payment_paypal_enabled' => ['label' => 'PayPal Enabled', 'type' => 'boolean'],
+                    'ecommerce_payment_paystack_enabled' => ['label' => 'Paystack Enabled', 'type' => 'boolean'],
+                    'ecommerce_payment_default_currency' => ['label' => 'Default Payment Currency', 'type' => 'text'],
+                    'razorpay_key' => ['label' => 'Razorpay Key', 'type' => 'text'],
+                    'razorpay_secret' => ['label' => 'Razorpay Secret', 'type' => 'password'],
+                    'stripe_key' => ['label' => 'Stripe Publishable Key', 'type' => 'text'],
+                    'stripe_secret' => ['label' => 'Stripe Secret Key', 'type' => 'password'],
+                    'stripe_webhook_secret' => ['label' => 'Stripe Webhook Secret', 'type' => 'password'],
+                    'paypal_client_id' => ['label' => 'PayPal Client ID', 'type' => 'text'],
+                    'paypal_secret' => ['label' => 'PayPal Secret', 'type' => 'password'],
+                    'paypal_mode' => ['label' => 'PayPal Mode', 'type' => 'text'],
+                    'paystack_public_key' => ['label' => 'Paystack Public Key', 'type' => 'text'],
+                    'paystack_secret_key' => ['label' => 'Paystack Secret Key', 'type' => 'password'],
+                ],
+            ],
             'social' => [
                 'title' => 'Social Media Settings',
                 'description' => 'Public profile links for header, footer, or contact areas.',
@@ -564,6 +615,16 @@ class SettingsController extends Controller
             'APP_DEBUG' => $this->stringifyEnvBoolean($settings['debug_mode'] ?? '0'),
             'APP_ENV' => $settings['app_env'] ?? config('app.env'),
             'APP_URL' => $settings['app_url'] ?? config('app.url'),
+            'RAZORPAY_KEY' => $settings['razorpay_key'] ?? config('services.razorpay.key'),
+            'RAZORPAY_SECRET' => $this->decryptSettingValue($settings['razorpay_secret'] ?? null) ?? config('services.razorpay.secret'),
+            'STRIPE_KEY' => $settings['stripe_key'] ?? config('services.stripe.key'),
+            'STRIPE_SECRET' => $this->decryptSettingValue($settings['stripe_secret'] ?? null) ?? config('services.stripe.secret'),
+            'STRIPE_WEBHOOK_SECRET' => $this->decryptSettingValue($settings['stripe_webhook_secret'] ?? null) ?? config('services.stripe.webhook_secret'),
+            'PAYPAL_CLIENT_ID' => $settings['paypal_client_id'] ?? config('services.paypal.client_id'),
+            'PAYPAL_SECRET' => $this->decryptSettingValue($settings['paypal_secret'] ?? null) ?? config('services.paypal.secret'),
+            'PAYPAL_MODE' => $settings['paypal_mode'] ?? config('services.paypal.mode', 'sandbox'),
+            'PAYSTACK_PUBLIC_KEY' => $settings['paystack_public_key'] ?? config('services.paystack.public_key'),
+            'PAYSTACK_SECRET_KEY' => $this->decryptSettingValue($settings['paystack_secret_key'] ?? null) ?? config('services.paystack.secret_key'),
         ];
 
         foreach (ModuleRegistry::definitions() as $moduleKey => $definition) {
@@ -601,6 +662,16 @@ class SettingsController extends Controller
             'app.url' => $settings['app_url'] ?? config('app.url'),
             'mail.mailers.smtp.password' => $this->decryptSettingValue($settings['mail_password'] ?? null) ?? config('mail.mailers.smtp.password'),
             'settings.cache_enabled' => $this->toBoolean($settings['cache_enabled'] ?? '1'),
+            'services.razorpay.key' => $settings['razorpay_key'] ?? config('services.razorpay.key'),
+            'services.razorpay.secret' => $this->decryptSettingValue($settings['razorpay_secret'] ?? null) ?? config('services.razorpay.secret'),
+            'services.stripe.key' => $settings['stripe_key'] ?? config('services.stripe.key'),
+            'services.stripe.secret' => $this->decryptSettingValue($settings['stripe_secret'] ?? null) ?? config('services.stripe.secret'),
+            'services.stripe.webhook_secret' => $this->decryptSettingValue($settings['stripe_webhook_secret'] ?? null) ?? config('services.stripe.webhook_secret'),
+            'services.paypal.client_id' => $settings['paypal_client_id'] ?? config('services.paypal.client_id'),
+            'services.paypal.secret' => $this->decryptSettingValue($settings['paypal_secret'] ?? null) ?? config('services.paypal.secret'),
+            'services.paypal.mode' => $settings['paypal_mode'] ?? config('services.paypal.mode', 'sandbox'),
+            'services.paystack.public_key' => $settings['paystack_public_key'] ?? config('services.paystack.public_key'),
+            'services.paystack.secret_key' => $this->decryptSettingValue($settings['paystack_secret_key'] ?? null) ?? config('services.paystack.secret_key'),
         ]);
 
         foreach (ModuleRegistry::definitions() as $moduleKey => $definition) {

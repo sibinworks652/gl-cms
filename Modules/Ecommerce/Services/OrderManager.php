@@ -12,31 +12,29 @@ class OrderManager
 {
     public function __construct(
         protected PaymentManager $payments,
+        protected PricingManager $pricing,
     ) {
     }
 
     public function placeOrder(Cart $cart, array $data, ?User $user = null): Order
     {
         return DB::transaction(function () use ($cart, $data, $user) {
-            $cart->loadMissing(['items.product.vendor', 'items.variant']);
-
-            $subtotal = (float) $cart->items->sum(fn ($item) => $item->line_total);
-            $taxAmount = (float) ($data['tax_amount'] ?? 0);
-            $shippingAmount = (float) ($data['shipping_amount'] ?? 0);
-            $discountAmount = (float) ($data['discount_amount'] ?? 0);
-            $grandTotal = $subtotal + $taxAmount + $shippingAmount - $discountAmount;
+            $cart->loadMissing(['items.product.category.discounts', 'items.product.discounts', 'items.product.vendor', 'items.variant', 'coupon']);
+            $totals = $this->pricing->cartTotals($cart, $cart->coupon);
 
             $order = Order::create([
                 'user_id' => $user?->id,
+                'coupon_id' => $cart->coupon_id,
+                'coupon_code' => $cart->coupon_code,
                 'order_number' => 'ORD-' . now()->format('Ymd') . '-' . Str::upper(Str::random(6)),
                 'status' => 'pending',
                 'payment_status' => $data['payment_method'] === 'cod' ? 'pending' : 'processing',
                 'payment_method' => $data['payment_method'],
-                'subtotal' => $subtotal,
-                'tax_amount' => $taxAmount,
-                'shipping_amount' => $shippingAmount,
-                'discount_amount' => $discountAmount,
-                'grand_total' => $grandTotal,
+                'subtotal' => $totals['subtotal'],
+                'tax_amount' => $totals['tax_total'],
+                'shipping_amount' => $totals['shipping_total'],
+                'discount_amount' => $totals['product_discount_total'] + $totals['coupon_discount_total'],
+                'grand_total' => $totals['grand_total'],
                 'customer_name' => $data['customer_name'],
                 'customer_email' => $data['customer_email'],
                 'customer_phone' => $data['customer_phone'] ?? null,
@@ -66,8 +64,17 @@ class OrderManager
                 }
             }
 
+            if ($cart->coupon) {
+                $cart->coupon->increment('used_count');
+            }
+
             $this->payments->createForOrder($order, $data['payment_method']);
             $cart->items()->delete();
+            $cart->update([
+                'coupon_id' => null,
+                'coupon_code' => null,
+                'coupon_discount_amount' => 0,
+            ]);
 
             return $order->fresh(['items.vendor', 'payments']);
         }, 3);

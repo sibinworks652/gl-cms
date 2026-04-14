@@ -3,15 +3,69 @@
 namespace Modules\Ecommerce\Controllers\Vendor;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\ValidationException;
+use Modules\Ecommerce\Models\Vendor;
+use Modules\Ecommerce\Models\Product;
+use Modules\Ecommerce\Models\Order;
+use Modules\Ecommerce\Models\OrderItem;
 use Modules\Ecommerce\Requests\VendorRegistrationRequest;
 use Modules\Ecommerce\Services\CatalogManager;
+use Modules\Ecommerce\Services\VendorService;
 
 class VendorController extends Controller
 {
     public function __construct(
         protected CatalogManager $catalog,
+        protected VendorService $vendorService,
     ) {
+    }
+
+    public function showLoginForm()
+    {
+        return view('ecommerce::vendor.login');
+    }
+
+    public function login(Request $request): RedirectResponse
+    {
+        $credentials = $request->validate([
+            'email' => ['required', 'email'],
+            'password' => ['required', 'string'],
+        ]);
+
+        $user = \App\Models\User::where('email', $credentials['email'])->first();
+
+        if (!$user || !Auth::guard('web')->attempt($credentials)) {
+            return back()->withErrors(['email' => 'Invalid credentials.'])->onlyInput('email');
+        }
+
+        $vendor = Vendor::where('user_id', $user->id)->first();
+
+        if (!$vendor) {
+            Auth::guard('web')->logout();
+            return back()->withErrors(['email' => 'No vendor account found for this email.'])->onlyInput('email');
+        }
+
+        if (!$vendor->isApproved()) {
+            Auth::guard('web')->logout();
+            $request->session()->put('vendor_id', $vendor->id);
+            return redirect()->route('vendor.pending');
+        }
+
+        $request->session()->regenerate();
+
+        return redirect()->intended(route('vendor.dashboard'));
+    }
+
+    public function logout(Request $request): RedirectResponse
+    {
+        Auth::guard('web')->logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect()->route('vendor.login');
     }
 
     public function showRegistrationForm()
@@ -19,20 +73,31 @@ class VendorController extends Controller
         return view('ecommerce::vendor.register');
     }
 
+    public function pending()
+    {
+        $vendorId = session('vendor_id');
+        if (!$vendorId) {
+            return redirect()->route('vendor.login');
+        }
+
+        $vendor = Vendor::findOrFail($vendorId);
+
+        return view('ecommerce::vendor.pending', ['vendor' => $vendor]);
+    }
+
     public function register(VendorRegistrationRequest $request)
     {
         $user = $request->user() ?? \App\Models\User::where('email', $request->input('email'))->first();
-        
+
         if (!$user) {
             $user = \App\Models\User::create([
                 'name' => $request->input('name'),
                 'email' => $request->input('email'),
                 'password' => bcrypt($request->input('password')),
             ]);
-            $user->assignRole('vendor');
         } else {
-            $existingVendor = \Modules\Ecommerce\Models\Vendor::where('user_id', $user->id)->first();
-            
+            $existingVendor = Vendor::where('user_id', $user->id)->first();
+
             if ($existingVendor) {
                 if ($existingVendor->isPending()) {
                     return redirect()->back()->with('info', 'Your vendor application is pending approval.');
@@ -45,47 +110,37 @@ class VendorController extends Controller
                         'status' => 'pending',
                         'rejection_reason' => null,
                     ]);
-                    return redirect()->route('vendor.dashboard')->with('success', 'Your vendor application has been resubmitted.');
+                    $request->session()->put('vendor_id', $existingVendor->id);
+                    return redirect()->route('vendor.pending')->with('success', 'Your vendor application has been resubmitted.');
                 }
             }
-            
-            $user->assignRole('vendor');
+
         }
 
         $data = $request->validated();
         $data['store_name'] = $data['store_name'] ?? $data['name'];
-        
+
         $vendor = $this->catalog->registerVendor($user, $data);
 
-        \Illuminate\Support\Facades\Auth::login($user);
+        Auth::guard('web')->login($user);
 
-        return redirect()->route('vendor.dashboard')->with('success', 'Vendor account created! Pending admin approval.');
+        if ($vendor->isApproved()) {
+            return redirect()->route('vendor.dashboard')->with('success', 'Vendor account approved successfully.');
+        }
+
+        return redirect()->route('vendor.pending')->with('success', 'Vendor account created! Pending admin approval.');
     }
 
     public function dashboard(Request $request)
     {
+        // dd($request->user());
         $user = $request->user();
-        $vendor = \Modules\Ecommerce\Models\Vendor::where('user_id', $user->id)->firstOrFail();
+        $vendor = $this->vendorService->getVendorOrFail($user);
 
-        if (!$vendor->isApproved()) {
-            return view('ecommerce::vendor.pending', [
-                'vendor' => $vendor,
-            ]);
-        }
-
-        $stats = [
-            'total_products' => $vendor->products()->count(),
-            'total_orders' => \Modules\Ecommerce\Models\OrderItem::where('vendor_id', $vendor->id)
-                ->distinct('order_id')
-                ->count('order_id'),
-            'pending_orders' => \Modules\Ecommerce\Models\OrderItem::where('vendor_id', $vendor->id)
-                ->whereHas('order', fn ($query) => $query->where('status', 'pending'))
-                ->distinct('order_id')
-                ->count('order_id'),
-        ];
-
+        $stats = $this->vendorService->getDashboardStats($vendor);
+        // dd($stats);
         $products = $vendor->products()->latest()->take(5)->get();
-        $orders = \Modules\Ecommerce\Models\Order::whereHas('items', fn ($query) => $query->where('vendor_id', $vendor->id))
+        $orders = Order::whereHas('items', fn ($query) => $query->where('vendor_id', $vendor->id))
             ->with(['items' => fn ($query) => $query->where('vendor_id', $vendor->id)])
             ->latest()
             ->take(5)
@@ -101,8 +156,7 @@ class VendorController extends Controller
 
     public function products(Request $request)
     {
-        $user = $request->user();
-        $vendor = \Modules\Ecommerce\Models\Vendor::where('user_id', $user->id)->firstOrFail();
+        $vendor = $this->vendorService->getVendorOrFail($request->user());
 
         $products = $vendor->products()
             ->when($request->filled('search'), fn ($query) => $query->where('name', 'like', '%' . $request->input('search') . '%'))
@@ -119,10 +173,9 @@ class VendorController extends Controller
 
     public function orders(Request $request)
     {
-        $user = $request->user();
-        $vendor = \Modules\Ecommerce\Models\Vendor::where('user_id', $user->id)->firstOrFail();
+        $vendor = $this->vendorService->getVendorOrFail($request->user());
 
-        $orders = \Modules\Ecommerce\Models\Order::whereHas('items', fn ($query) => $query->where('vendor_id', $vendor->id))
+        $orders = Order::whereHas('items', fn ($query) => $query->where('vendor_id', $vendor->id))
             ->with(['items' => fn ($query) => $query->where('vendor_id', $vendor->id)])
             ->when($request->filled('status'), fn ($query) => $query->where('status', $request->input('status')))
             ->latest()
@@ -135,10 +188,9 @@ class VendorController extends Controller
         ]);
     }
 
-    public function showOrder(\Modules\Ecommerce\Models\Order $order)
+    public function showOrder(Order $order)
     {
-        $user = request()->user();
-        $vendor = \Modules\Ecommerce\Models\Vendor::where('user_id', $user->id)->firstOrFail();
+        $vendor = $this->vendorService->getVendorOrFail(request()->user());
 
         $order->load(['items' => fn ($query) => $query->where('vendor_id', $vendor->id)]);
 
@@ -155,12 +207,11 @@ class VendorController extends Controller
         ]);
     }
 
-    public function updateOrderStatus(\Modules\Ecommerce\Requests\OrderStatusRequest $request, \Modules\Ecommerce\Models\Order $order)
+    public function updateOrderStatus(\Modules\Ecommerce\Requests\OrderStatusRequest $request, Order $order)
     {
-        $user = $request->user();
-        $vendor = \Modules\Ecommerce\Models\Vendor::where('user_id', $user->id)->firstOrFail();
+        $vendor = $this->vendorService->getVendorOrFail($request->user());
 
-        $vendorOrderItem = \Modules\Ecommerce\Models\OrderItem::where('order_id', $order->id)
+        $vendorOrderItem = OrderItem::where('order_id', $order->id)
             ->where('vendor_id', $vendor->id)
             ->first();
 

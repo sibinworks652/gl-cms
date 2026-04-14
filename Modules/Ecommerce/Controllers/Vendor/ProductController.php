@@ -39,8 +39,11 @@ class ProductController extends Controller
         $vendor = \Modules\Ecommerce\Models\Vendor::where('user_id', $user->id)->firstOrFail();
 
         return view('ecommerce::vendor.products.form', [
-            'product' => new Product(['status' => true]),
+            'product' => new Product(['status' => true, 'track_inventory' => true, 'low_stock_threshold' => 10]),
             'categories' => Category::query()->ordered()->get(),
+            'brands' => \Modules\Ecommerce\Models\Brand::query()->where('status', true)->orderBy('name')->get(),
+            'tags' => \Modules\Ecommerce\Models\Tag::query()->where('status', true)->orderBy('name')->get(),
+            'attributes' => \Modules\Ecommerce\Models\Attribute::query()->with('options')->where('status', true)->orderBy('name')->get(),
             'vendor' => $vendor,
             'isEdit' => false,
         ]);
@@ -73,11 +76,14 @@ class ProductController extends Controller
             abort(403, 'You can only edit your own products.');
         }
 
-        $product->load(['variants', 'images']);
+        $product->load(['variants', 'images', 'tags', 'attributes', 'attributeOptions']);
 
         return view('ecommerce::vendor.products.form', [
             'product' => $product,
             'categories' => Category::query()->ordered()->get(),
+            'brands' => \Modules\Ecommerce\Models\Brand::query()->where('status', true)->orderBy('name')->get(),
+            'tags' => \Modules\Ecommerce\Models\Tag::query()->where('status', true)->orderBy('name')->get(),
+            'attributes' => \Modules\Ecommerce\Models\Attribute::query()->with('options')->where('status', true)->orderBy('name')->get(),
             'vendor' => $vendor,
             'isEdit' => true,
         ]);

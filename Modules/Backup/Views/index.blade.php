@@ -66,7 +66,7 @@
                         @elseif($googleConfigured)
                             <a href="{{ route('admin.backups.google.redirect') }}" class="btn btn-primary btn-sm">Connect Google Drive</a>
                         @else
-                            <button type="button" class="btn btn-secondary btn-sm" disabled>Connect Google Drive</button>
+                            <button type="button" class="btn btn-primary btn-sm" disabled>Connect Google Drive</button>
                         @endif
                     @endif
                 </div> --}}

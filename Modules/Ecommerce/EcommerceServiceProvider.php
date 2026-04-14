@@ -12,6 +12,10 @@ class EcommerceServiceProvider extends ServiceProvider
         $this->loadMigrationsFrom(__DIR__ . '/Migrations');
         $this->loadViewsFrom(__DIR__ . '/Views', 'ecommerce');
 
+        foreach (glob(__DIR__ . '/Support/*.php') as $file) {
+            require_once $file;
+        }
+
         Route::middleware('web')
             ->group(__DIR__ . '/Routes/web.php');
 

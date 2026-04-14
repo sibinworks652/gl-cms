@@ -3,7 +3,7 @@
 namespace Modules\Ecommerce\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
+use Modules\Ecommerce\Support\EcommerceSettings;
 
 class CheckoutRequest extends FormRequest
 {
@@ -21,7 +21,7 @@ class CheckoutRequest extends FormRequest
             'shipping_address' => ['required', 'string'],
             'billing_address' => ['nullable', 'string'],
             'notes' => ['nullable', 'string'],
-            'payment_method' => ['required', Rule::in(['cod', 'razorpay', 'stripe'])],
+            'payment_method' => ['required', 'in:' . implode(',', EcommerceSettings::enabledPaymentMethods())],
             'tax_amount' => ['nullable', 'numeric', 'min:0'],
             'shipping_amount' => ['nullable', 'numeric', 'min:0'],
             'discount_amount' => ['nullable', 'numeric', 'min:0'],

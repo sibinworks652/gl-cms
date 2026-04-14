@@ -4,8 +4,11 @@ namespace Modules\Ecommerce\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Modules\Ecommerce\Models\Attribute;
+use Modules\Ecommerce\Models\Brand;
 use Modules\Ecommerce\Models\Category;
 use Modules\Ecommerce\Models\Product;
+use Modules\Ecommerce\Models\Tag;
 use Modules\Ecommerce\Models\Vendor;
 use Modules\Ecommerce\Requests\ProductRequest;
 use Modules\Ecommerce\Services\CatalogManager;
@@ -28,9 +31,12 @@ class ProductController extends Controller
     public function create()
     {
         return view('ecommerce::admin.products.form', [
-            'product' => new Product(['status' => true]),
-            'categories' => Category::query()->ordered()->get(),
+            'product' => new Product(['status' => true, 'track_inventory' => true, 'low_stock_threshold' => 10]),
+            'categories' => Category::query()->with('parent')->ordered()->get(),
             'vendors' => Vendor::query()->orderBy('name')->get(),
+            'brands' => Brand::query()->orderBy('name')->get(),
+            'tags' => Tag::query()->orderBy('name')->get(),
+            'attributes' => Attribute::query()->with('options')->orderBy('name')->get(),
             'isEdit' => false,
         ]);
     }
@@ -49,12 +55,15 @@ class ProductController extends Controller
 
     public function edit(Product $product)
     {
-        $product->load(['variants', 'images']);
+        $product->load(['variants.attributeOptions.attribute', 'images', 'tags', 'attributes.options', 'attributeOptions']);
 
         return view('ecommerce::admin.products.form', [
             'product' => $product,
-            'categories' => Category::query()->ordered()->get(),
+            'categories' => Category::query()->with('parent')->ordered()->get(),
             'vendors' => Vendor::query()->orderBy('name')->get(),
+            'brands' => Brand::query()->orderBy('name')->get(),
+            'tags' => Tag::query()->orderBy('name')->get(),
+            'attributes' => Attribute::query()->with('options')->orderBy('name')->get(),
             'isEdit' => true,
         ]);
     }
